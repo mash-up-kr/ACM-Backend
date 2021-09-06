@@ -1,15 +1,17 @@
 package mashup.backend.spring.acm.collector.note
 
+import mashup.backend.spring.acm.collector.note.NoteCollectorConfig.Companion.JOB_NAME
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
 import org.springframework.batch.core.repository.JobRepository
 import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-// TODO: ConditionalOnProperty
+@ConditionalOnProperty(name = ["spring.batch.job.names"], havingValue = JOB_NAME)
 @Configuration
 class NoteCollectorConfig {
     @Autowired
@@ -21,7 +23,7 @@ class NoteCollectorConfig {
 
     @Bean
     fun noteCollectorJob(): Job {
-        return jobBuilderFactory["noteCollectorJob"]
+        return jobBuilderFactory[JOB_NAME]
             .repository(jobRepository)
             .start(
                 stepBuilderFactory["noteCollectorStep"]
@@ -33,4 +35,8 @@ class NoteCollectorConfig {
 
     @Bean
     fun noteCollectorTasklet(): Tasklet = NoteCollectorTasklet()
+
+    companion object {
+        const val JOB_NAME = "noteCollectorJob"
+    }
 }
