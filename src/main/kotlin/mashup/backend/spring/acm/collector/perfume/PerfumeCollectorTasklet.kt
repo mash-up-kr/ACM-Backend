@@ -23,9 +23,11 @@ class PerfumeCollectorTasklet : Tasklet {
             genders.iterator().forEach {
                 webDriver.get(url + "?spol=${it}")
                 Thread.sleep(1500)
-                val button = webDriver.findElement(By.cssSelector("div.grid-x.grid-margin-x.grid-margin-y.text-center > div > button"))
+                val button = webDriver.findElement(
+                    By.cssSelector("div.grid-x.grid-margin-x.grid-margin-y.text-center > div > button")
+                )
                 while (isClickable(button))
-                Thread.sleep(500)
+                    Thread.sleep(500)
                 val perfumes = getPerfumes(webDriver, it)
                 log.info("perfumes.size: ${perfumes.size}")
                 log.info("perfumes: $perfumes")
@@ -63,11 +65,13 @@ class PerfumeCollectorTasklet : Tasklet {
                 val aTag = it.findElement(By.cssSelector("div > p > a"))
                 val smallTag = it.findElement(By.cssSelector("div > p > small"))
                 try {
+                    val url = aTag.getAttribute("href")
                     Perfume(
+                        perfumeId = url.substring(url.lastIndexOf('-') + 1, url.lastIndexOf('.')),
                         name = aTag.text,
                         brand = smallTag.text,
                         gender = gender,
-                        url = aTag.getAttribute("href"),
+                        url = url,
                         thumbnailImageUrl = imageTag.getAttribute("src")
                     )
                 } catch (e: Exception) {
@@ -79,6 +83,7 @@ class PerfumeCollectorTasklet : Tasklet {
     }
 
     data class Perfume(
+        val perfumeId: String = "",
         val name: String = "",
         val brand: String = "",
         val gender: String = "",
