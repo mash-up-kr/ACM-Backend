@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 
 interface NoteService {
     fun getNotes(pageable: Pageable): Page<Note>
+    fun getNote(url: String): Note
     fun create(noteCreateVo: NoteCreateVo): Note
 }
 
@@ -17,10 +18,12 @@ class NoteServiceImpl(
 ) : NoteService {
     override fun getNotes(pageable: Pageable): Page<Note> = noteRepository.findAll(pageable)
 
+    override fun getNote(url: String): Note = noteRepository.findByUrl(url) ?: throw NoteNotFoundException()
+
     @Transactional
     override fun create(noteCreateVo: NoteCreateVo): Note {
         if (noteRepository.existsByUrl(noteCreateVo.url)) {
-            throw DuplicatedNoteException(message = "Note already exists. url: ${noteCreateVo.url}")
+            throw DuplicatedNoteException("Note already exists. url: ${noteCreateVo.url}")
         }
         return noteRepository.save(Note.from(noteCreateVo))
     }

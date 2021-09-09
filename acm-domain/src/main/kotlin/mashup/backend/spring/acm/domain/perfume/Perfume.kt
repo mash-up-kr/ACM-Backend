@@ -2,6 +2,7 @@ package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.BaseEntity
 import javax.persistence.Entity
+import javax.persistence.OneToMany
 
 @Entity
 class Perfume(
@@ -9,6 +10,8 @@ class Perfume(
     val description: String = "",
     val url: String,
     val thumbnailImageUrl: String,
+    @OneToMany
+    val notes: List<PerfumeNote> = ArrayList()
 ) : BaseEntity() {
     companion object {
         fun from(perfumeCreateVo: PerfumeCreateVo) = Perfume(
