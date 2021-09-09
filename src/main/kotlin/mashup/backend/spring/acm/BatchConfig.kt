@@ -5,4 +5,8 @@ import org.springframework.context.annotation.Configuration
 
 @EnableBatchProcessing
 @Configuration
-class BatchConfig
+class BatchConfig {
+    companion object {
+        const val SPRING_BATCH_JOB_NAMES = "spring.batch.job.names"
+    }
+}
