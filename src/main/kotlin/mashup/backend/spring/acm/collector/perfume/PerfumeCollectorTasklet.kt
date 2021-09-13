@@ -19,35 +19,35 @@ class PerfumeCollectorTasklet : Tasklet {
     override fun execute(contribution: StepContribution, chunkContext: ChunkContext): RepeatStatus? {
         val url = "https://www.fragrantica.com/search/"
         try {
-            getWebDriver(url)
-            genders.iterator().forEach {
+            executeWebDriver(url)
+            genders.forEach {
                 webDriver.get(url + "?spol=${it}")
                 Thread.sleep(1500)
                 val button = webDriver.findElement(
                     By.cssSelector("div.grid-x.grid-margin-x.grid-margin-y.text-center > div > button")
                 )
-                while (isClickable(button))
+                while (tryClick(button))
                     Thread.sleep(500)
-                val perfumes = getPerfumes(webDriver, it)
+                val perfumes = getPerfumes(it)
                 log.info("perfumes.size: ${perfumes.size}")
                 log.info("perfumes: $perfumes")
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            log.error(e.stackTraceToString())
         } finally {
             webDriver.close()
         }
         return RepeatStatus.FINISHED
     }
 
-    private fun getWebDriver(url: String) {
+    private fun executeWebDriver(url: String) {
         System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe")
         webDriver = ChromeDriver()
         webDriver.get(url)
         Thread.sleep(3000)
     }
 
-    private fun isClickable(button: WebElement): Boolean {
+    private fun tryClick(button: WebElement): Boolean {
         try {
             val webDriverWait = WebDriverWait(webDriver, 10)
             webDriverWait.until(ExpectedConditions.elementToBeClickable(button))
@@ -58,7 +58,7 @@ class PerfumeCollectorTasklet : Tasklet {
         return true
     }
 
-    private fun getPerfumes(webDriver: WebDriver, gender: String): List<Perfume> {
+    private fun getPerfumes(gender: String): List<Perfume> {
         return webDriver.findElements(By.cssSelector("div.cell.card.fr-news-box"))
             .map {
                 val imageTag = it.findElement(By.cssSelector("div.card-section > img"))
