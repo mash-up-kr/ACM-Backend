@@ -1,7 +1,6 @@
 package mashup.backend.spring.acm.collector.mapping
 
 import mashup.backend.spring.acm.BatchConfig.Companion.SPRING_BATCH_JOB_NAMES
-import mashup.backend.spring.acm.collector.note.NoteCollectorTasklet
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
