@@ -6,3 +6,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
 }
+
+jar {
+    enabled = false
+}
