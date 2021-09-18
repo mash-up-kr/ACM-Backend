@@ -1,3 +1,2 @@
 rootProject.name = "acm"
-include("acm-admin", "acm-batch", "acm-domain")
-//include("acm-api")
+include("acm-admin", "acm-api", "acm-batch", "acm-domain")
