@@ -1,6 +1,6 @@
 package mashup.backend.spring.acm.collector.perfume
 
-import mashup.backend.spring.acm.BatchConfig
+import mashup.backend.spring.acm.infrastructure.BatchConfig
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
