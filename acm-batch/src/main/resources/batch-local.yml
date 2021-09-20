@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:/usr/local/var/db/h2/acm2
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+  batch:
+    initialize-schema: always

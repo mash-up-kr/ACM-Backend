@@ -7,5 +7,6 @@ import org.springframework.boot.runApplication
 class AcmApplication
 
 fun main(args: Array<String>) {
+	System.setProperty("spring.config.name", "application,batch")
 	runApplication<AcmApplication>(*args)
 }
