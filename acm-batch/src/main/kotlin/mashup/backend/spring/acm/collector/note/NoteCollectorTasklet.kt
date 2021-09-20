@@ -12,7 +12,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.repeat.RepeatStatus
 import org.springframework.beans.factory.annotation.Autowired
 
-class NoteCollectorTasklet : Tasklet {
+open class NoteCollectorTasklet : Tasklet {
     @Autowired
     lateinit var noteService: NoteService
 
@@ -22,6 +22,8 @@ class NoteCollectorTasklet : Tasklet {
         val notes = getNotes(document)
         log.info("notes.size: ${notes.size}")
         log.info("notes.distinct.size: ${notes.map { it.name }.toSet().size}")
+
+        // 노트 그룹당 1번씩 노트 조회
         notes.forEach {
             noteService.create(NoteCreateVo(
                 name = it.name,
