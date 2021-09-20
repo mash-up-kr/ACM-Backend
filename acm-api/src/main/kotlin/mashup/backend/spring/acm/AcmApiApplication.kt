@@ -7,5 +7,6 @@ import org.springframework.boot.runApplication
 class AcmApiApplication
 
 fun main(args: Array<String>) {
+    System.setProperty("spring.config.name", "application,api")
     runApplication<AcmApiApplication>(*args)
 }

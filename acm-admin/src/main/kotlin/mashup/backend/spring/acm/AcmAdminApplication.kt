@@ -7,5 +7,6 @@ import org.springframework.boot.runApplication
 class AcmAdminApplication
 
 fun main(args: Array<String>) {
+    System.setProperty("spring.config.name", "application,admin")
     runApplication<AcmAdminApplication>(*args)
 }
