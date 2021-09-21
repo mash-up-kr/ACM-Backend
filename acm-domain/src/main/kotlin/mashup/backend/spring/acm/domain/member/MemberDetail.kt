@@ -4,12 +4,9 @@ import mashup.backend.spring.acm.domain.BaseEntity
 import java.time.LocalDate
 import java.time.Year
 import javax.persistence.Entity
-import javax.persistence.OneToOne
 
 @Entity
 class MemberDetail(
-    @OneToOne
-    val member: Member,
     /**
      * 성별
      */
@@ -30,10 +27,49 @@ class MemberDetail(
     /**
      * 나이
      */
+    @Transient
     var age: Int = 0
         set(value) {
-            birthYear = Year.of(LocalDate.now().year - value + 1)
+            birthYear = calculateBirthYear(value)
             field = value
         }
-        get() = LocalDate.now().year - birthYear.value + 1
+        get() = calculateAge(birthYear)
+
+    private fun calculateBirthYear(age: Int): Year {
+        return Year.of(LocalDate.now().year - age + 1)
+    }
+
+    private fun calculateAge(birthYear: Year): Int {
+        return LocalDate.now().year - birthYear.value + 1
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MemberDetail
+
+        if (gender != other.gender) return false
+        if (birthYear != other.birthYear) return false
+        if (note != other.note) return false
+        if (perfume != other.perfume) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = gender.hashCode()
+        result = 31 * result + birthYear.hashCode()
+        result = 31 * result + note.hashCode()
+        result = 31 * result + perfume.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "MemberDetail(gender='$gender', birthYear=$birthYear, note='$note', perfume='$perfume')"
+    }
+
+    init {
+        this.age = calculateAge(birthYear)
+    }
 }

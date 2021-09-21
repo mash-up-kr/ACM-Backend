@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 interface MemberService {
-    fun findByIdProviderVo(idProviderInfo: IdProviderInfo): Member
+    fun findByIdProviderVo(idProviderInfo: IdProviderInfo): Member?
     fun join(): Member
     fun withdraw()
 }
