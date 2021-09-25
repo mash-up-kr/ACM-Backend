@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional
 interface PerfumeService {
     fun create(perfumeCreateVo: PerfumeCreateVo): Perfume
     fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType)
+    fun getPerfume(id: Long): Perfume
+    fun getSimilarPerfume(id: Long): List<Perfume>
 }
 
 @Service
@@ -36,6 +38,17 @@ class PerfumeServiceImpl(
         perfumeRepository.save(perfume)
     }
 
+    @Transactional(readOnly = true)
+    override fun getPerfume(id: Long) = perfumeRepository.findPerfumeById(id)
+        ?: throw PerfumeNotFoundException("Perfume not found. id: $id")
+
+
     private fun getPerfume(url: String) = perfumeRepository.findByUrl(url)
         ?: throw PerfumeNotFoundException("Perfume not found. url: $url")
+
+    @Transactional(readOnly = true)
+    override fun getSimilarPerfume(id: Long): List<Perfume> {
+        // TODO: 구현해야 함.
+        return emptyList()
+    }
 }
