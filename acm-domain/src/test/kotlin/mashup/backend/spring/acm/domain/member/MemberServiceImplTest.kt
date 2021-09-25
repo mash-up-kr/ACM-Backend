@@ -20,7 +20,7 @@ internal class MemberServiceImplTest {
     lateinit var sut: MemberService
 
     @Test
-    fun test() {
+    fun findMember() {
         // given
         val idProviderInfo = IdProviderInfo(
             idProviderType = IdProviderType.UUID,
@@ -44,5 +44,18 @@ internal class MemberServiceImplTest {
         )
         member.add(memberIdProvider)
         memberRepository.save(member)
+    }
+
+    @Test
+    fun join() {
+        // given
+        val idProviderInfo = IdProviderInfo(
+            idProviderType = IdProviderType.UUID,
+            idProviderUserId = "idProviderUserId"
+        )
+        // when
+        val actual = sut.join(idProviderInfo)
+        // then
+        assertThat(actual).isNotNull
     }
 }
