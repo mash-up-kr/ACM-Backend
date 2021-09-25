@@ -1,0 +1,3 @@
+jwt:
+  token-issuer: acm-api
+  token-signing-key: ENC(vpjbYmpc39bYP+i3Giq4FBOKosJCxKlJUW0PYZ7Rjq7sPtpOjvwBGW4JKWfafUIHpO6YqV9dochP4+nezaWjUw==)
