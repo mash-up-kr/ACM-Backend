@@ -6,9 +6,9 @@ import javax.persistence.*
 
 @Entity
 class Member(
-    val memberStatus: MemberStatus = MemberStatus.ACTIVE,
+    val memberStatus: MemberStatus = MemberStatus.ASSOCIATE,
     @OneToOne(cascade = [CascadeType.ALL])
-    val memberDetail: MemberDetail,
+    val memberDetail: MemberDetail? = null,
     @OneToMany(cascade = [CascadeType.ALL])
     @JoinColumn(name = "memberId")
     val memberIdProviders: MutableList<MemberIdProvider> = ArrayList()
