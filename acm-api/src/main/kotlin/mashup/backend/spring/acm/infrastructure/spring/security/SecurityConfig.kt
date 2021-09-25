@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -49,13 +50,12 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.logout().disable()
         http.formLogin().disable()
         http.httpBasic().disable()
-        // TODO: bearerPreAuthFilter()
-//        http.addFilterAt(bearerPreAuthFilter(), AbstractPreAuthenticatedProcessingFilter::class.java)
+        http.addFilterAt(tokenPreAuthFilter(), AbstractPreAuthenticatedProcessingFilter::class.java)
         http.sessionManagement().sessionFixation().changeSessionId()
         http.cors().disable()
         http.exceptionHandling()
             .authenticationEntryPoint { request: HttpServletRequest?, response: HttpServletResponse, authException: AuthenticationException? ->
-                log.info("authenticationEntryPoint: {}, {}, {}", request, response, authException)
+                log.debug("authenticationEntryPoint: {}, {}, {}", request, response, authException)
                 response.status = HttpStatus.UNAUTHORIZED.value()
                 response.contentType = MediaType.APPLICATION_JSON_VALUE
                 objectMapper.writeValue(
@@ -64,7 +64,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 )
             }
             .accessDeniedHandler { request: HttpServletRequest?, response: HttpServletResponse, accessDeniedException: AccessDeniedException? ->
-                log.info("accessDeniedHandler: {}, {}, {}", request, response, accessDeniedException)
+                log.debug("accessDeniedHandler: {}, {}, {}", request, response, accessDeniedException)
                 response.status = HttpStatus.FORBIDDEN.value()
                 response.contentType = MediaType.APPLICATION_JSON_VALUE
                 objectMapper.writeValue(
@@ -74,13 +74,13 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             }
     }
 
-//    @Bean
-//    fun bearerPreAuthFilter(): FirebasePreAuthFilter? {
-//        val filter = FirebasePreAuthFilter()
-//        filter.setAuthenticationManager(ProviderManager(preAuthTokenProvider()))
-//        return filter
-//    }
-//
+    @Bean
+    fun tokenPreAuthFilter(): TokenPreAuthFilter {
+        val filter = TokenPreAuthFilter()
+        filter.setAuthenticationManager(ProviderManager(preAuthTokenProvider()))
+        return filter
+    }
+
     @Bean
     fun preAuthTokenProvider(): PreAuthTokenProvider = PreAuthTokenProvider()
 
