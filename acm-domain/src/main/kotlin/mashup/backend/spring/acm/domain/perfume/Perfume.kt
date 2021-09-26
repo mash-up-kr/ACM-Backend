@@ -11,6 +11,8 @@ class Perfume(
     val url: String,
     val thumbnailImageUrl: String,
     @OneToMany
+    val accords: List<PerfumeAccord> = ArrayList(),
+    @OneToMany
     val notes: List<PerfumeNote> = ArrayList()
 ) : BaseEntity() {
     companion object {
