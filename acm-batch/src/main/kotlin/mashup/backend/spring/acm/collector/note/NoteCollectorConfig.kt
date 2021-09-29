@@ -1,7 +1,6 @@
 package mashup.backend.spring.acm.collector.note
 
 import mashup.backend.spring.acm.BatchConfig.Companion.SPRING_BATCH_JOB_NAMES
-import mashup.backend.spring.acm.collector.notegroup.NoteGroupCollectorConfig
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
@@ -20,8 +19,10 @@ import org.springframework.context.annotation.Configuration
 class NoteCollectorConfig {
     @Autowired
     lateinit var jobBuilderFactory: JobBuilderFactory
+
     @Autowired
     lateinit var jobRepository: JobRepository
+
     @Autowired
     lateinit var stepBuilderFactory: StepBuilderFactory
 
