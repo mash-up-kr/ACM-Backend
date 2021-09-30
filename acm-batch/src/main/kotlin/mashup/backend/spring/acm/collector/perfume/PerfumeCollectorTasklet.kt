@@ -1,10 +1,9 @@
 package mashup.backend.spring.acm.collector.perfume
 
-import org.openqa.selenium.By
-import org.openqa.selenium.NoSuchElementException
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebDriverException
-import org.openqa.selenium.WebElement
+import mashup.backend.spring.acm.domain.perfume.Gender
+import mashup.backend.spring.acm.domain.perfume.PerfumeCreateVo
+import mashup.backend.spring.acm.domain.perfume.PerfumeService
+import org.openqa.selenium.*
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -14,11 +13,13 @@ import org.springframework.batch.core.StepContribution
 import org.springframework.batch.core.scope.context.ChunkContext
 import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.repeat.RepeatStatus
-import kotlin.jvm.Throws
-import kotlin.text.StringBuilder
+import org.springframework.beans.factory.annotation.Autowired
 
 class PerfumeCollectorTasklet : Tasklet {
     private lateinit var webDriver: WebDriver
+
+    @Autowired
+    lateinit var perfumeService: PerfumeService
 
     override fun execute(contribution: StepContribution, chunkContext: ChunkContext): RepeatStatus? {
         val url = "https://www.fragrantica.com/search/"
@@ -33,15 +34,30 @@ class PerfumeCollectorTasklet : Tasklet {
                         val button = webDriver.findElement(
                             By.cssSelector("div.grid-x.grid-margin-x.grid-margin-y.text-center > div > button")
                         )
-                        while (true) {
+                        do {
                             val lastPerfume = replacePerfumeName(frenchToEnglish(getLastPerfumeName()))
                             if (!isSameKeyword(keyword, lastPerfume)) break
-                            tryClick(button)
+                        } while (tryClick(button))
+
+                        val perfumes = getPerfumes(keyword)
+                        logger.info("search condition: $gender + $keyword -> perfumes.size: ${perfumes.size}")
+                        val genderType = when (gender) {
+                            "female" -> Gender.WOMAN
+                            "male" -> Gender.MAN
+                            else -> Gender.UNISEX
                         }
-                        val perfumes = getPerfumes(gender, keyword)
-                        // TODO: DB에 저장
-                        logger.info("perfumes.size: ${perfumes.size}")
-                        logger.info("perfumes: $perfumes")
+                        perfumes.forEach {
+                            perfumeService.create(
+                                PerfumeCreateVo(
+                                    name = it.name,
+                                    brand = it.brand,
+                                    gender = genderType,
+                                    description = "",
+                                    url = it.url,
+                                    thumbnailImageUrl = it.thumbnailImageUrl
+                                )
+                            )
+                        }
                     } catch (e: NoSuchElementException) {
                         return@forEach
                     }
@@ -76,14 +92,20 @@ class PerfumeCollectorTasklet : Tasklet {
     }
 
     /**
-     * 버튼을 클릭할 수 있으면 클릭하고 700millis 멈춤
+     * 버튼을 클릭하고 700millis 멈춤
+     * 클릭할 수 있으면 return true, 클릭할 수 없다면(Exception 발생) return false
      */
     @Throws(WebDriverException::class)
-    private fun tryClick(button: WebElement) {
-        val webDriverWait = WebDriverWait(webDriver, 10)
-        webDriverWait.until(ExpectedConditions.elementToBeClickable(button))
-        button.click()
-        Thread.sleep(700)
+    private fun tryClick(button: WebElement): Boolean {
+        try {
+            val webDriverWait = WebDriverWait(webDriver, 10)
+            webDriverWait.until(ExpectedConditions.elementToBeClickable(button))
+            button.click()
+            Thread.sleep(700)
+        } catch (e: WebDriverException) {
+            return false
+        }
+        return true
     }
 
     /**
@@ -140,8 +162,7 @@ class PerfumeCollectorTasklet : Tasklet {
 
     /**
      * 검색 키워드와 향수 이름을 비교
-     * 맨 앞 두 글자끼리 비교하여 같으면 return true
-     * 같지 않다면 return false
+     * 맨 앞 두 글자끼리 비교하여 같으면 return true, 같지 않다면 return false
      */
     private fun isSameKeyword(keyword: String, perfumeName: String): Boolean {
         val range: IntRange =
@@ -156,7 +177,7 @@ class PerfumeCollectorTasklet : Tasklet {
     /**
      * 웹 페이지에 있는 향수 정보를 파싱
      */
-    private fun getPerfumes(gender: String, keyword: String): List<Perfume> {
+    private fun getPerfumes(keyword: String): List<Perfume> {
         return webDriver.findElements(By.cssSelector("div.cell.card.fr-news-box"))
             .filter {
                 val perfumeName = it.findElement(By.cssSelector("div > p > a")).text
@@ -167,10 +188,8 @@ class PerfumeCollectorTasklet : Tasklet {
                 val smallTag = it.findElement(By.cssSelector("div > p > small"))
                 val url = aTag.getAttribute("href")
                 Perfume(
-                    perfumeId = url.substring(url.lastIndexOf('-') + 1, url.lastIndexOf('.')),
                     name = frenchToEnglish(aTag.text),
                     brand = frenchToEnglish(smallTag.text),
-                    gender = gender,
                     url = url,
                     thumbnailImageUrl = imageTag.getAttribute("src")
                 )
@@ -195,10 +214,8 @@ class PerfumeCollectorTasklet : Tasklet {
     }
 
     data class Perfume(
-        val perfumeId: String,
         val name: String,
         val brand: String,
-        val gender: String,
         val url: String,
         val thumbnailImageUrl: String
     )
