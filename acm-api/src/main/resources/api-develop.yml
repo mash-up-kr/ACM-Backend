@@ -1,0 +1,3 @@
+jwt:
+  token-issuer: acm-api-develop
+  token-signing-key: ENC(4VRIXH383eYjwjYXtlj82PYH3Q0VFeZ8HdtoRVwhTVMs4b6qLEoHOBCyifQmEfHxgg+uocQddEHQutxofP8htA==)
