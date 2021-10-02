@@ -9,11 +9,14 @@ import javax.persistence.OneToMany
 @Entity
 class Perfume(
     val name: String,
+    val originalName: String,
     val brand: String,
+    val originalBrand: String,
     @Enumerated(EnumType.STRING)
     val gender: Gender,
-    val description: String = "",
+    var description: String = "",
     val url: String,
+    var imageUrl: String = "",
     val thumbnailImageUrl: String,
     @OneToMany
     val accords: List<PerfumeAccord> = ArrayList(),
@@ -23,9 +26,10 @@ class Perfume(
     companion object {
         fun from(perfumeCreateVo: PerfumeCreateVo) = Perfume(
             name = perfumeCreateVo.name,
+            originalName = perfumeCreateVo.originalName,
             brand = perfumeCreateVo.brand,
+            originalBrand = perfumeCreateVo.originalBrand,
             gender = perfumeCreateVo.gender,
-            description = perfumeCreateVo.description,
             url = perfumeCreateVo.url,
             thumbnailImageUrl = perfumeCreateVo.thumbnailImageUrl
         )

@@ -50,15 +50,17 @@ class PerfumeCollectorTasklet : Tasklet {
                             perfumeService.create(
                                 PerfumeCreateVo(
                                     name = it.name,
+                                    originalName = it.originalName,
                                     brand = it.brand,
+                                    originalBrand = it.originalBrand,
                                     gender = genderType,
-                                    description = "",
                                     url = it.url,
                                     thumbnailImageUrl = it.thumbnailImageUrl
                                 )
                             )
                         }
                     } catch (e: NoSuchElementException) {
+                        logger.warn("search condition: $gender + $keyword -> No Such Result")
                         return@forEach
                     }
                 }
@@ -95,7 +97,6 @@ class PerfumeCollectorTasklet : Tasklet {
      * 버튼을 클릭하고 700millis 멈춤
      * 클릭할 수 있으면 return true, 클릭할 수 없다면(Exception 발생) return false
      */
-    @Throws(WebDriverException::class)
     private fun tryClick(button: WebElement): Boolean {
         try {
             val webDriverWait = WebDriverWait(webDriver, 10)
@@ -189,7 +190,9 @@ class PerfumeCollectorTasklet : Tasklet {
                 val url = aTag.getAttribute("href")
                 Perfume(
                     name = frenchToEnglish(aTag.text),
+                    originalName = aTag.text,
                     brand = frenchToEnglish(smallTag.text),
+                    originalBrand = smallTag.text,
                     url = url,
                     thumbnailImageUrl = imageTag.getAttribute("src")
                 )
@@ -215,7 +218,9 @@ class PerfumeCollectorTasklet : Tasklet {
 
     data class Perfume(
         val name: String,
+        val originalName: String,
         val brand: String,
+        val originalBrand: String,
         val url: String,
         val thumbnailImageUrl: String
     )
