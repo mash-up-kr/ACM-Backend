@@ -9,7 +9,7 @@ class PerfumeUrlScrapingJobService(
     private val perfumeUrlRepository: PerfumeUrlRepository
 ) {
     @Transactional
-    fun createIfNotExists(perfumeUrl: String) : Pair<Boolean, PerfumeUrlScrapingJob?> {
+    fun createIfNotExists(perfumeUrl: String): Pair<Boolean, PerfumeUrlScrapingJob?> {
         val url = if (perfumeUrl.startsWith("https://www.fragrantica.com/")) {
             perfumeUrl
         } else {
