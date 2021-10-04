@@ -1,2 +1,7 @@
-rootProject.name = "acm"
-include("acm-admin", "acm-api", "acm-batch", "acm-domain")
+rootProject.name = "perfuming"
+include(
+    "perfuming-admin",
+    "perfuming-api",
+    "perfuming-batch",
+    "perfuming-domain"
+)

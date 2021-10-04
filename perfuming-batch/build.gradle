@@ -1,5 +1,5 @@
 dependencies {
-    api(project(":acm-domain"))
+    api(project(":perfuming-domain"))
     implementation("org.springframework.boot:spring-boot-starter-batch")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation ("org.jsoup:jsoup:1.14.2")
