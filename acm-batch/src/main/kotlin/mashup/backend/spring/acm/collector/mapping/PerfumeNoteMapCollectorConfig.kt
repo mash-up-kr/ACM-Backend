@@ -11,13 +11,18 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-@ConditionalOnProperty(value = [SPRING_BATCH_JOB_NAMES], havingValue = "perfumeNoteMapCollectorJob")
+@ConditionalOnProperty(
+    name = [SPRING_BATCH_JOB_NAMES],
+    havingValue = PerfumeNoteMapCollectorConfig.JOB_NAME
+)
 @Configuration
 class PerfumeNoteMapCollectorConfig {
     @Autowired
     lateinit var jobBuilderFactory: JobBuilderFactory
+
     @Autowired
     lateinit var jobRepository: JobRepository
+
     @Autowired
     lateinit var stepBuilderFactory: StepBuilderFactory
 
@@ -26,7 +31,7 @@ class PerfumeNoteMapCollectorConfig {
         return jobBuilderFactory[JOB_NAME]
             .repository(jobRepository)
             .start(
-                stepBuilderFactory["perfumeNoteMapCollectorStep"]
+                stepBuilderFactory[STEP_NAME]
                     .tasklet(perfumeNoteMapCollectorTasklet())
                     .build()
             )
@@ -38,5 +43,6 @@ class PerfumeNoteMapCollectorConfig {
 
     companion object {
         const val JOB_NAME = "perfumeNoteMapCollectorJob"
+        const val STEP_NAME = "perfumeNoteMapCollectorStep"
     }
 }

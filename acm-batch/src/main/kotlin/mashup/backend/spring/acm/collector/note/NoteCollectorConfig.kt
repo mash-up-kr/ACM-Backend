@@ -19,8 +19,10 @@ import org.springframework.context.annotation.Configuration
 class NoteCollectorConfig {
     @Autowired
     lateinit var jobBuilderFactory: JobBuilderFactory
+
     @Autowired
     lateinit var jobRepository: JobRepository
+
     @Autowired
     lateinit var stepBuilderFactory: StepBuilderFactory
 

@@ -5,7 +5,6 @@ import org.springframework.batch.support.transaction.ResourcelessTransactionMana
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-
 @EnableBatchProcessing
 @Configuration
 class BatchConfig {
