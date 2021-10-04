@@ -1,0 +1,7 @@
+# TODO: add database for batch production
+#spring:
+#  batch:
+#    datasource:
+#      url: jdbc:mysql://acm-db-01.cycmo96vm8ng.ap-northeast-2.rds.amazonaws.com:3306/perfuming_batch_dev?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&DB_CLOSE_ON_EXIT=FALSE
+#      username: acm
+#      password: ENC(IPNXUg/rPLNb371777vuH6VMgjCZkAqEXXnHGNd1I1QPtVxnyge19oK+BQD99NoF)

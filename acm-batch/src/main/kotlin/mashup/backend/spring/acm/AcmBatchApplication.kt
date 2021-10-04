@@ -4,9 +4,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class AcmApplication
+class AcmBatchApplication
 
 fun main(args: Array<String>) {
 	System.setProperty("spring.config.name", "application,batch")
-	runApplication<AcmApplication>(*args)
+	runApplication<AcmBatchApplication>(*args)
 }
