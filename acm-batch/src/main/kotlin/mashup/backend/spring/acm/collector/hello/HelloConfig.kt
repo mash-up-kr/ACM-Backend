@@ -1,33 +1,33 @@
-package mashup.backend.spring.acm.collector.notegroup
+package mashup.backend.spring.acm.collector.hello
 
-import mashup.backend.spring.acm.infrastructure.BatchConfig.Companion.SPRING_BATCH_JOB_NAMES
+import mashup.backend.spring.acm.infrastructure.BatchConfig
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.core.repository.JobRepository
+import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Component
 
 @ConditionalOnProperty(
-    name = [SPRING_BATCH_JOB_NAMES],
-    havingValue = NoteGroupCollectorConfig.JOB_NAME
+    value = [BatchConfig.SPRING_BATCH_JOB_NAMES],
+    havingValue = HelloConfig.JOB_NAME
 )
-@Configuration
-class NoteGroupCollectorConfig(
+@Component
+class HelloConfig(
     private val jobBuilderFactory: JobBuilderFactory,
     private val jobRepository: JobRepository,
     private val stepBuilderFactory: StepBuilderFactory
 ) {
-
     @Bean
-    fun noteGroupCollectorJob(): Job {
+    fun helloJob(): Job {
         return jobBuilderFactory[JOB_NAME]
             .repository(jobRepository)
             .start(
                 stepBuilderFactory[STEP_NAME]
-                    .tasklet(noteGroupCollectorTasklet())
+                    .tasklet(helloTasklet())
                     .build()
             )
             .build()
@@ -35,10 +35,10 @@ class NoteGroupCollectorConfig(
 
     @Bean
     @StepScope
-    fun noteGroupCollectorTasklet() = NoteGroupCollectorTasklet()
+    fun helloTasklet(): Tasklet = HelloTasklet()
 
     companion object {
-        const val JOB_NAME = "noteGroupCollectorJob"
-        const val STEP_NAME = "noteGroupCollectorStep"
+        const val JOB_NAME = "helloJob"
+        const val STEP_NAME = "helloStep"
     }
 }
