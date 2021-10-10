@@ -5,8 +5,12 @@ import kotlin.streams.toList
 
 data class PerfumeDetailResponse(
     val id: Long,
-    val thumbnailImageUrl: String,
     val name: String,
+    val brand: String,
+    val gender: Gender,
+    val description: String,
+    val imageUrl: String,
+    val thumbnailImageUrl: String,
     val accords: List<SimplePerfumeAccord>,
     val notes: List<SimplePerfumeNote>,
     val similarPerfumes: List<SimpleSimilarPerfume>? = emptyList()
@@ -14,8 +18,12 @@ data class PerfumeDetailResponse(
     companion object {
         fun of(perfume: Perfume, similarPerfumes: List<SimpleSimilarPerfume>?) = PerfumeDetailResponse(
             id = perfume.id,
-            thumbnailImageUrl = perfume.thumbnailImageUrl,
             name = perfume.name,
+            brand = perfume.brand,
+            gender = perfume.gender,
+            description = perfume.description,
+            imageUrl = perfume.imageUrl,
+            thumbnailImageUrl = perfume.thumbnailImageUrl,
             accords = SimplePerfumeAccord.of(perfume.accords),
             notes = SimplePerfumeNote.of(perfume.notes),
             similarPerfumes = similarPerfumes
