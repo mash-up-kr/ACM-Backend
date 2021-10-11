@@ -1,4 +1,4 @@
-package mashup.backend.spring.acm.presentaion.api.perfume
+package mashup.backend.spring.acm.presentation.api.perfume
 
 import mashup.backend.spring.acm.domain.perfume.*
 import kotlin.streams.toList
@@ -38,7 +38,7 @@ data class SimpleSimilarPerfume(
 ) {
     companion object {
         fun of(perfume: List<Perfume>) : List<SimpleSimilarPerfume> {
-            return perfume.stream().map(SimpleSimilarPerfume::of).toList()
+            return perfume.stream().map(Companion::of).toList()
         }
 
         private fun of(perfume: Perfume) = SimpleSimilarPerfume(
@@ -56,7 +56,7 @@ data class SimplePerfumeAccord(
 ) {
     companion object {
         fun of(perfumeAccords: List<PerfumeAccord>) : List<SimplePerfumeAccord> {
-            return perfumeAccords.stream().map(SimplePerfumeAccord::of).toList()
+            return perfumeAccords.stream().map(Companion::of).toList()
         }
 
         private fun of(perfumeAccord: PerfumeAccord) = SimplePerfumeAccord(
@@ -75,7 +75,7 @@ data class SimplePerfumeNote(
 ) {
     companion object {
         fun of(perfumeNotes: List<PerfumeNote>) : List<SimplePerfumeNote> {
-            return perfumeNotes.stream().map(SimplePerfumeNote::of).toList()
+            return perfumeNotes.stream().map(Companion::of).toList()
         }
         private fun of(perfumeNote: PerfumeNote) = SimplePerfumeNote(
             noteType = perfumeNote.noteType,

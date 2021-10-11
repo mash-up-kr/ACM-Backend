@@ -4,22 +4,22 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-data class ApiResponse<T>(
+data class ApiResponse(
     val code: String,
     val message: String,
-    val data: T? = null
+    val data: Map<String, Any> = emptyMap()
 ) {
     companion object {
-        fun <T> empty(): ApiResponse<T> {
-            return ApiResponse("", "", null)
+        fun empty(): ApiResponse {
+            return ApiResponse("", "")
         }
 
-        fun <T> success(data: T): ApiResponse<T> {
-            return ApiResponse("", "", data)
+        fun success(name: String, data: Any): ApiResponse {
+            return ApiResponse("", "", mapOf(name to data))
         }
 
-        fun failure(code: String, message: String): ApiResponse<*> {
-            return ApiResponse<Any>(code, message, null)
+        fun failure(code: String, message: String): ApiResponse {
+            return ApiResponse(code, message)
         }
     }
 }
@@ -28,7 +28,7 @@ data class ApiResponse<T>(
  * example
  * ------------------------------
  * fun tmp2(): ApiResponse<PageData<TmpDto>> {
- *  return ApiResponse.success(tmp())
+ *  return ApiResponse.success("tmps", tmp())
  * }
  *
  * fun tmp(): PageData<TmpDto> {

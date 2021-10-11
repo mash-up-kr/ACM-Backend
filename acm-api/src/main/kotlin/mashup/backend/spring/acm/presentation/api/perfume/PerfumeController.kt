@@ -1,4 +1,4 @@
-package mashup.backend.spring.acm.presentaion.api.perfume
+package mashup.backend.spring.acm.presentation.api.perfume
 
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.presentation.ApiResponse
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class PerfumeController(val perfumeService: PerfumeService) {
     @GetMapping("/{id}")
-    fun getPerfumeDetail(@PathVariable id: Long):  ApiResponse<PerfumeDetailResponse>{
+    fun getPerfumeDetail(@PathVariable id: Long): ApiResponse {
         val perfumes = perfumeService.getPerfume(id)
         val similarPerfumes = SimpleSimilarPerfume.of(perfumeService.getSimilarPerfume(id))
 
-        return ApiResponse.success(PerfumeDetailResponse.of(perfumes, similarPerfumes))
+        return ApiResponse.success("PerfumeDetail", PerfumeDetailResponse.of(perfumes, similarPerfumes))
     }
 }
