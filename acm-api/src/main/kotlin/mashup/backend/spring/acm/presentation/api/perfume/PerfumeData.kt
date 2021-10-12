@@ -4,6 +4,10 @@ import mashup.backend.spring.acm.domain.perfume.*
 import kotlin.streams.toList
 
 data class PerfumeDetailResponse(
+    val perfumeDetail: PerfumeDetail
+)
+
+data class PerfumeDetail(
     val id: Long,
     val name: String,
     val brand: String,
@@ -13,10 +17,10 @@ data class PerfumeDetailResponse(
     val thumbnailImageUrl: String,
     val accords: List<SimplePerfumeAccord>,
     val notes: List<SimplePerfumeNote>,
-    val similarPerfumes: List<SimpleSimilarPerfume>? = emptyList()
+    val similarPerfumes: List<SimpleSimilarPerfume> = emptyList()
 ) {
     companion object {
-        fun of(perfume: Perfume, similarPerfumes: List<SimpleSimilarPerfume>?) = PerfumeDetailResponse(
+        fun of(perfume: Perfume, similarPerfumes: List<SimpleSimilarPerfume>) = PerfumeDetail(
             id = perfume.id,
             name = perfume.name,
             brand = perfume.brand,

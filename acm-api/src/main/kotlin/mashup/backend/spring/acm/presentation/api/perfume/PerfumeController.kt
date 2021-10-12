@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class PerfumeController(val perfumeService: PerfumeService) {
     @GetMapping("/{id}")
-    fun getPerfumeDetail(@PathVariable id: Long): ApiResponse {
+    fun getPerfumeDetail(@PathVariable id: Long): ApiResponse<PerfumeDetailResponse> {
         val perfumes = perfumeService.getPerfume(id)
         val similarPerfumes = SimpleSimilarPerfume.of(perfumeService.getSimilarPerfume(id))
 
-        return ApiResponse.success("PerfumeDetail", PerfumeDetailResponse.of(perfumes, similarPerfumes))
+        return ApiResponse.success(PerfumeDetailResponse(PerfumeDetail.of(perfumes, similarPerfumes)))
     }
 }

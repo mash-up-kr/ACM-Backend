@@ -2,24 +2,23 @@ package mashup.backend.spring.acm.presentation
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
-data class ApiResponse(
+data class ApiResponse<T>(
     val code: String,
     val message: String,
-    val data: Map<String, Any> = emptyMap()
+    val data: T? = null
 ) {
     companion object {
-        fun empty(): ApiResponse {
-            return ApiResponse("", "")
+        fun <T> empty(): ApiResponse<T> {
+            return ApiResponse("", "", null)
         }
 
-        fun success(name: String, data: Any): ApiResponse {
-            return ApiResponse("", "", mapOf(name to data))
+        fun <T> success(data: T): ApiResponse<T> {
+            return ApiResponse("", "", data)
         }
 
-        fun failure(code: String, message: String): ApiResponse {
-            return ApiResponse(code, message)
+        fun failure(code: String, message: String): ApiResponse<*> {
+            return ApiResponse<Any>(code, message, null)
         }
     }
 }
@@ -28,7 +27,7 @@ data class ApiResponse(
  * example
  * ------------------------------
  * fun tmp2(): ApiResponse<PageData<TmpDto>> {
- *  return ApiResponse.success("tmps", tmp())
+ *  return ApiResponse.success(PageResponse(tmo()))
  * }
  *
  * fun tmp(): PageData<TmpDto> {
