@@ -2,7 +2,6 @@ package mashup.backend.spring.acm.presentation
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 data class ApiResponse<T>(
     val code: String,
@@ -28,7 +27,7 @@ data class ApiResponse<T>(
  * example
  * ------------------------------
  * fun tmp2(): ApiResponse<PageData<TmpDto>> {
- *  return ApiResponse.success(tmp())
+ *  return ApiResponse.success(PageResponse(tmo()))
  * }
  *
  * fun tmp(): PageData<TmpDto> {

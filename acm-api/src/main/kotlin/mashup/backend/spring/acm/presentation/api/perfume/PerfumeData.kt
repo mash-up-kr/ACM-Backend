@@ -1,21 +1,33 @@
-package mashup.backend.spring.acm.presentaion.api.perfume
+package mashup.backend.spring.acm.presentation.api.perfume
 
 import mashup.backend.spring.acm.domain.perfume.*
 import kotlin.streams.toList
 
 data class PerfumeDetailResponse(
+    val perfumeDetail: PerfumeDetail
+)
+
+data class PerfumeDetail(
     val id: Long,
-    val thumbnailImageUrl: String,
     val name: String,
+    val brand: String,
+    val gender: Gender,
+    val description: String,
+    val imageUrl: String,
+    val thumbnailImageUrl: String,
     val accords: List<SimplePerfumeAccord>,
     val notes: List<SimplePerfumeNote>,
-    val similarPerfumes: List<SimpleSimilarPerfume>? = emptyList()
+    val similarPerfumes: List<SimpleSimilarPerfume> = emptyList()
 ) {
     companion object {
-        fun of(perfume: Perfume, similarPerfumes: List<SimpleSimilarPerfume>?) = PerfumeDetailResponse(
+        fun of(perfume: Perfume, similarPerfumes: List<SimpleSimilarPerfume>) = PerfumeDetail(
             id = perfume.id,
-            thumbnailImageUrl = perfume.thumbnailImageUrl,
             name = perfume.name,
+            brand = perfume.brand,
+            gender = perfume.gender,
+            description = perfume.description,
+            imageUrl = perfume.imageUrl,
+            thumbnailImageUrl = perfume.thumbnailImageUrl,
             accords = SimplePerfumeAccord.of(perfume.accords),
             notes = SimplePerfumeNote.of(perfume.notes),
             similarPerfumes = similarPerfumes
@@ -30,7 +42,7 @@ data class SimpleSimilarPerfume(
 ) {
     companion object {
         fun of(perfume: List<Perfume>) : List<SimpleSimilarPerfume> {
-            return perfume.stream().map(SimpleSimilarPerfume::of).toList()
+            return perfume.stream().map(Companion::of).toList()
         }
 
         private fun of(perfume: Perfume) = SimpleSimilarPerfume(
@@ -48,7 +60,7 @@ data class SimplePerfumeAccord(
 ) {
     companion object {
         fun of(perfumeAccords: List<PerfumeAccord>) : List<SimplePerfumeAccord> {
-            return perfumeAccords.stream().map(SimplePerfumeAccord::of).toList()
+            return perfumeAccords.stream().map(Companion::of).toList()
         }
 
         private fun of(perfumeAccord: PerfumeAccord) = SimplePerfumeAccord(
@@ -67,7 +79,7 @@ data class SimplePerfumeNote(
 ) {
     companion object {
         fun of(perfumeNotes: List<PerfumeNote>) : List<SimplePerfumeNote> {
-            return perfumeNotes.stream().map(SimplePerfumeNote::of).toList()
+            return perfumeNotes.stream().map(Companion::of).toList()
         }
         private fun of(perfumeNote: PerfumeNote) = SimplePerfumeNote(
             noteType = perfumeNote.noteType,
