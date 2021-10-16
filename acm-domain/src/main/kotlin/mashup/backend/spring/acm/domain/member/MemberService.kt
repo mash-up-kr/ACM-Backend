@@ -9,7 +9,8 @@ import org.springframework.transaction.annotation.Transactional
 interface MemberService {
     fun findById(memberId: Long): Member?
     fun findByIdProviderVo(idProviderInfo: IdProviderInfo): Member?
-    fun join(idProviderInfo: IdProviderInfo): Member
+    fun findDetailById(memberId: Long): MemberDetailVo?
+    fun join(idProviderInfo: IdProviderInfo): MemberDetailVo
     fun withdraw()
 }
 
@@ -26,11 +27,15 @@ class MemberServiceImpl(
         return memberRepository.findByMemberIdProviders_IdProviderInfo(idProviderInfo)
     }
 
+    override fun findDetailById(memberId: Long): MemberDetailVo {
+        return getMemberDetailById(memberId)
+    }
+
     @Transactional
-    override fun join(idProviderInfo: IdProviderInfo): Member {
+    override fun join(idProviderInfo: IdProviderInfo): MemberDetailVo {
         val member = memberRepository.findByMemberIdProviders_IdProviderInfo(idProviderInfo)
         if (member != null) {
-            return member
+            return getMemberDetailById(memberId = member.id)
         }
         return memberRepository.save(
             Member(
@@ -38,7 +43,13 @@ class MemberServiceImpl(
                     MemberIdProvider(idProviderInfo = idProviderInfo)
                 )
             )
-        )
+        ).let { MemberDetailVo(it) }
+    }
+
+    private fun getMemberDetailById(memberId: Long): MemberDetailVo {
+        val member = memberRepository.findByIdOrNull(memberId)
+            ?: throw RuntimeException("member not found. memberId: $memberId")
+        return MemberDetailVo(member)
     }
 
     @Transactional

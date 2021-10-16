@@ -1,6 +1,7 @@
 package mashup.backend.spring.acm.infrastructure.spring.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import mashup.backend.spring.acm.domain.ResultCode
 import mashup.backend.spring.acm.presentation.ApiResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -45,11 +46,15 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.antMatcher("/**")
             .authorizeRequests()
-            .antMatchers("/api/**").authenticated()
+            .antMatchers("/api/v1/test/**").permitAll()
+            .antMatchers("/api/v1/members/login").permitAll()
+            .antMatchers("/api/**").hasAuthority(ROLE_MEMBER)
         http.csrf().disable()
         http.logout().disable()
+        http.anonymous().disable()
         http.formLogin().disable()
         http.httpBasic().disable()
+        http.requestCache().disable()
         http.addFilterAt(tokenPreAuthFilter(), AbstractPreAuthenticatedProcessingFilter::class.java)
         http.sessionManagement().sessionFixation().changeSessionId()
         http.cors().disable()
@@ -60,7 +65,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 response.contentType = MediaType.APPLICATION_JSON_VALUE
                 objectMapper.writeValue(
                     response.outputStream,
-                    ApiResponse.failure(HttpStatus.UNAUTHORIZED.name, "Unauthorized")
+                    ApiResponse.failure(ResultCode.UNAUTHORIZED)
                 )
             }
             .accessDeniedHandler { request: HttpServletRequest?, response: HttpServletResponse, accessDeniedException: AccessDeniedException? ->
@@ -69,7 +74,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 response.contentType = MediaType.APPLICATION_JSON_VALUE
                 objectMapper.writeValue(
                     response.outputStream,
-                    ApiResponse.failure(HttpStatus.FORBIDDEN.name, "Forbidden")
+                    ApiResponse.failure(ResultCode.FORBIDDEN)
                 )
             }
     }
@@ -82,10 +87,11 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     @Bean
-    fun preAuthTokenProvider(): PreAuthTokenProvider = PreAuthTokenProvider()
+    fun preAuthTokenProvider() = PreAuthTokenProvider()
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
+        const val ROLE_MEMBER = "MEMBER"
     }
 
 }

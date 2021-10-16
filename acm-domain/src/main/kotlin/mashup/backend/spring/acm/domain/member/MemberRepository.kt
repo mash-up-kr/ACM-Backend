@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface MemberRepository: JpaRepository<Member, Long> {
     fun findByMemberIdProviders_IdProviderInfo(idProviderInfo: IdProviderInfo): Member?
+    fun findByIdAndMemberStatus(memberId: Long, memberStatus: MemberStatus): Member?
 }
