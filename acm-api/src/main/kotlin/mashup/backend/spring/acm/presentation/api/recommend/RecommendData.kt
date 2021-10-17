@@ -6,7 +6,7 @@ data class MainPopularResponse(
 
 data class MainPopular(
     val myRecommendPerfumes: List<SimpleRecommendPerfume>,
-    val popularBrands: List<String>,
+    val popularBrands: List<PopularBrand>,
     val recommendPerfumesList: List<List<SimpleRecommendPerfume>>,
     val recommendNoteGroups : List<RecommendNoteGroup>
 )
@@ -27,5 +27,9 @@ data class SimpleRecommendPerfume(
     val image: String,
     val brand: String,
     val name: String
+)
+data class PopularBrand(
+    val name: String,
+    val image: String
 )
 

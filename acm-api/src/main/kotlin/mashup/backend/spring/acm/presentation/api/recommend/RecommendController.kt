@@ -25,7 +25,7 @@ class RecommendController {
         // 1. 온보딩 추천 향수(온보딩) or 전체 인기 함수에서 랜덤 3개
         val mockMyRecommendPerfumes = getMockRecommendPerfumes()
         // 2. 인기 브랜드
-        val mockPopularBrands = List(10) { "http://assets.stickpng.com/images/5a1ac5e0f65d84088faf1344.png"}
+        val mockPopularBrands = List(10) { PopularBrand("test-brand", "http://assets.stickpng.com/images/5a1ac5e0f65d84088faf1344.png")}
         // 3. gender 인기 향수(온보딩) or 이달의 추천 향수
         val mockPopularGenderOrRecommendMonthPerfumes = getMockRecommendPerfumes()
         // 4. 전체 인기 향수
