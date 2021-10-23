@@ -21,7 +21,21 @@ import javax.persistence.Entity
  */
 @Entity
 class NoteGroup(
-    val name: String,
-    val description: String
+    var name: String,
+    var description: String,
+    var imageUrl: String,
+    val originalName: String,
+    val originalDescription: String,
+    val originalImageUrl: String,
 ) : BaseEntity() {
+    companion object {
+        fun from(noteGroupCreateVo: NoteGroupCreateVo): NoteGroup = NoteGroup(
+            name = noteGroupCreateVo.name,
+            description = noteGroupCreateVo.description,
+            imageUrl = noteGroupCreateVo.imageUrl,
+            originalName = noteGroupCreateVo.name,
+            originalDescription = noteGroupCreateVo.description,
+            originalImageUrl = noteGroupCreateVo.imageUrl
+        )
+    }
 }

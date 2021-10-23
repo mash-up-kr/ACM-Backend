@@ -1,5 +1,7 @@
 package mashup.backend.spring.acm.collector.notegroup
 
+import mashup.backend.spring.acm.domain.note.NoteGroupCreateVo
+import mashup.backend.spring.acm.domain.note.NoteGroupService
 import org.jsoup.Jsoup
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -7,10 +9,21 @@ import org.springframework.batch.core.StepContribution
 import org.springframework.batch.core.scope.context.ChunkContext
 import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.repeat.RepeatStatus
+import org.springframework.beans.factory.annotation.Autowired
 
 open class NoteGroupCollectorTasklet : Tasklet {
+    @Autowired
+    lateinit var noteGroupService: NoteGroupService
+
     override fun execute(contribution: StepContribution, chunkContext: ChunkContext): RepeatStatus {
-        getNoteGroups()
+        val noteGroups = getNoteGroups()
+        noteGroups.forEach {
+            noteGroupService.create(NoteGroupCreateVo(
+                name = it.name,
+                description = it.description,
+                imageUrl = it.imageUrl
+            ))
+        }
         return RepeatStatus.FINISHED
     }
 
