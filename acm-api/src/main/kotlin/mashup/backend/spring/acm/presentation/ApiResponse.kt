@@ -14,19 +14,13 @@ data class ApiResponse<T>(
             return ApiResponse("", "", null)
         }
 
-        fun <T> success(): ApiResponse<T> = ApiResponse(ResultCode.SUCCESS.name, ResultCode.SUCCESS.message, null)
+        fun <T> success() = ApiResponse<T>(ResultCode.SUCCESS.name, ResultCode.SUCCESS.message, null)
 
-        fun <T> success(data: T): ApiResponse<T> {
-            return ApiResponse(ResultCode.SUCCESS.name, ResultCode.SUCCESS.message, data)
-        }
+        fun <T> success(data: T) = ApiResponse(ResultCode.SUCCESS.name, ResultCode.SUCCESS.message, data)
 
-        fun failure(code: String, message: String): ApiResponse<*> {
-            return ApiResponse<Any>(code, message, null)
-        }
+        fun failure(code: String, message: String) = ApiResponse<Unit>(code, message, null)
 
-        fun failure(resultCode: ResultCode): ApiResponse<*> {
-            return ApiResponse<Any>(resultCode.name, resultCode.message, null)
-        }
+        fun failure(resultCode: ResultCode) = ApiResponse<Unit>(resultCode.name, resultCode.message, null)
     }
 }
 
