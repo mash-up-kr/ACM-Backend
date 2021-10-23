@@ -1,6 +1,7 @@
 package mashup.backend.spring.acm.infrastructure.spring.security
 
 import mashup.backend.spring.acm.application.TokenService
+import mashup.backend.spring.acm.domain.member.MemberNotFoundException
 import mashup.backend.spring.acm.domain.member.MemberService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,7 +29,7 @@ class PreAuthTokenProvider : AuthenticationProvider {
             val token = authentication.getPrincipal() as String
             val member = jwtService.decode(token)
                 ?.let { memberService.findById(it) }
-                ?: throw TokenMalformedException("Invalid token")
+                ?: throw MemberNotFoundException("회원정보가 없습니다. token: $token")
             return UsernamePasswordAuthenticationToken(
                 member.id.toString(),
                 "",

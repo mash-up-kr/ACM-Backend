@@ -18,9 +18,9 @@ data class ApiResponse<T>(
 
         fun <T> success(data: T) = ApiResponse(ResultCode.SUCCESS.name, ResultCode.SUCCESS.message, data)
 
-        fun failure(code: String, message: String) = ApiResponse<Unit>(code, message, null)
+        fun <T> failure(code: String, message: String) = ApiResponse<T>(code, message, null)
 
-        fun failure(resultCode: ResultCode) = ApiResponse<Unit>(resultCode.name, resultCode.message, null)
+        fun <T> failure(resultCode: ResultCode) = ApiResponse<T>(resultCode.name, resultCode.message, null)
     }
 }
 

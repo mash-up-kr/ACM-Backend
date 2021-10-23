@@ -3,6 +3,7 @@ package mashup.backend.spring.acm.domain.member
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderInfo
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderType
 import mashup.backend.spring.acm.domain.member.idprovider.MemberIdProvider
+import mashup.backend.spring.acm.domain.perfume.Gender
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,8 +40,10 @@ internal class MemberServiceImplTest {
         val member = Member(
             memberDetail = MemberDetail(
                 name = "name",
-                gender = "gender",
-                birthYear = Year.of(1989)
+                gender = Gender.MAN,
+                age = Age(33, Year.now()),
+                emptyList(),
+                emptyList()
             )
         )
         member.add(memberIdProvider)

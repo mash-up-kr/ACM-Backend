@@ -2,19 +2,29 @@ package mashup.backend.spring.acm.domain.member
 
 import mashup.backend.spring.acm.domain.BaseEntity
 import mashup.backend.spring.acm.domain.member.idprovider.MemberIdProvider
+import java.lang.RuntimeException
 import javax.persistence.*
 
 @Entity
 class Member(
-    val memberStatus: MemberStatus = MemberStatus.ASSOCIATE,
+    @Enumerated(EnumType.STRING)
+    var memberStatus: MemberStatus = MemberStatus.ASSOCIATE,
     @OneToOne(cascade = [CascadeType.ALL])
-    val memberDetail: MemberDetail? = null,
+    val memberDetail: MemberDetail = MemberDetail.empty(),
     @OneToMany(cascade = [CascadeType.ALL])
     @JoinColumn(name = "memberId")
     val memberIdProviders: MutableList<MemberIdProvider> = ArrayList()
 ) : BaseEntity() {
     fun add(memberIdProvider: MemberIdProvider) {
         memberIdProviders.add(memberIdProvider)
+    }
+
+    fun initialize(memberInitializeRequestVo: MemberInitializeRequestVo) {
+        if (memberStatus == MemberStatus.ACTIVE) {
+            throw MemberInitializeFailedException("이미 ACTIVE 상태인 회원입니다. memberId: $id")
+        }
+        memberStatus = MemberStatus.ACTIVE
+        memberDetail.initialize(memberInitializeRequestVo)
     }
 
     override fun equals(other: Any?): Boolean {
