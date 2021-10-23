@@ -4,13 +4,12 @@ import mashup.backend.spring.acm.application.login.LoginRequestVo
 import mashup.backend.spring.acm.application.login.LoginResponseVo
 import mashup.backend.spring.acm.domain.member.MemberService
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderInfo
-import org.springframework.stereotype.Service
 
 interface LoginApplicationService {
     fun login(loginRequestVo: LoginRequestVo): LoginResponseVo
 }
 
-@Service
+@ApplicationService
 class LoginApplicationServiceImpl(
     private val memberService: MemberService,
     private val jwtService: TokenService<Long>,
