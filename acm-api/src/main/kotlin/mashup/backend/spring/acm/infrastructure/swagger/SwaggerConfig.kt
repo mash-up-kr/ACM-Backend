@@ -38,7 +38,7 @@ class SwaggerConfig {
                 .modelRef(ModelRef("string"))
                 .required(false)
                 .parameterType("header")
-                .description("bearer {accessToken}")
+                .description("Bearer {accessToken}")
                 .build()
         )
     }

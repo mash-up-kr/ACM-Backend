@@ -1,6 +1,7 @@
 package mashup.backend.spring.acm.presentation
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import mashup.backend.spring.acm.domain.ResultCode
 import org.springframework.data.domain.Page
 
 data class ApiResponse<T>(
@@ -14,11 +15,15 @@ data class ApiResponse<T>(
         }
 
         fun <T> success(data: T): ApiResponse<T> {
-            return ApiResponse("", "", data)
+            return ApiResponse(ResultCode.SUCCESS.name, ResultCode.SUCCESS.message, data)
         }
 
         fun failure(code: String, message: String): ApiResponse<*> {
             return ApiResponse<Any>(code, message, null)
+        }
+
+        fun failure(resultCode: ResultCode): ApiResponse<*> {
+            return ApiResponse<Any>(resultCode.name, resultCode.message, null)
         }
     }
 }

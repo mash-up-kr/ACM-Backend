@@ -14,7 +14,7 @@ import org.springframework.transaction.PlatformTransactionManager
 class JpaConfig {
     @Bean
     @Primary
-    fun acmTransactionManager(
+    fun transactionManager(
         transactionManagerCustomizers: ObjectProvider<TransactionManagerCustomizers>
     ): PlatformTransactionManager {
         val transactionManager = JpaTransactionManager()

@@ -38,6 +38,7 @@ internal class MemberServiceImplTest {
         val memberIdProvider = MemberIdProvider(idProviderInfo)
         val member = Member(
             memberDetail = MemberDetail(
+                name = "name",
                 gender = "gender",
                 birthYear = Year.of(1989)
             )

@@ -15,7 +15,7 @@ class TokenPreAuthFilter : AbstractPreAuthenticatedProcessingFilter() {
     }
 
     private fun resolveToken(request: HttpServletRequest): String? {
-        val bearerToken = request.getHeader("Authorization")
+        val bearerToken = request.getHeader(AUTHORIZATION_HEADER_NAME)
         if (!StringUtils.hasText(bearerToken)) {
             return null
         }
@@ -26,6 +26,7 @@ class TokenPreAuthFilter : AbstractPreAuthenticatedProcessingFilter() {
     }
 
     companion object {
-        private val BEARER_TOKEN_PATTERN = Pattern.compile("Bearer (.*)")
+        private val BEARER_TOKEN_PATTERN = Pattern.compile("[Bb]earer (.*)")
+        private const val AUTHORIZATION_HEADER_NAME = "Authorization"
     }
 }

@@ -8,6 +8,10 @@ import javax.persistence.Entity
 @Entity
 class MemberDetail(
     /**
+     * 이름
+     */
+    var name: String,
+    /**
      * 성별
      */
     var gender: String,
