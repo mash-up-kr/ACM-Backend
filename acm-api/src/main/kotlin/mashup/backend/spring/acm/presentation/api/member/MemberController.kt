@@ -31,8 +31,7 @@ class MemberController(
 
     @GetMapping("/me")
     fun getMe(
-        @ApiIgnore @ModelAttribute("memberId") memberId: Long,
-        authentication: Authentication
+        @ApiIgnore @ModelAttribute("memberId") memberId: Long
     ): ApiResponse<MemberInfoResponse> {
         return ApiResponse.success(
             data = memberApplicationService.getMemberInfo(memberId).toMemberInfoResponse()
