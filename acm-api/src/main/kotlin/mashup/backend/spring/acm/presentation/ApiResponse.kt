@@ -14,6 +14,8 @@ data class ApiResponse<T>(
             return ApiResponse("", "", null)
         }
 
+        fun <T> success(): ApiResponse<T> = ApiResponse(ResultCode.SUCCESS.name, ResultCode.SUCCESS.message, null)
+
         fun <T> success(data: T): ApiResponse<T> {
             return ApiResponse(ResultCode.SUCCESS.name, ResultCode.SUCCESS.message, data)
         }
