@@ -51,7 +51,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers("/api/**").hasAuthority(ROLE_MEMBER)
         http.csrf().disable()
         http.logout().disable()
-        http.anonymous().disable()
         http.formLogin().disable()
         http.httpBasic().disable()
         http.requestCache().disable()
