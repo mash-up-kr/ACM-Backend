@@ -5,12 +5,13 @@ import org.springframework.transaction.annotation.Transactional
 
 interface NoteGroupService {
     fun create(noteGroupCreateVo: NoteGroupCreateVo): NoteGroup
+    fun getNoteGroupByName(originalName: String): NoteGroup?
 }
 
 @Service
 @Transactional(readOnly = true)
 class NoteGroupServiceImpl(
-    private val noteGroupRepository: NoteGroupRepository
+    private val noteGroupRepository: NoteGroupRepository,
 ): NoteGroupService {
     @Transactional(readOnly = false)
     override fun create(noteGroupCreateVo: NoteGroupCreateVo): NoteGroup {
@@ -19,4 +20,6 @@ class NoteGroupServiceImpl(
         }
         return noteGroupRepository.save(NoteGroup.from(noteGroupCreateVo))
     }
+
+    override fun getNoteGroupByName(originalName: String): NoteGroup? = noteGroupRepository.findByOriginalName(originalName)
 }

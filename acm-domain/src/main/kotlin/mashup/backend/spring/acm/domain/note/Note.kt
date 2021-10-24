@@ -14,7 +14,7 @@ class Note(
     var noteGroup: NoteGroup?
 ) : BaseEntity() {
     companion object {
-        fun from(noteCreateVo: NoteCreateVo) = Note(
+        fun of(noteCreateVo: NoteCreateVo, noteGroup: NoteGroup) = Note(
             name = noteCreateVo.name,
             description = noteCreateVo.description,
             url = noteCreateVo.url,

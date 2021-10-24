@@ -14,7 +14,8 @@ interface NoteService {
 @Service
 @Transactional(readOnly = true)
 class NoteServiceImpl(
-    private val noteRepository: NoteRepository
+    private val noteRepository: NoteRepository,
+    private val noteGroupService: NoteGroupService,
 ) : NoteService {
     override fun getNotes(pageable: Pageable): Page<Note> = noteRepository.findAll(pageable)
 
@@ -25,6 +26,8 @@ class NoteServiceImpl(
         if (noteRepository.existsByUrl(noteCreateVo.url)) {
             throw DuplicatedNoteException("Note already exists. url: ${noteCreateVo.url}")
         }
-        return noteRepository.save(Note.from(noteCreateVo))
+        val noteGroup = noteGroupService.getNoteGroupByName(noteCreateVo.noteGroupName)
+            ?: throw RuntimeException("노트 그룹이 없습니다. noteGroupName: ${noteCreateVo.noteGroupName}")
+        return noteRepository.save(Note.of(noteCreateVo, noteGroup))
     }
 }
