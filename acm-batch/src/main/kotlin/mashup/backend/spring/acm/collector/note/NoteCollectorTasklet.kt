@@ -41,6 +41,7 @@ open class NoteCollectorTasklet : Tasklet {
     private fun getNotes(document: Document): List<Note> {
         val noteGroupName = document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div:nth-child(1) > div > div:nth-child(1) > h3 > b")
             .text()
+        val description = document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div.cell.callout > p").text()
 
         return document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div > div > div.cell.small-6.medium-4.large-3.text-center.notebox")
             .map {
