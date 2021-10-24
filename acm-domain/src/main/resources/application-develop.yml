@@ -7,3 +7,5 @@ spring:
     hibernate:
       ddl-auto: update
       database-platform: org.hibernate.dialect.MySQL8Dialect
+  main:
+    allow-bean-definition-overriding: true
