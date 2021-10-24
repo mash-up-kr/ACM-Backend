@@ -30,7 +30,7 @@ open class NoteCollectorTasklet : Tasklet {
                 description = "",
                 url = it.url,
                 thumbnailImageUrl = it.thumbnailImageUrl,
-                noteGroupName = it.noteGroupName
+                noteGroupName = "",
             ))
         }
         return RepeatStatus.FINISHED
@@ -39,10 +39,6 @@ open class NoteCollectorTasklet : Tasklet {
     private fun getDocument(url: String): Document = Jsoup.connect(url).get()
 
     private fun getNotes(document: Document): List<Note> {
-        val noteGroupName = document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div:nth-child(1) > div > div:nth-child(1) > h3 > b")
-            .text()
-        val description = document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div.cell.callout > p").text()
-
         return document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div > div > div > div.cell.small-6.medium-4.large-3.text-center.notebox")
             .map {
                 val aTag = it.child(0)
@@ -52,7 +48,6 @@ open class NoteCollectorTasklet : Tasklet {
                         name = it.text().trim(),
                         url = aTag.attr("href"),
                         thumbnailImageUrl = imageTag.attr("src"),
-                        noteGroupName = noteGroupName,
                     )
                 } catch (e: Exception) {
                     log.error("Failed to parse note: ${it.text()}")
@@ -65,7 +60,6 @@ open class NoteCollectorTasklet : Tasklet {
         val name: String = "",
         val url: String = "",
         val thumbnailImageUrl: String = "",
-        val noteGroupName: String = "",
     )
 
     companion object {

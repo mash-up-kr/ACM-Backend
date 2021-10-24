@@ -7,14 +7,14 @@ import javax.persistence.ManyToOne
 @Entity
 class Note(
     val name: String,
-    val description: String = "",
+    var description: String = "",
     val url: String,
     val thumbnailImageUrl: String,
     @ManyToOne
     var noteGroup: NoteGroup?
 ) : BaseEntity() {
     companion object {
-        fun of(noteCreateVo: NoteCreateVo, noteGroup: NoteGroup) = Note(
+        fun from(noteCreateVo: NoteCreateVo) = Note(
             name = noteCreateVo.name,
             description = noteCreateVo.description,
             url = noteCreateVo.url,
