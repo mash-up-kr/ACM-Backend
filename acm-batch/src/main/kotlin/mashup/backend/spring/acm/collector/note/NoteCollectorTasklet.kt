@@ -29,7 +29,8 @@ open class NoteCollectorTasklet : Tasklet {
                 name = it.name,
                 description = "",
                 url = it.url,
-                thumbnailImageUrl = it.thumbnailImageUrl
+                thumbnailImageUrl = it.thumbnailImageUrl,
+                noteGroupName = "",
             ))
         }
         return RepeatStatus.FINISHED
@@ -46,7 +47,7 @@ open class NoteCollectorTasklet : Tasklet {
                     Note(
                         name = it.text().trim(),
                         url = aTag.attr("href"),
-                        thumbnailImageUrl = imageTag.attr("src")
+                        thumbnailImageUrl = imageTag.attr("src"),
                     )
                 } catch (e: Exception) {
                     log.error("Failed to parse note: ${it.text()}")
@@ -58,7 +59,7 @@ open class NoteCollectorTasklet : Tasklet {
     data class Note(
         val name: String = "",
         val url: String = "",
-        val thumbnailImageUrl: String = ""
+        val thumbnailImageUrl: String = "",
     )
 
     companion object {
