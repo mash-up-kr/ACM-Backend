@@ -18,11 +18,15 @@ open class NoteGroupCollectorTasklet : Tasklet {
     override fun execute(contribution: StepContribution, chunkContext: ChunkContext): RepeatStatus {
         val noteGroups = getNoteGroups()
         noteGroups.forEach {
-            noteGroupService.create(NoteGroupCreateVo(
-                name = it.name,
-                description = it.description,
-                imageUrl = it.imageUrl
-            ))
+            try {
+                noteGroupService.create(NoteGroupCreateVo(
+                    name = it.name,
+                    description = it.description,
+                    imageUrl = it.imageUrl
+                ))
+            } catch (e: Exception) {
+                log.error("노트 그룹 생성 실패", e)
+            }
         }
         return RepeatStatus.FINISHED
     }
