@@ -55,7 +55,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.httpBasic().disable()
         http.requestCache().disable()
         http.addFilterAt(tokenPreAuthFilter(), AbstractPreAuthenticatedProcessingFilter::class.java)
-//        http.sessionManagement().sessionFixation().changeSessionId()
         http.sessionManagement().disable()
         http.cors().disable()
         http.exceptionHandling()
