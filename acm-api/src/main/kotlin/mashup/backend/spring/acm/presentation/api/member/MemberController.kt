@@ -63,9 +63,5 @@ class MemberController(
         )
         return ApiResponse.success()
     }
-
-    companion object {
-        val log: Logger = LoggerFactory.getLogger(MemberController::class.java)
-    }
 }
 
