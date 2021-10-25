@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class RecommendController {
     @ApiOperation(
-        value = "[v1.0.0] 메인페이지 추천 API",
+        value = "[v1] 메인페이지 추천 API",
         notes = "메인페이지 추천 내용\n"
                 + " 1. 온보딩 맞춤 추천 향수 or 전체 인기 향수 랜덤 데이터(온보딩x)\n"
                 + " 2. 인기 브랜드\n"
