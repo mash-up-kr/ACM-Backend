@@ -1,5 +1,7 @@
 package mashup.backend.spring.acm.domain.note
 
+import mashup.backend.spring.acm.domain.exception.DuplicatedNoteException
+import mashup.backend.spring.acm.domain.exception.NoteNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service

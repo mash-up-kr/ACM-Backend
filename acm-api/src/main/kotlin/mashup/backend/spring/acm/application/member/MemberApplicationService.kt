@@ -3,7 +3,7 @@ package mashup.backend.spring.acm.application.member
 import mashup.backend.spring.acm.application.ApplicationService
 import mashup.backend.spring.acm.domain.member.MemberDetailVo
 import mashup.backend.spring.acm.domain.member.MemberInitializeRequestVo
-import mashup.backend.spring.acm.domain.member.MemberNotFoundException
+import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import mashup.backend.spring.acm.domain.member.MemberService
 
 interface MemberApplicationService {

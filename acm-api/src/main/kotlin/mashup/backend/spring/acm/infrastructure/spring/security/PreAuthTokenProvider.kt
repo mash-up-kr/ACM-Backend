@@ -1,7 +1,7 @@
 package mashup.backend.spring.acm.infrastructure.spring.security
 
 import mashup.backend.spring.acm.application.TokenService
-import mashup.backend.spring.acm.domain.member.MemberNotFoundException
+import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import mashup.backend.spring.acm.domain.member.MemberService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

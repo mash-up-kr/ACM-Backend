@@ -1,11 +1,12 @@
-package mashup.backend.spring.acm.domain.member
+package mashup.backend.spring.acm.domain.exception
 
-import mashup.backend.spring.acm.BusinessException
 import mashup.backend.spring.acm.domain.ResultCode
 
 class MemberInitializeFailedException(
     override val message: String? = null,
-) : BusinessException(
+    override val cause: Throwable? = null,
+) : BadRequestException(
     resultCode = ResultCode.MEMBER_STATUS_ALREADY_ACTIVE,
-    message = message
+    message = message,
+    cause = cause,
 )

@@ -2,6 +2,7 @@ package mashup.backend.spring.acm.domain.member
 
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderInfo
 import mashup.backend.spring.acm.domain.member.idprovider.MemberIdProvider
+import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

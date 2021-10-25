@@ -1,6 +1,8 @@
 package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.note.NoteService
+import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
+import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

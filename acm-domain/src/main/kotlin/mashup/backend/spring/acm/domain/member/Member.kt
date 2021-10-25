@@ -2,7 +2,7 @@ package mashup.backend.spring.acm.domain.member
 
 import mashup.backend.spring.acm.domain.BaseEntity
 import mashup.backend.spring.acm.domain.member.idprovider.MemberIdProvider
-import java.lang.RuntimeException
+import mashup.backend.spring.acm.domain.exception.MemberInitializeFailedException
 import javax.persistence.*
 
 @Entity

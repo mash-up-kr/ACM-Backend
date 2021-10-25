@@ -1,6 +1,6 @@
 package mashup.backend.spring.acm.domain.scrap.perfume_by_rewiew_date
 
-import mashup.backend.spring.acm.domain.scrap.ScrapingJobDuplicatedException
+import mashup.backend.spring.acm.domain.exception.ScrapingJobDuplicatedException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

@@ -1,12 +1,12 @@
 package mashup.backend.spring.acm.presentation.api.member
 
-import mashup.backend.spring.acm.BusinessException
+import mashup.backend.spring.acm.domain.exception.BusinessException
 import mashup.backend.spring.acm.application.LoginApplicationService
 import mashup.backend.spring.acm.application.login.toLoginResponse
 import mashup.backend.spring.acm.application.login.toVo
 import mashup.backend.spring.acm.application.member.MemberApplicationService
-import mashup.backend.spring.acm.domain.member.MemberInitializeFailedException
-import mashup.backend.spring.acm.domain.member.MemberNotFoundException
+import mashup.backend.spring.acm.domain.exception.MemberInitializeFailedException
+import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import mashup.backend.spring.acm.presentation.ApiResponse
 import mashup.backend.spring.acm.presentation.assembler.toMemberInfoResponse
 import mashup.backend.spring.acm.presentation.assembler.toVo
@@ -81,7 +81,8 @@ class MemberController(
         } catch (e: BusinessException) {
             when (e) {
                 is MemberInitializeFailedException,
-                is MemberNotFoundException -> {
+                is MemberNotFoundException
+                -> {
                     log.warn("회원 초기화 실패", e)
                     ResponseEntity.badRequest().body(
                         ApiResponse.failure(e.resultCode)
