@@ -1,18 +1,14 @@
 package mashup.backend.spring.acm.presentation.api.member
 
-import mashup.backend.spring.acm.domain.exception.BusinessException
 import mashup.backend.spring.acm.application.LoginApplicationService
 import mashup.backend.spring.acm.application.login.toLoginResponse
 import mashup.backend.spring.acm.application.login.toVo
 import mashup.backend.spring.acm.application.member.MemberApplicationService
-import mashup.backend.spring.acm.domain.exception.MemberInitializeFailedException
-import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import mashup.backend.spring.acm.presentation.ApiResponse
 import mashup.backend.spring.acm.presentation.assembler.toMemberInfoResponse
 import mashup.backend.spring.acm.presentation.assembler.toVo
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
 
@@ -44,19 +40,10 @@ class MemberController(
     @GetMapping("/me")
     fun getMe(
         @ApiIgnore @ModelAttribute("memberId") memberId: Long,
-    ): ResponseEntity<ApiResponse<MemberInfoResponse>> {
-        return try {
-            ResponseEntity.ok(
-                ApiResponse.success(
-                    data = memberApplicationService.getMemberInfo(memberId).toMemberInfoResponse()
-                )
-            )
-        } catch (e: MemberNotFoundException) {
-            log.warn("내 정보 조회 실패", e)
-            ResponseEntity.badRequest().body(
-                ApiResponse.failure(e.resultCode)
-            )
-        }
+    ): ApiResponse<MemberInfoResponse> {
+        return ApiResponse.success(
+            data = memberApplicationService.getMemberInfo(memberId).toMemberInfoResponse()
+        )
     }
 
     /**
@@ -69,28 +56,12 @@ class MemberController(
     fun initialize(
         @ApiIgnore @ModelAttribute("memberId") memberId: Long,
         @RequestBody memberInitializeRequest: MemberInitializeRequest,
-    ): ResponseEntity<ApiResponse<Unit>> {
-        return try {
-            memberApplicationService.initialize(
-                memberId = memberId,
-                requestVo = memberInitializeRequest.toVo()
-            )
-            ResponseEntity.ok(
-                ApiResponse.success()
-            )
-        } catch (e: BusinessException) {
-            when (e) {
-                is MemberInitializeFailedException,
-                is MemberNotFoundException
-                -> {
-                    log.warn("회원 초기화 실패", e)
-                    ResponseEntity.badRequest().body(
-                        ApiResponse.failure(e.resultCode)
-                    )
-                }
-                else -> throw e
-            }
-        }
+    ): ApiResponse<Unit> {
+        memberApplicationService.initialize(
+            memberId = memberId,
+            requestVo = memberInitializeRequest.toVo()
+        )
+        return ApiResponse.success()
     }
 
     companion object {
