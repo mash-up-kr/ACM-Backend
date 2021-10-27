@@ -1,4 +1,4 @@
-package mashup.backend.spring.acm.domain.perfume
+package mashup.backend.spring.acm.domain.exception
 
 import java.lang.RuntimeException
 

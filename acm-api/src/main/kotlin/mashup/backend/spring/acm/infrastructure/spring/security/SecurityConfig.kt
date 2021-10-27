@@ -55,7 +55,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.httpBasic().disable()
         http.requestCache().disable()
         http.addFilterAt(tokenPreAuthFilter(), AbstractPreAuthenticatedProcessingFilter::class.java)
-        http.sessionManagement().sessionFixation().changeSessionId()
+        http.sessionManagement().disable()
         http.cors().disable()
         http.exceptionHandling()
             .authenticationEntryPoint { request: HttpServletRequest?, response: HttpServletResponse, authException: AuthenticationException? ->
@@ -64,7 +64,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 response.contentType = MediaType.APPLICATION_JSON_VALUE
                 objectMapper.writeValue(
                     response.outputStream,
-                    ApiResponse.failure(ResultCode.UNAUTHORIZED)
+                    ApiResponse.failure<Unit>(ResultCode.UNAUTHORIZED)
                 )
             }
             .accessDeniedHandler { request: HttpServletRequest?, response: HttpServletResponse, accessDeniedException: AccessDeniedException? ->
@@ -73,7 +73,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 response.contentType = MediaType.APPLICATION_JSON_VALUE
                 objectMapper.writeValue(
                     response.outputStream,
-                    ApiResponse.failure(ResultCode.FORBIDDEN)
+                    ApiResponse.failure<Unit>(ResultCode.FORBIDDEN)
                 )
             }
     }

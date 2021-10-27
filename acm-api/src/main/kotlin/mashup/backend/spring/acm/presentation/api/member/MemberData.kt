@@ -36,3 +36,12 @@ data class LoginRequest(
     val idProviderType: IdProviderType,
     val idProviderUserId: String
 )
+
+
+data class MemberInitializeRequest(
+    val name: String?,
+    val gender: String?,
+    val age: Int?,
+    val noteGroupIds: List<Long>?,
+    val perfumeIds: List<Long>?
+)

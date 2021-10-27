@@ -2,6 +2,7 @@ package mashup.backend.spring.acm.domain.member
 
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderInfo
 import mashup.backend.spring.acm.domain.member.idprovider.MemberIdProvider
+import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,6 +13,7 @@ interface MemberService {
     fun findDetailById(memberId: Long): MemberDetailVo?
     fun join(idProviderInfo: IdProviderInfo): MemberDetailVo
     fun withdraw()
+    fun initialize(memberId: Long, requestVo: MemberInitializeRequestVo)
 }
 
 @Service
@@ -48,12 +50,19 @@ class MemberServiceImpl(
 
     private fun getMemberDetailById(memberId: Long): MemberDetailVo {
         val member = memberRepository.findByIdOrNull(memberId)
-            ?: throw RuntimeException("member not found. memberId: $memberId")
+            ?: throw MemberNotFoundException(memberId = memberId)
         return MemberDetailVo(member)
     }
 
     @Transactional
     override fun withdraw() {
         TODO("Not yet implemented")
+    }
+
+    @Transactional
+    override fun initialize(memberId: Long, requestVo: MemberInitializeRequestVo) {
+        val member = memberRepository.findByIdOrNull(memberId)
+            ?: throw MemberNotFoundException(memberId = memberId)
+        member.initialize(requestVo)
     }
 }

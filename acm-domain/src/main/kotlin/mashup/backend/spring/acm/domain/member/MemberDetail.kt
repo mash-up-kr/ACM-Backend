@@ -1,9 +1,10 @@
 package mashup.backend.spring.acm.domain.member
 
 import mashup.backend.spring.acm.domain.BaseEntity
-import java.time.LocalDate
+import mashup.backend.spring.acm.domain.converter.NumberListAndStringConverter
+import mashup.backend.spring.acm.domain.perfume.Gender
 import java.time.Year
-import javax.persistence.Entity
+import javax.persistence.*
 
 @Entity
 class MemberDetail(
@@ -14,37 +15,43 @@ class MemberDetail(
     /**
      * 성별
      */
-    var gender: String,
+    @Enumerated(EnumType.STRING)
+    var gender: Gender,
     /**
      * 출생연도
      */
-    private var birthYear: Year,
+    @Embedded
+    var age: Age,
     /**
      * 좋아하는 노트
      */
-    var note: String = "",
+    @Convert(converter = NumberListAndStringConverter::class)
+    var noteGroupIds: List<Long>,
     /**
      * 좋아하는 향수
      */
-    var perfume: String = "",
+    @Convert(converter = NumberListAndStringConverter::class)
+    var perfumeIds: List<Long>,
 ) : BaseEntity() {
-    /**
-     * 나이
-     */
-    @Transient
-    var age: Int = 0
-        set(value) {
-            birthYear = calculateBirthYear(value)
-            field = value
-        }
-        get() = calculateAge(birthYear)
 
-    private fun calculateBirthYear(age: Int): Year {
-        return Year.of(LocalDate.now().year - age + 1)
+    companion object {
+        fun empty(): MemberDetail {
+            return MemberDetail(
+                name = "",
+                gender = Gender.UNKNOWN,
+                age = Age.UNKNOWN,
+                noteGroupIds = emptyList(),
+                perfumeIds = emptyList(),
+            )
+        }
     }
 
-    private fun calculateAge(birthYear: Year): Int {
-        return LocalDate.now().year - birthYear.value + 1
+    fun initialize(requestVo: MemberInitializeRequestVo) {
+        requestVo.name?.run { name = this }
+        requestVo.gender?.run { gender = this }
+        requestVo.age?.run { age = Age(this, Year.now()) }
+        requestVo.noteGroupIds?.run { noteGroupIds = this }
+        requestVo.perfumeIds?.run { perfumeIds = this }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -54,26 +61,18 @@ class MemberDetail(
         other as MemberDetail
 
         if (gender != other.gender) return false
-        if (birthYear != other.birthYear) return false
-        if (note != other.note) return false
-        if (perfume != other.perfume) return false
+        if (age != other.age) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = gender.hashCode()
-        result = 31 * result + birthYear.hashCode()
-        result = 31 * result + note.hashCode()
-        result = 31 * result + perfume.hashCode()
+        result = 31 * result + age.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "MemberDetail(gender='$gender', birthYear=$birthYear, note='$note', perfume='$perfume')"
-    }
-
-    init {
-        this.age = calculateAge(birthYear)
+        return "MemberDetail(gender='$gender', age=$age')"
     }
 }
