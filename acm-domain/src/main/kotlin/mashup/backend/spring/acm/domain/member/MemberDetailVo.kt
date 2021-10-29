@@ -7,13 +7,13 @@ data class MemberDetailVo(
     val status: MemberStatus,
     val name: String?,
     val gender: Gender?,
-    val age: Int?,
+    val ageGroup: AgeGroup?,
 ) {
     constructor(member: Member) : this(
         id = member.id,
         status = member.memberStatus,
         name = member.memberDetail.name,
         gender = member.memberDetail.gender,
-        age = member.memberDetail.age.value
+        ageGroup = member.memberDetail.ageGroup
     )
 }

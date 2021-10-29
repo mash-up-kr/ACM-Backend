@@ -1,5 +1,6 @@
 package mashup.backend.spring.acm.presentation.assembler
 
+import mashup.backend.spring.acm.domain.member.AgeGroup
 import mashup.backend.spring.acm.domain.member.MemberDetailVo
 import mashup.backend.spring.acm.domain.member.MemberInitializeRequestVo
 import mashup.backend.spring.acm.domain.perfume.Gender
@@ -12,7 +13,7 @@ fun MemberDetailVo.toMemberDetailResponse(): MemberDetailResponse = MemberDetail
     status = this.status.name,
     name = this.name,
     gender = this.gender?.name,
-    age = this.age
+    ageGroup = this.ageGroup?.name
 )
 
 fun MemberDetailVo.toMemberInfoResponse(): MemberInfoResponse = MemberInfoResponse(
@@ -23,7 +24,7 @@ fun MemberInitializeRequest.toVo(): MemberInitializeRequestVo {
     return MemberInitializeRequestVo(
         name = this.name ?: "",
         gender = this.gender?.let { Gender.valueOf(it) } ?: Gender.UNKNOWN,
-        age = this.age,
+        ageGroup = this.ageGroup?.let { AgeGroup.valueOf(it) } ?: AgeGroup.UNKNOWN,
         noteGroupIds = this.noteGroupIds,
         perfumeIds = this.perfumeIds
     )

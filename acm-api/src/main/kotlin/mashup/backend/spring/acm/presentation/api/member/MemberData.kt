@@ -22,9 +22,9 @@ data class MemberDetailResponse(
      */
     val gender: String?,
     /**
-     * 나이
+     * 나이대
      */
-    val age: Int?
+    val ageGroup: String?
 )
 
 data class LoginResponse(
@@ -41,7 +41,7 @@ data class LoginRequest(
 data class MemberInitializeRequest(
     val name: String?,
     val gender: String?,
-    val age: Int?,
+    val ageGroup: String?,
     val noteGroupIds: List<Long>?,
     val perfumeIds: List<Long>?
 )

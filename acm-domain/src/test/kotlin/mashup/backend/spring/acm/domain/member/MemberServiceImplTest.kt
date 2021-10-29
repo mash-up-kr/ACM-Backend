@@ -41,9 +41,9 @@ internal class MemberServiceImplTest {
             memberDetail = MemberDetail(
                 name = "name",
                 gender = Gender.MAN,
-                age = Age(33, Year.now()),
-                emptyList(),
-                emptyList()
+                ageGroup = AgeGroup.THIRTIES,
+                noteGroupIds = emptyList(),
+                perfumeIds = emptyList()
             )
         )
         member.add(memberIdProvider)

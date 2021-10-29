@@ -18,10 +18,9 @@ class MemberDetail(
     @Enumerated(EnumType.STRING)
     var gender: Gender,
     /**
-     * 출생연도
+     * 나이대 (10대, 20대, ...)
      */
-    @Embedded
-    var age: Age,
+    var ageGroup: AgeGroup,
     /**
      * 좋아하는 노트
      */
@@ -39,7 +38,7 @@ class MemberDetail(
             return MemberDetail(
                 name = "",
                 gender = Gender.UNKNOWN,
-                age = Age.UNKNOWN,
+                ageGroup = AgeGroup.UNKNOWN,
                 noteGroupIds = emptyList(),
                 perfumeIds = emptyList(),
             )
@@ -48,8 +47,8 @@ class MemberDetail(
 
     fun initialize(requestVo: MemberInitializeRequestVo) {
         requestVo.name?.run { name = this }
-        requestVo.gender?.run { gender = this }
-        requestVo.age?.run { age = Age(this, Year.now()) }
+        requestVo.gender.run { gender = this }
+        requestVo.ageGroup.run { ageGroup = this }
         requestVo.noteGroupIds?.run { noteGroupIds = this }
         requestVo.perfumeIds?.run { perfumeIds = this }
     }
@@ -60,19 +59,21 @@ class MemberDetail(
 
         other as MemberDetail
 
+        if (name != other.name) return false
         if (gender != other.gender) return false
-        if (age != other.age) return false
+        if (ageGroup != other.ageGroup) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = gender.hashCode()
-        result = 31 * result + age.hashCode()
+        var result = name.hashCode()
+        result = 31 * result + gender.hashCode()
+        result = 31 * result + ageGroup.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "MemberDetail(gender='$gender', age=$age')"
+        return "MemberDetail(name='$name', gender=$gender, ageGroup=$ageGroup, noteGroupIds=$noteGroupIds, perfumeIds=$perfumeIds)"
     }
 }
