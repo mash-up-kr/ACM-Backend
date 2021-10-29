@@ -10,8 +10,9 @@ enum class ResultCode(val message: String = "") {
 
     // member
     MEMBER_NOT_FOUND("회원 조회 실패"),
-    MEMBER_STATUS_ALREADY_ACTIVE("이미 초기화된 회원입니다."),
-    MEMBER_NICKNAME_ALREADY_EXIST("이미 사용중인 닉네임입니다."),
+    MEMBER_STATUS_ALREADY_ACTIVE("이미 초기화된 회원입니다"),
+    MEMBER_NICKNAME_ALREADY_EXIST("이미 사용중인 닉네임입니다"),
+    MEMBER_NICKNAME_INVALID("사용할 수 없는 닉네임입니다"),
     // note
     NOTE_NOT_FOUND("노트 조회 실패"),
     NOTE_ALREADY_EXIST("노트 중복"),

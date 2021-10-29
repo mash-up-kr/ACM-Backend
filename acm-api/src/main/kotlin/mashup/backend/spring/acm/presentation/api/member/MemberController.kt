@@ -50,13 +50,19 @@ class MemberController(
      * 닉네임 변경
      * - 200, SUCCESS
      * - 400, MEMBER_NICKNAME_ALREADY_EXIST
+     * - 400, MEMBER_NOT_FOUND
      * - 401, UNAUTHORIZED
      */
     @PutMapping("/me/nickname")
     fun updateNickname(
         @ApiIgnore @ModelAttribute("memberId") memberId: Long,
+        @RequestBody nicknameUpdateRequest: NicknameUpdateRequest
     ): ApiResponse<Unit> {
-        TODO()
+        memberApplicationService.updateNickname(
+            memberId = memberId,
+            nickname = nicknameUpdateRequest.nickname
+        )
+        return ApiResponse.success()
     }
 
     /**

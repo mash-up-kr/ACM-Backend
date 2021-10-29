@@ -8,6 +8,7 @@ import mashup.backend.spring.acm.domain.member.MemberService
 
 interface MemberApplicationService {
     fun getMemberInfo(memberId: Long): MemberDetailVo
+    fun updateNickname(memberId: Long, nickname: String)
     fun initialize(memberId: Long, requestVo: MemberInitializeRequestVo)
 }
 
@@ -22,6 +23,16 @@ class MemberApplicationServiceImpl(
      */
     override fun getMemberInfo(memberId: Long): MemberDetailVo {
         return memberService.findDetailById(memberId = memberId) ?: throw MemberNotFoundException(memberId = memberId)
+    }
+
+    /**
+     * 닉네임 수정
+     */
+    override fun updateNickname(memberId: Long, nickname: String) {
+        return memberService.updateNickname(
+            memberId = memberId,
+            nickname = nickname
+        )
     }
 
     /**
