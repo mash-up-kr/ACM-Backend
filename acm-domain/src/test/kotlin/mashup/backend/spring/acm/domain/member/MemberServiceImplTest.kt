@@ -43,7 +43,6 @@ internal class MemberServiceImplTest {
                 gender = Gender.MAN,
                 ageGroup = AgeGroup.THIRTIES,
                 noteGroupIds = emptyList(),
-                perfumeIds = emptyList()
             )
         )
         member.add(memberIdProvider)
