@@ -30,7 +30,6 @@ class Note(
         other as Note
 
         if (name != other.name) return false
-        if (description != other.description) return false
         if (url != other.url) return false
         if (thumbnailImageUrl != other.thumbnailImageUrl) return false
 
@@ -39,13 +38,12 @@ class Note(
 
     override fun hashCode(): Int {
         var result = name.hashCode()
-        result = 31 * result + description.hashCode()
         result = 31 * result + url.hashCode()
         result = 31 * result + thumbnailImageUrl.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Note(name='$name', description='$description', url='$url', thumbnailImageUrl='$thumbnailImageUrl', noteGroup=$noteGroup)"
+        return "Note(name='$name', description='${description.take(30)}', url='$url', thumbnailImageUrl='$thumbnailImageUrl', noteGroup=$noteGroup)"
     }
 }
