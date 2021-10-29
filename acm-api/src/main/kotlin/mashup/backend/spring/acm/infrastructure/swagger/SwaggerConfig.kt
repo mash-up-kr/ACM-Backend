@@ -34,21 +34,19 @@ class SwaggerConfig {
             .securityContexts(securityContext())
     }
 
-    private fun securityContext(): List<SecurityContext> {
-        val securityContexts: MutableList<SecurityContext> = ArrayList()
-        securityContexts.add(SecurityContext.builder().securityReferences(defaultAuth()).forPaths(PathSelectors.any()).build())
+    private fun securityContext() = listOf(
+        SecurityContext.builder()
+            .securityReferences(defaultAuth())
+            .forPaths(PathSelectors.regex("(?!/api/v1/members/login|/api/v1/test).*"))
+            .build()
+    )
 
-        return securityContexts
-    }
-
-    private fun defaultAuth(): List<SecurityReference> {
-        val securityReferences: MutableList<SecurityReference> = ArrayList()
-        val authorizationScopes: Array<AuthorizationScope> = arrayOf<AuthorizationScope>(AuthorizationScope("global", "access All"))
-        val securityReference = SecurityReference("Bearer {accessToken}", authorizationScopes)
-        securityReferences.add(securityReference)
-
-        return securityReferences
-    }
+    private fun defaultAuth() = listOf(
+        SecurityReference(
+            "Bearer {accessToken}",
+            arrayOf(AuthorizationScope("global", "access All"))
+        )
+    )
 
     private fun apiKey(): ApiKey {
         return ApiKey("Bearer {accessToken}", "Authorization", "header")
