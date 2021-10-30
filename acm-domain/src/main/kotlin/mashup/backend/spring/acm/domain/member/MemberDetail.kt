@@ -26,11 +26,6 @@ class MemberDetail(
      */
     @Convert(converter = NumberListAndStringConverter::class)
     var noteGroupIds: List<Long>,
-    /**
-     * 좋아하는 향수
-     */
-    @Convert(converter = NumberListAndStringConverter::class)
-    var perfumeIds: List<Long>,
 ) : BaseEntity() {
 
     companion object {
@@ -40,17 +35,14 @@ class MemberDetail(
                 gender = Gender.UNKNOWN,
                 ageGroup = AgeGroup.UNKNOWN,
                 noteGroupIds = emptyList(),
-                perfumeIds = emptyList(),
             )
         }
     }
 
     fun initialize(requestVo: MemberInitializeRequestVo) {
-        requestVo.name?.run { name = this }
         requestVo.gender.run { gender = this }
         requestVo.ageGroup.run { ageGroup = this }
         requestVo.noteGroupIds?.run { noteGroupIds = this }
-        requestVo.perfumeIds?.run { perfumeIds = this }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -74,6 +66,6 @@ class MemberDetail(
     }
 
     override fun toString(): String {
-        return "MemberDetail(name='$name', gender=$gender, ageGroup=$ageGroup, noteGroupIds=$noteGroupIds, perfumeIds=$perfumeIds)"
+        return "MemberDetail(name='$name', gender=$gender, ageGroup=$ageGroup, noteGroupIds=$noteGroupIds)"
     }
 }

@@ -38,11 +38,9 @@ data class LoginRequest(
 )
 
 data class MemberInitializeRequest(
-    val name: String?,
     val gender: String?,
     val ageGroup: String?,
     val noteGroupIds: List<Long>?,
-    val perfumeIds: List<Long>?
 )
 
 data class NicknameUpdateRequest(
