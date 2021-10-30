@@ -33,6 +33,7 @@ open class BrandDetailCollectorTasklet : Tasklet {
                     name = getName(document),
                     url = brandUrlScrapingJob.url,
                     description = getDescription(document),
+                    logoImageUrl = getLogoImageUrl(document)
                 )
             )
             brandUrlScrapingJobService.updateToSuccess(brandUrlScrapingJobId = brandUrlScrapingJob.id)
@@ -51,6 +52,11 @@ open class BrandDetailCollectorTasklet : Tasklet {
 
     private fun getDescription(document: Document): String =
         document.select("#descAAA > p").joinToString(separator = "\n") { it.text() }
+
+    private fun getLogoImageUrl(document: Document): String? =
+        document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div.grid-x.grid-margin-x > div.cell.small-12.medium-4 > div > div.cell.small-4.medium-12 > img")
+            .attr("src")
+            .ifBlank { null }
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(BrandDetailCollectorTasklet::class.java)
