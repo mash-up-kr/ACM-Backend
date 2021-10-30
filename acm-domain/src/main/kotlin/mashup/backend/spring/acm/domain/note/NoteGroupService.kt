@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 interface NoteGroupService {
     fun create(noteGroupCreateVo: NoteGroupCreateVo): NoteGroup
     fun getNoteGroupByName(originalName: String): NoteGroup?
+    fun findAll(): List<NoteGroup>
 }
 
 @Service
@@ -22,4 +23,6 @@ class NoteGroupServiceImpl(
     }
 
     override fun getNoteGroupByName(originalName: String): NoteGroup? = noteGroupRepository.findByOriginalName(originalName)
+
+    override fun findAll(): List<NoteGroup> = noteGroupRepository.findAll()
 }

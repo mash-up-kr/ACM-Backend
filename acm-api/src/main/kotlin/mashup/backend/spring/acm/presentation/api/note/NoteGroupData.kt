@@ -1,7 +1,7 @@
-package mashup.backend.spring.acm.presentation.api.notegroup
+package mashup.backend.spring.acm.presentation.api.note
 
 data class NoteGroupListResponse(
-    val noteGroups: List<NoteGroupSimpleResponse>
+    val noteGroups: List<NoteGroupSimpleResponse>,
 )
 
 data class NoteGroupSimpleResponse(
