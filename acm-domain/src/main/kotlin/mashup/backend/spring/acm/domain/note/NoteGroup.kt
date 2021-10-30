@@ -46,10 +46,8 @@ class NoteGroup(
         other as NoteGroup
 
         if (name != other.name) return false
-        if (description != other.description) return false
         if (imageUrl != other.imageUrl) return false
         if (originalName != other.originalName) return false
-        if (originalDescription != other.originalDescription) return false
         if (originalImageUrl != other.originalImageUrl) return false
 
         return true
@@ -57,15 +55,13 @@ class NoteGroup(
 
     override fun hashCode(): Int {
         var result = name.hashCode()
-        result = 31 * result + description.hashCode()
         result = 31 * result + imageUrl.hashCode()
         result = 31 * result + originalName.hashCode()
-        result = 31 * result + originalDescription.hashCode()
         result = 31 * result + originalImageUrl.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "NoteGroup(name='$name', description='$description', imageUrl='$imageUrl', originalName='$originalName', originalDescription='$originalDescription', originalImageUrl='$originalImageUrl')"
+        return "NoteGroup(name='$name', description='${description.take(30)}', imageUrl='$imageUrl', originalName='$originalName', originalDescription='$${originalDescription.take(30)}', originalImageUrl='$originalImageUrl')"
     }
 }

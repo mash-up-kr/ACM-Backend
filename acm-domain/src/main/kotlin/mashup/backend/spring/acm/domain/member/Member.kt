@@ -19,6 +19,10 @@ class Member(
         memberIdProviders.add(memberIdProvider)
     }
 
+    fun updateNickname(nickname: String) {
+        memberDetail.name = nickname
+    }
+
     fun initialize(memberInitializeRequestVo: MemberInitializeRequestVo) {
         if (memberStatus == MemberStatus.ACTIVE) {
             throw MemberInitializeFailedException("이미 ACTIVE 상태인 회원입니다. memberId: $id")
@@ -48,5 +52,4 @@ class Member(
     override fun toString(): String {
         return "Member(memberStatus=$memberStatus, memberDetail=$memberDetail)"
     }
-
 }
