@@ -5,7 +5,7 @@ data class BrandCreateVo(
     val url: String,
     val description: String,
     val logoImageUrl: String? = null,
-    val country: String? = null,
+    val countryName: String? = null,
     val websiteUrl: String? = null,
     val parentCompanyUrl: String? = null,
 )

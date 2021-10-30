@@ -22,9 +22,9 @@ class Brand(
      */
     val logoImageUrl: String? = null,
     /**
-     * 국가
+     * 국가이름
      */
-    val country: String? = null,
+    val countryName: String? = null,
     /**
      * 웹사이트 url
      */
@@ -40,7 +40,7 @@ class Brand(
         url = brandCreateVo.url,
         description = brandCreateVo.description,
         logoImageUrl = brandCreateVo.logoImageUrl,
-        country = brandCreateVo.country,
+        countryName = brandCreateVo.countryName,
         websiteUrl = brandCreateVo.websiteUrl,
         parentCompanyUrl = brandCreateVo.parentCompanyUrl,
     )
@@ -54,7 +54,7 @@ class Brand(
         if (name != other.name) return false
         if (url != other.url) return false
         if (logoImageUrl != other.logoImageUrl) return false
-        if (country != other.country) return false
+        if (countryName != other.countryName) return false
         if (websiteUrl != other.websiteUrl) return false
         if (parentCompanyUrl != other.parentCompanyUrl) return false
 
@@ -65,13 +65,13 @@ class Brand(
         var result = name.hashCode()
         result = 31 * result + url.hashCode()
         result = 31 * result + (logoImageUrl?.hashCode() ?: 0)
-        result = 31 * result + (country?.hashCode() ?: 0)
+        result = 31 * result + (countryName?.hashCode() ?: 0)
         result = 31 * result + (websiteUrl?.hashCode() ?: 0)
         result = 31 * result + (parentCompanyUrl?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "Brand(name='$name', url='$url', description='${description.take(30)}', logoImageUrl=$logoImageUrl, country=$country, websiteUrl=$websiteUrl, parentCompanyUrl=$parentCompanyUrl)"
+        return "Brand(name='$name', url='$url', description='${description.take(30)}', logoImageUrl=$logoImageUrl, countryName=$countryName, websiteUrl=$websiteUrl, parentCompanyUrl=$parentCompanyUrl)"
     }
 }

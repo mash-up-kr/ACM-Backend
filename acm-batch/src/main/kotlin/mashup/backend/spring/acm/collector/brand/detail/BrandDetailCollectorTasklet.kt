@@ -33,7 +33,8 @@ open class BrandDetailCollectorTasklet : Tasklet {
                     name = getName(document),
                     url = brandUrlScrapingJob.url,
                     description = getDescription(document),
-                    logoImageUrl = getLogoImageUrl(document)
+                    logoImageUrl = getLogoImageUrl(document),
+                    countryName = getCountryName(document),
                 )
             )
             brandUrlScrapingJobService.updateToSuccess(brandUrlScrapingJobId = brandUrlScrapingJob.id)
@@ -57,6 +58,11 @@ open class BrandDetailCollectorTasklet : Tasklet {
     private fun getLogoImageUrl(document: Document): String? =
         document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div.grid-x.grid-margin-x > div.cell.small-12.medium-4 > div > div.cell.small-4.medium-12 > img")
             .attr("src")
+            .ifBlank { null }
+
+    private fun getCountryName(document: Document): String? =
+        document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div.grid-x.grid-margin-x > div.cell.small-12.medium-4 > div > div.cell.small-7.small-offset-1.medium-12 > a:nth-child(1) > b")
+            .text()
             .ifBlank { null }
 
     companion object {
