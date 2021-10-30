@@ -42,3 +42,7 @@ data class MemberInitializeRequest(
     val ageGroup: String?,
     val noteGroupIds: List<Long>?,
 )
+
+data class NicknameUpdateRequest(
+    val nickname: String,
+)
