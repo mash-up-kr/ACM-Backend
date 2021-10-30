@@ -8,6 +8,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -23,6 +24,19 @@ class ApiControllerAdvice {
             return principal.principal.toString().toLong()
         }
         return null
+    }
+
+    /**
+     * 요청에 오류가 있는 경우
+     */
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ApiResponse<Unit> {
+        log.error("MethodArgumentNotValidException", e)
+        return ApiResponse.failure(
+            message = e.message ?: ResultCode.BAD_REQUEST.message,
+            code = ResultCode.BAD_REQUEST.name,
+        )
     }
 
     /**

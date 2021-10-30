@@ -6,11 +6,12 @@ enum class ResultCode(val message: String = "") {
     UNAUTHORIZED("인증 실패"),
     FORBIDDEN("권한 없음"),
     // 기타
+    BAD_REQUEST("요청에 오류가 있습니다"),
     INTERNAL_SERVER_ERROR("서버 에러"),
 
     // member
     MEMBER_NOT_FOUND("회원 조회 실패"),
-    MEMBER_STATUS_ALREADY_ACTIVE("이미 초기화된 회원입니다."),
+    MEMBER_STATUS_ALREADY_ACTIVE("이미 초기화된 회원입니다"),
     // note
     NOTE_NOT_FOUND("노트 조회 실패"),
     NOTE_ALREADY_EXIST("노트 중복"),
