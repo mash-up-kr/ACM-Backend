@@ -1,16 +1,14 @@
 package mashup.backend.spring.acm.presentation.api.member
 
 import mashup.backend.spring.acm.application.LoginApplicationService
-import mashup.backend.spring.acm.application.login.toLoginResponse
-import mashup.backend.spring.acm.application.login.toVo
+import mashup.backend.spring.acm.presentation.assembler.toLoginResponse
+import mashup.backend.spring.acm.presentation.assembler.toVo
 import mashup.backend.spring.acm.application.member.MemberApplicationService
 import mashup.backend.spring.acm.presentation.ApiResponse
 import mashup.backend.spring.acm.presentation.assembler.toMemberInfoResponse
-import mashup.backend.spring.acm.presentation.assembler.toVo
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1/members")
@@ -24,7 +22,7 @@ class MemberController(
      */
     @PostMapping("/login")
     fun login(
-        @RequestBody loginRequest: LoginRequest,
+        @RequestBody @Valid loginRequest: LoginRequest,
     ): ApiResponse<LoginResponse> {
         return ApiResponse.success(
             data = loginApplicationService.login(loginRequestVo = loginRequest.toVo()).toLoginResponse()

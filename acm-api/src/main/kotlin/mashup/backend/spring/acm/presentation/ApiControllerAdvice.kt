@@ -7,6 +7,7 @@ import mashup.backend.spring.acm.domain.exception.NotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -27,15 +28,30 @@ class ApiControllerAdvice {
     }
 
     /**
-     * 요청에 오류가 있는 경우
+     * 요청에 오류가 있는 경우 (invalid parameter)
      */
     @ExceptionHandler(MethodArgumentNotValidException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ApiResponse<Unit> {
         log.error("MethodArgumentNotValidException", e)
         return ApiResponse.failure(
-            message = e.message ?: ResultCode.BAD_REQUEST.message,
             code = ResultCode.BAD_REQUEST.name,
+            message = e.fieldErrors.joinToString {
+                "${it.field}: ${it.defaultMessage}"
+            },
+        )
+    }
+
+    /**
+     * 요청에 오류가 있는 경우 (Http Message 파싱 실패)
+     */
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ApiResponse<Unit> {
+        log.error("HttpMessageNotReadableException", e)
+        return ApiResponse.failure(
+            code = ResultCode.BAD_REQUEST.name,
+            message = e.mostSpecificCause.message ?: ResultCode.BAD_REQUEST.message
         )
     }
 

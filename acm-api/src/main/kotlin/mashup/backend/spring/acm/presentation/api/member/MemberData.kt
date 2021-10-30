@@ -1,9 +1,12 @@
 package mashup.backend.spring.acm.presentation.api.member
 
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderType
+import org.hibernate.validator.constraints.Length
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
 data class MemberInfoResponse(
-    val member: MemberDetailResponse
+    val member: MemberDetailResponse,
 )
 
 data class MemberDetailResponse(
@@ -24,17 +27,20 @@ data class MemberDetailResponse(
     /**
      * 나이대
      */
-    val ageGroup: String?
+    val ageGroup: String?,
 )
 
 data class LoginResponse(
     val accessToken: String,
-    val member: MemberDetailResponse
+    val member: MemberDetailResponse,
 )
 
 data class LoginRequest(
-    val idProviderType: IdProviderType,
-    val idProviderUserId: String
+    @field:NotNull
+    val idProviderType: IdProviderType?,
+    @field:NotBlank
+    @field:Length(max = 255)
+    val idProviderUserId: String?,
 )
 
 
@@ -43,5 +49,5 @@ data class MemberInitializeRequest(
     val gender: String?,
     val ageGroup: String?,
     val noteGroupIds: List<Long>?,
-    val perfumeIds: List<Long>?
+    val perfumeIds: List<Long>?,
 )

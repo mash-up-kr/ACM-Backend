@@ -19,7 +19,7 @@ class LoginApplicationServiceImpl(
         val memberDetailVo = memberService.join(
             idProviderInfo = IdProviderInfo(
                 idProviderType = loginRequestVo.idProviderType,
-                idProviderUserId = loginRequestVo.idProviderUserId
+                idProviderUserId = loginRequestVo.idProviderUserId.trim()
             )
         )
         return LoginResponseVo(
