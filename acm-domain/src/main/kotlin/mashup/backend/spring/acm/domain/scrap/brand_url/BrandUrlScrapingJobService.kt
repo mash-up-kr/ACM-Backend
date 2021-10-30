@@ -1,5 +1,7 @@
 package mashup.backend.spring.acm.domain.scrap.brand_url
 
+import mashup.backend.spring.acm.domain.scrap.ScrappingJobStatus
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,4 +23,15 @@ class BrandUrlScrapingJobService(
         val brandUrlScrapingJob = brandUrlScrapingJobRepository.save(BrandUrlScrapingJob(url))
         return Pair(true, brandUrlScrapingJob)
     }
+
+    @Transactional
+    fun updateToSuccess(brandUrlScrapingJobId: Long) =
+        brandUrlScrapingJobRepository.findByIdOrNull(brandUrlScrapingJobId)?.updateToSuccess()
+
+    @Transactional
+    fun updateToFailure(brandUrlScrapingJobId: Long) =
+        brandUrlScrapingJobRepository.findByIdOrNull(brandUrlScrapingJobId)?.updateToFailure()
+
+    fun findFirstByUrlForScrap(): BrandUrlScrapingJob? =
+        brandUrlScrapingJobRepository.findFirstByStatus(status = ScrappingJobStatus.PROCESSING)
 }
