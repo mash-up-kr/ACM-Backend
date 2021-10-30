@@ -44,4 +44,34 @@ class Brand(
         websiteUrl = brandCreateVo.websiteUrl,
         parentCompanyUrl = brandCreateVo.parentCompanyUrl,
     )
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Brand
+
+        if (name != other.name) return false
+        if (url != other.url) return false
+        if (logoImageUrl != other.logoImageUrl) return false
+        if (country != other.country) return false
+        if (websiteUrl != other.websiteUrl) return false
+        if (parentCompanyUrl != other.parentCompanyUrl) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + url.hashCode()
+        result = 31 * result + (logoImageUrl?.hashCode() ?: 0)
+        result = 31 * result + (country?.hashCode() ?: 0)
+        result = 31 * result + (websiteUrl?.hashCode() ?: 0)
+        result = 31 * result + (parentCompanyUrl?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "Brand(name='$name', url='$url', description='${description.take(30)}', logoImageUrl=$logoImageUrl, country=$country, websiteUrl=$websiteUrl, parentCompanyUrl=$parentCompanyUrl)"
+    }
 }

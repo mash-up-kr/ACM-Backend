@@ -28,7 +28,7 @@ open class BrandDetailCollectorTasklet : Tasklet {
         }
         try {
             val document = getDocument(url = brandUrlScrapingJob.url)
-            brandService.create(
+            val brand = brandService.create(
                 brandCreateVo = BrandCreateVo(
                     name = getName(document),
                     url = brandUrlScrapingJob.url,
@@ -37,6 +37,7 @@ open class BrandDetailCollectorTasklet : Tasklet {
                 )
             )
             brandUrlScrapingJobService.updateToSuccess(brandUrlScrapingJobId = brandUrlScrapingJob.id)
+            log.info("브랜드 저장 성공. brand: $brand")
         } catch (e: Exception) {
             log.error("브랜드 크롤링 실패. url: ${brandUrlScrapingJob.url}", e)
             brandUrlScrapingJobService.updateToFailure(brandUrlScrapingJobId = brandUrlScrapingJob.id)
