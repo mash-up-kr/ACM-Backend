@@ -5,5 +5,14 @@ import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
 abstract class ScrapingJob(
-    open var status: ScrappingJobStatus
-) : BaseEntity()
+    open var status: ScrappingJobStatus,
+) : BaseEntity() {
+
+    fun updateToSuccess() {
+        status = ScrappingJobStatus.SUCCESS
+    }
+
+    fun updateToFailure() {
+        status = ScrappingJobStatus.FAILURE
+    }
+}
