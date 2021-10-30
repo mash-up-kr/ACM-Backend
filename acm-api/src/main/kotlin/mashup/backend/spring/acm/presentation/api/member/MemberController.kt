@@ -47,6 +47,25 @@ class MemberController(
     }
 
     /**
+     * 닉네임 변경
+     * - 200, SUCCESS
+     * - 400, MEMBER_NICKNAME_ALREADY_EXIST
+     * - 400, MEMBER_NOT_FOUND
+     * - 401, UNAUTHORIZED
+     */
+    @PutMapping("/me/nickname")
+    fun updateNickname(
+        @ApiIgnore @ModelAttribute("memberId") memberId: Long,
+        @RequestBody nicknameUpdateRequest: NicknameUpdateRequest
+    ): ApiResponse<Unit> {
+        memberApplicationService.updateNickname(
+            memberId = memberId,
+            nickname = nicknameUpdateRequest.nickname
+        )
+        return ApiResponse.success()
+    }
+
+    /**
      * 회원 초기화 (온보딩 정보 입력, 상태 변경(ASSOCIATE -> ACTIVE))
      * - 200, SUCCESS
      * - 400, MEMBER_STATUS_ALREADY_ACTIVE
