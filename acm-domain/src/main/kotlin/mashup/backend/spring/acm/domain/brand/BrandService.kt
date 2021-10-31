@@ -12,6 +12,7 @@ interface BrandService {
     fun findAll(): List<Brand>
     fun searchByName(name: String): List<BrandSimpleVo>
     fun getDetail(brandId: Long): BrandDetailVo
+    fun getPopularBrands(): List<Brand>
 }
 
 @Service
@@ -43,4 +44,33 @@ class BrandServiceImpl(
     override fun getDetail(brandId: Long): BrandDetailVo = brandRepository.findByIdOrNull(brandId)
         ?.let { BrandDetailVo(it) }
         ?: throw BrandNotFoundException(brandId = brandId)
+
+    override fun getPopularBrands(): List<Brand> = POPULAR_BRAND_URL_LIST.mapNotNull { brandRepository.findByUrl(it) }
+
+    companion object {
+        val POPULAR_BRAND_URL_LIST: List<String> = listOf(
+            // 바이레도, BYREDO
+            "https://www.fragrantica.com/designers/Byredo.html",
+            // 랑방, LANVIN
+            "https://www.fragrantica.com/designers/Lanvin.html",
+            // 조말론, Jo Malone London
+            "https://www.fragrantica.com/designers/Jo-Malone-London.html",
+            // 딥티크, Diptyque
+            "https://www.fragrantica.com/designers/Diptyque.html",
+            // 디올, DIOR
+            "https://www.fragrantica.com/designers/Dior.html",
+            // 샤넬, CHANEL
+            "https://www.fragrantica.com/designers/Chanel.html",
+            // 불가리, bulgari, BVLGARI
+            "https://www.fragrantica.com/designers/Bvlgari.html",
+            // 입생로랑, Yves Saint Laurent
+            "https://www.fragrantica.com/designers/Yves-Saint-Laurent.html",
+            // 클린, CLEAN
+            "https://www.fragrantica.com/designers/Clean.html",
+            // 존바바토스, John Varvatos
+            "https://www.fragrantica.com/designers/John-Varvatos.html",
+            // 버버리, Burberry
+            "https://www.fragrantica.com/designers/Burberry.html",
+        )
+    }
 }
