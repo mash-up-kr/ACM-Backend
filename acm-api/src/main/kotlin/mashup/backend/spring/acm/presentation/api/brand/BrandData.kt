@@ -11,4 +11,5 @@ data class BrandSearchResponse(
 data class BrandSimpleResponse(
     val id: Long,
     val name: String,
+    val thumbnailImageUrl: String,
 )

@@ -19,10 +19,3 @@ data class NoteGroupDetailResponse(
     val description: String,
     val notes: List<NoteSimpleResponse>,
 )
-
-data class NoteSimpleResponse(
-    val id: Long,
-    val name: String,
-    val description: String,
-    val thumbnailImageUrl: String,
-)

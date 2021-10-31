@@ -9,4 +9,8 @@ class NoteNotFoundException(
     resultCode = ResultCode.NOTE_NOT_FOUND,
     message = message,
     cause = cause
-)
+) {
+    constructor(noteId: Long) : this(
+        message = "노트를 찾을 수 없습니다. noteId: $noteId",
+    )
+}

@@ -1,6 +1,6 @@
 package mashup.backend.spring.acm.presentation.api.note
 
-import mashup.backend.spring.acm.application.note.NoteApplicationService
+import mashup.backend.spring.acm.application.note.NoteGroupApplicationService
 import mashup.backend.spring.acm.presentation.ApiResponse
 import mashup.backend.spring.acm.presentation.assembler.toDto
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1/note-groups")
 class NoteGroupController(
-    private val noteApplicationService: NoteApplicationService,
+    private val noteGroupApplicationService: NoteGroupApplicationService,
 ) {
     /**
      * 노트 그룹 목록 조회
@@ -20,7 +20,7 @@ class NoteGroupController(
     fun getNoteGroupList(): ApiResponse<NoteGroupListData> {
         return ApiResponse.success(
             data = NoteGroupListData(
-                noteGroups = noteApplicationService.getAllNoteGroups().map { it.toDto() }
+                noteGroups = noteGroupApplicationService.getAllNoteGroups().map { it.toDto() }
             )
         )
     }
@@ -34,7 +34,7 @@ class NoteGroupController(
     ): ApiResponse<NoteGroupDetailData> {
         return ApiResponse.success(
             data = NoteGroupDetailData(
-                noteGroup = noteApplicationService.getNoteGroup(noteGroupId = noteGroupId).toDto(),
+                noteGroup = noteGroupApplicationService.getNoteGroup(noteGroupId = noteGroupId).toDto(),
             ),
         )
     }
