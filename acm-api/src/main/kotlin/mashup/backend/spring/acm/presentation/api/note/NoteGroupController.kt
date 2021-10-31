@@ -16,11 +16,17 @@ class NoteGroupController(
      * 노트 그룹 목록 조회
      */
     @GetMapping
-    fun getNoteGroupList(): ApiResponse<NoteGroupListResponse> {
+    fun getNoteGroupList(): ApiResponse<NoteGroupListData> {
         return ApiResponse.success(
-            data = NoteGroupListResponse(
+            data = NoteGroupListData(
                 noteGroups = noteApplicationService.getAllNoteGroups().map { it.toDto() }
             )
         )
     }
+
+    /**
+     * 노트 그룹 상세 조회
+     */
+    @GetMapping("/{noteGroupId")
+    fun getNoteGroup(): ApiResponse<NoteGroupDetailData> = TODO()
 }

@@ -2,6 +2,8 @@ package mashup.backend.spring.acm.domain.note
 
 import mashup.backend.spring.acm.domain.BaseEntity
 import javax.persistence.Entity
+import javax.persistence.JoinColumn
+import javax.persistence.OneToMany
 
 /**
  * Note Groups:
