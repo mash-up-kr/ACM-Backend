@@ -42,6 +42,9 @@ class PerfumeDetailCollectorConfig(
     @Bean
     fun perfumeNoteMappingService() = PerfumeNoteMappingService()
 
+    @Bean
+    fun perfumeBrandMappingService() = PerfumeBrandMappingService()
+
     companion object {
         const val JOB_NAME = "perfumeDetailCollectorJob"
         const val STEP_NAME = "perfumeDetailCollectorStep"

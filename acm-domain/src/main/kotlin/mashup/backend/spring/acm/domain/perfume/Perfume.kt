@@ -1,14 +1,13 @@
 package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.BaseEntity
+import mashup.backend.spring.acm.domain.brand.Brand
 import javax.persistence.*
 
 @Entity
 class Perfume(
     val name: String,
     val originalName: String,
-    val brand: String,
-    val originalBrand: String,
     @Enumerated(EnumType.STRING)
     val gender: Gender,
     var description: String = "",
@@ -18,14 +17,14 @@ class Perfume(
     @OneToMany(mappedBy = "perfume")
     val accords: List<PerfumeAccord> = ArrayList(),
     @OneToMany(mappedBy = "perfume")
-    val notes: List<PerfumeNote> = ArrayList()
+    val notes: List<PerfumeNote> = ArrayList(),
+    @ManyToOne
+    var brand: Brand? = null,
 ) : BaseEntity() {
     companion object {
         fun from(perfumeCreateVo: PerfumeCreateVo) = Perfume(
             name = perfumeCreateVo.name,
             originalName = perfumeCreateVo.originalName,
-            brand = perfumeCreateVo.brand,
-            originalBrand = perfumeCreateVo.originalBrand,
             gender = perfumeCreateVo.gender,
             description = perfumeCreateVo.description,
             url = perfumeCreateVo.url,

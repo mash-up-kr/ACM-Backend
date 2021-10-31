@@ -23,7 +23,7 @@ data class PerfumeDetail(
         fun of(perfume: Perfume, similarPerfumes: List<SimpleSimilarPerfume>) = PerfumeDetail(
             id = perfume.id,
             name = perfume.name,
-            brand = perfume.brand,
+            brand = perfume.brand?.name ?: "",
             gender = perfume.gender,
             description = perfume.description,
             imageUrl = perfume.imageUrl,

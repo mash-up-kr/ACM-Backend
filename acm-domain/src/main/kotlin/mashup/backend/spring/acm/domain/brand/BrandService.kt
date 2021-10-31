@@ -9,6 +9,7 @@ interface BrandService {
     fun create(brandCreateVo: BrandCreateVo): Brand
     fun rename(brandId: Long, name: String)
     fun findAll(): List<Brand>
+    fun findByUrl(url: String): Brand?
 }
 
 @Service
@@ -33,4 +34,6 @@ class BrandServiceImpl(
         ?: throw RuntimeException("브랜드를 찾을 수 없습니다. brandId: $brandId")
 
     override fun findAll(): List<Brand> = brandRepository.findAll()
+
+    override fun findByUrl(url: String): Brand? = brandRepository.findByUrl(url)
 }

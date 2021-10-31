@@ -51,8 +51,6 @@ class PerfumeCollectorTasklet : Tasklet {
                                 PerfumeCreateVo(
                                     name = it.name,
                                     originalName = it.originalName,
-                                    brand = it.brand,
-                                    originalBrand = it.originalBrand,
                                     gender = genderType,
                                     url = it.url,
                                     thumbnailImageUrl = it.thumbnailImageUrl,

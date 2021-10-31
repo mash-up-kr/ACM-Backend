@@ -30,6 +30,9 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
     @Autowired
     lateinit var perfumeNoteMappingService: PerfumeNoteMappingService
 
+    @Autowired
+    lateinit var perfumeBrandMappingService: PerfumeBrandMappingService
+
     override fun execute(contribution: StepContribution, chunkContext: ChunkContext): RepeatStatus {
         val perfumeUrlScrapingJob = perfumeUrlScrapingJobService.getOneToScrap()
         if (perfumeUrlScrapingJob == null) {
@@ -40,7 +43,7 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
         try {
             val document = getDocument(url = perfumeUrlScrapingJob.url)
             val name = getName(document)
-            val brand = getBrandUrl(document)
+            val brandUrl = getBrandUrl(document)
             val perfumeAccordCreateVoList = getAccords(document).map {
                 PerfumeAccordCreateVo(
                     accordId = accordService.createIfNotExists(
@@ -57,8 +60,6 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
             val perfumeCreateVo = PerfumeCreateVo(
                 name = name,
                 originalName = name,
-                brand = brand,
-                originalBrand = brand,
                 gender = getGender(document),
                 url = perfumeUrlScrapingJob.url,
                 thumbnailImageUrl = getThumbnailImageUrl(document),
@@ -69,7 +70,15 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
             // 향수 생성, 향수 - 어코드 매핑
             val perfume = perfumeService.create(perfumeCreateVo = perfumeCreateVo)
             // 향수 - 노트 매핑
-            perfumeNoteMappingService.saveNotes(document = document, perfumeUrl = perfumeUrlScrapingJob.url)
+            perfumeNoteMappingService.saveNotes(
+                document = document,
+                perfumeUrl = perfumeUrlScrapingJob.url
+            )
+            // 향수 - 브랜드 매핑
+            perfumeBrandMappingService.saveBrand(
+                perfumeUrl = perfumeUrlScrapingJob.url,
+                brandUrl = getBrandUrl(document),
+            )
             perfumeUrlScrapingJobService.updateToSuccess(perfumeUrlScrapingJobId = perfumeUrlScrapingJob.id)
             log.info("향수 저장 성공. perfume: $perfume")
         } catch (e: Exception) {

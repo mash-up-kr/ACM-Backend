@@ -1,6 +1,7 @@
 package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.accord.AccordService
+import mashup.backend.spring.acm.domain.brand.Brand
 import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.note.NoteService
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 interface PerfumeService {
     fun create(perfumeCreateVo: PerfumeCreateVo): Perfume
     fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType)
+    fun setBrand(perfumeUrl: String, brand: Brand)
     fun getPerfume(id: Long): Perfume
     fun getSimilarPerfume(id: Long): List<Perfume>
 }
@@ -66,6 +68,15 @@ class PerfumeServiceImpl(
         )
         perfumeNote.noteType = noteType
         perfumeNoteRepository.save(perfumeNote)
+    }
+
+    @Transactional
+    override fun setBrand(perfumeUrl: String, brand: Brand) {
+        val perfume = getPerfume(url = perfumeUrl)
+        if (perfume.brand == brand) {
+            return
+        }
+        perfume.brand = brand
     }
 
     @Transactional(readOnly = true)
