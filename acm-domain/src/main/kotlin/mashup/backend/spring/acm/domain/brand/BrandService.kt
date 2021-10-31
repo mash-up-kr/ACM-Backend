@@ -1,11 +1,14 @@
 package mashup.backend.spring.acm.domain.brand
 
 import mashup.backend.spring.acm.domain.exception.BrandDuplicatedException
+import mashup.backend.spring.acm.domain.exception.BrandNotFoundException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 interface BrandService {
     fun create(brandCreateVo: BrandCreateVo): Brand
+    fun getDetail(brandId: Long): BrandDetailVo
 }
 
 @Service
@@ -23,4 +26,8 @@ class BrandServiceImpl(
             Brand(brandCreateVo = brandCreateVo)
         )
     }
+
+    override fun getDetail(brandId: Long): BrandDetailVo = brandRepository.findByIdOrNull(brandId)
+        ?.let { BrandDetailVo(it) }
+        ?: throw BrandNotFoundException(brandId = brandId)
 }
