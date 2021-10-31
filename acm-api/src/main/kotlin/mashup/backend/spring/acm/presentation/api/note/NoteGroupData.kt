@@ -23,5 +23,6 @@ data class NoteGroupDetailResponse(
 data class NoteSimpleResponse(
     val id: Long,
     val name: String,
+    val description: String,
     val thumbnailImageUrl: String,
 )

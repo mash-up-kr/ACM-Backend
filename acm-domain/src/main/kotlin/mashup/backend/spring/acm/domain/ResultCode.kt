@@ -17,6 +17,8 @@ enum class ResultCode(val message: String = "") {
     // note
     NOTE_NOT_FOUND("노트 조회 실패"),
     NOTE_ALREADY_EXIST("노트 중복"),
+    // note group
+    NOTE_GROUP_NOT_FOUND("노트 그룹 조회 실패"),
     // perfume
     PERFUME_NOT_FOUND("향수 조회 실패"),
     // brand
