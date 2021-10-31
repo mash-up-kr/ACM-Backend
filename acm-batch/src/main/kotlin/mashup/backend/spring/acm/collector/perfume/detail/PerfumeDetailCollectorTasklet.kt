@@ -43,7 +43,6 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
         try {
             val document = getDocument(url = perfumeUrlScrapingJob.url)
             val name = getName(document)
-            val brandUrl = getBrandUrl(document)
             val perfumeAccordCreateVoList = getAccords(document).map {
                 PerfumeAccordCreateVo(
                     accordId = accordService.createIfNotExists(
@@ -79,6 +78,13 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
                 perfumeUrl = perfumeUrlScrapingJob.url,
                 brandUrl = getBrandUrl(document),
             )
+            // "{향수이름} {브랜드이름}" 으로 저장되어있어서, 브랜드이름 제거함
+            perfume.brand?.run {
+                perfumeService.rename(
+                    perfumeId = perfume.id,
+                    name = perfume.name.replace(this.name, "").trim()
+                )
+            }
             perfumeUrlScrapingJobService.updateToSuccess(perfumeUrlScrapingJobId = perfumeUrlScrapingJob.id)
             log.info("향수 저장 성공. perfume: $perfume")
         } catch (e: Exception) {
@@ -92,7 +98,6 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
 
     private fun getName(document: Document): String = document.select("#toptop > h1").textNodes()[0].text()
 
-    // TODO: brand 적재 완료 후 매핑해야함
     private fun getBrandUrl(document: Document): String =
         document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > p > a")
             .attr("href")

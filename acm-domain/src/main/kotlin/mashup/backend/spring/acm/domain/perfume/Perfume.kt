@@ -6,7 +6,7 @@ import javax.persistence.*
 
 @Entity
 class Perfume(
-    val name: String,
+    var name: String,
     val originalName: String,
     @Enumerated(EnumType.STRING)
     val gender: Gender,

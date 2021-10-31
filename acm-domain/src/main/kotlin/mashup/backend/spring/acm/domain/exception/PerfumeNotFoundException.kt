@@ -9,4 +9,8 @@ class PerfumeNotFoundException(
     resultCode = ResultCode.PERFUME_NOT_FOUND,
     message = message,
     cause = cause
-)
+) {
+    constructor(perfumeId: Long) : this(
+        message = "향수를 찾을 수 없습니다. perfumeId: $perfumeId",
+    )
+}
