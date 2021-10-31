@@ -16,6 +16,7 @@ interface PerfumeService {
     fun rename(perfumeId: Long, name: String)
     fun getPerfume(id: Long): Perfume
     fun getSimilarPerfume(id: Long): List<Perfume>
+    fun searchByName(name: String): List<PerfumeSimpleVo>
 }
 
 @Service
@@ -99,4 +100,7 @@ class PerfumeServiceImpl(
         // TODO: 구현해야 함.
         return emptyList()
     }
+
+    override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findByNameContaining(name)
+        .map { PerfumeSimpleVo(it) }
 }
