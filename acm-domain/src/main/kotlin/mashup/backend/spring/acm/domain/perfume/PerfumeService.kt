@@ -1,8 +1,8 @@
 package mashup.backend.spring.acm.domain.perfume
 
-import mashup.backend.spring.acm.domain.note.NoteService
 import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
+import mashup.backend.spring.acm.domain.note.NoteService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -11,13 +11,14 @@ interface PerfumeService {
     fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType)
     fun getPerfume(id: Long): Perfume
     fun getSimilarPerfume(id: Long): List<Perfume>
+    fun searchByName(name: String): List<PerfumeSimpleVo>
 }
 
 @Service
 @Transactional(readOnly = true)
 class PerfumeServiceImpl(
     private val perfumeRepository: PerfumeRepository,
-    private val noteService: NoteService
+    private val noteService: NoteService,
 ) : PerfumeService {
     @Transactional
     override fun create(perfumeCreateVo: PerfumeCreateVo): Perfume {
@@ -53,4 +54,7 @@ class PerfumeServiceImpl(
         // TODO: 구현해야 함.
         return emptyList()
     }
+
+    override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findByNameContaining(name)
+        .map { PerfumeSimpleVo(it) }
 }

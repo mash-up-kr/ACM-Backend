@@ -12,6 +12,7 @@ interface NoteService {
     fun getNotes(pageable: Pageable): Page<Note>
     fun getNote(url: String): Note
     fun getFirstNoteToScrap(): Note?
+    fun getNoteDetail(noteId: Long): NoteDetailVo
     fun create(noteCreateVo: NoteCreateVo): Note
     fun update(noteId: Long, noteUpdateVo: NoteUpdateVo): Note
 }
@@ -27,6 +28,10 @@ class NoteServiceImpl(
     override fun getNote(url: String): Note = noteRepository.findByUrl(url) ?: throw NoteNotFoundException()
 
     override fun getFirstNoteToScrap(): Note? = noteRepository.findFirstByNoteGroupIsNull()
+
+    override fun getNoteDetail(noteId: Long): NoteDetailVo = noteRepository.findByIdOrNull(noteId)
+        ?.let { NoteDetailVo(it) }
+        ?: throw NoteNotFoundException(noteId = noteId)
 
     @Transactional
     override fun create(noteCreateVo: NoteCreateVo): Note {

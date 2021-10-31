@@ -52,6 +52,7 @@ open class BrandDetailCollectorTasklet : Tasklet {
     private fun getName(document: Document): String =
         document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div.grid-x.grid-margin-x > div.cell.text-center.dname > h1")
             .text()
+            .replace(" perfumes and colognes", "")
 
     private fun getDescription(document: Document): String =
         document.select("#descAAA > p").joinToString(separator = "\n") { it.text() }

@@ -101,6 +101,7 @@ data class PerfumeSearchResponse(
 data class PerfumeSimpleResponse(
     val id: Long,
     val name: String,
+    val thumbnailImageUrl: String,
 )
 
 val SAMPLE_PERFUME_LIST: List<PerfumeSimpleResponse> = listOf(
