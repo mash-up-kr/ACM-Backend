@@ -10,13 +10,14 @@ data class NoteDetailResponse(
     val id: Long,
     val name: String,
     val description: String,
-    val url: String,
     val thumbnailImageUrl: String,
-    val noteGroup: NoteGroupSimpleResponse,
+    val noteGroup: NoteGroupSimpleResponse?,
     val perfumes: List<PerfumeSimpleResponse>,
 )
 
-data class NoteGroupSimpleResponse(
+data class NoteSimpleResponse(
     val id: Long,
     val name: String,
+    val description: String,
+    val thumbnailImageUrl: String,
 )
