@@ -27,7 +27,7 @@ open class BrandDetailCollectorTasklet : Tasklet {
             return RepeatStatus.FINISHED
         }
         try {
-            val document = getDocument(url = "https://www.fragrantica.com/designers/Zara.html")
+            val document = getDocument(url = brandUrlScrapingJob.url)
             val brandCreateVo = BrandCreateVo(
                 name = getName(document),
                 url = brandUrlScrapingJob.url,
