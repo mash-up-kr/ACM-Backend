@@ -102,3 +102,86 @@ data class PerfumeSimpleResponse(
     val id: Long,
     val name: String,
 )
+
+val SAMPLE_PERFUME_LIST: List<PerfumeSimpleResponse> = listOf(
+    PerfumeSimpleResponse(
+        id = -1,
+        name = "Tobacco Oud Tom Ford",
+    ),
+    PerfumeSimpleResponse(
+        id = -2,
+        name = "One-Man-Show-Emerald-Edition",
+    ),
+    PerfumeSimpleResponse(
+        id = -3,
+        name = "Armani-Prive-Rouge-Malachite",
+    ),
+    PerfumeSimpleResponse(
+        id = -4,
+        name = "R-E-M",
+    ),
+    PerfumeSimpleResponse(
+        id = -5,
+        name = "L-eau-A-la-Rose",
+    ),
+    PerfumeSimpleResponse(
+        id = -6,
+        name = "Narciso",
+    ),
+    PerfumeSimpleResponse(
+        id = -7,
+        name = "1-Million-Prive",
+    ),
+    PerfumeSimpleResponse(
+        id = -8,
+        name = "Tres-Chere",
+    ),
+    PerfumeSimpleResponse(
+        id = -9,
+        name = "Do-Son-Eau-de-Parfum",
+    ),
+    PerfumeSimpleResponse(
+        id = -10,
+        name = "Club-de-Nuit-Intense",
+    ),
+    PerfumeSimpleResponse(
+        id = -11,
+        name = "Oody-Woody",
+    ),
+    PerfumeSimpleResponse(
+        id = -12,
+        name = "Chloe-Eau-de-Parfum",
+    ),
+    PerfumeSimpleResponse(
+        id = -13,
+        name = "Hiris",
+    ),
+    PerfumeSimpleResponse(
+        id = -14,
+        name = "Reflection",
+    ),
+    PerfumeSimpleResponse(
+        id = -15,
+        name = "Golden-Autumn",
+    ),
+    PerfumeSimpleResponse(
+        id = -16,
+        name = "Lipstick-On",
+    ),
+    PerfumeSimpleResponse(
+        id = -17,
+        name = "Lettre-de-Pushkar",
+    ),
+    PerfumeSimpleResponse(
+        id = -18,
+        name = "L-Ombre-Dans-L-Eau",
+    ),
+    PerfumeSimpleResponse(
+        id = -19,
+        name = "Essence-de-Patchouli",
+    ),
+    PerfumeSimpleResponse(
+        id = -20,
+        name = "Lovely",
+    ),
+)
