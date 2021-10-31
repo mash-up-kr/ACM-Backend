@@ -12,7 +12,7 @@ class SearchApplicationService(
     private val perfumeService: PerfumeService,
 ) {
     fun search(name: String): Pair<List<BrandSimpleVo>, List<PerfumeSimpleVo>> = Pair(
-        brandService.findByName(name = name),
-        perfumeService.findByName(name = name)
+        brandService.searchByName(name = name),
+        perfumeService.searchByName(name = name)
     )
 }

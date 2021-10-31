@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 
 interface BrandService {
     fun create(brandCreateVo: BrandCreateVo): Brand
-    fun findByName(name: String): List<BrandSimpleVo>
+    fun searchByName(name: String): List<BrandSimpleVo>
 }
 
 @Service
@@ -25,6 +25,6 @@ class BrandServiceImpl(
         )
     }
 
-    override fun findByName(name: String): List<BrandSimpleVo> = brandRepository.findByName(name)
+    override fun searchByName(name: String): List<BrandSimpleVo> = brandRepository.findByNameContaining(name)
         .map { BrandSimpleVo(it) }
 }

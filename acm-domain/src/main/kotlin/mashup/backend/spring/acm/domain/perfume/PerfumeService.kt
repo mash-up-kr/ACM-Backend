@@ -11,7 +11,7 @@ interface PerfumeService {
     fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType)
     fun getPerfume(id: Long): Perfume
     fun getSimilarPerfume(id: Long): List<Perfume>
-    fun findByName(name: String): List<PerfumeSimpleVo>
+    fun searchByName(name: String): List<PerfumeSimpleVo>
 }
 
 @Service
@@ -55,6 +55,6 @@ class PerfumeServiceImpl(
         return emptyList()
     }
 
-    override fun findByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findByName(name)
+    override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findByNameContaining(name)
         .map { PerfumeSimpleVo(it) }
 }
