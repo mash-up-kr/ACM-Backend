@@ -16,7 +16,7 @@ class MemberDetail(
      * 성별
      */
     @Enumerated(EnumType.STRING)
-    var gender: Gender,
+    var gender: MemberGender,
     /**
      * 나이대 (10대, 20대, ...)
      */
@@ -32,7 +32,7 @@ class MemberDetail(
         fun empty(): MemberDetail {
             return MemberDetail(
                 name = "",
-                gender = Gender.UNKNOWN,
+                gender = MemberGender.UNKNOWN,
                 ageGroup = AgeGroup.UNKNOWN,
                 noteGroupIds = emptyList(),
             )
