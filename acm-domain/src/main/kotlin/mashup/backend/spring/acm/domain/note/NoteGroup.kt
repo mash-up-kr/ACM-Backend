@@ -2,6 +2,7 @@ package mashup.backend.spring.acm.domain.note
 
 import mashup.backend.spring.acm.domain.BaseEntity
 import javax.persistence.Entity
+import javax.persistence.OneToMany
 
 /**
  * Note Groups:
@@ -27,6 +28,8 @@ class NoteGroup(
     val originalName: String,
     val originalDescription: String,
     val originalImageUrl: String,
+    @OneToMany(mappedBy = "noteGroup")
+    val notes: List<Note> = ArrayList(),
 ) : BaseEntity() {
     companion object {
         fun from(noteGroupCreateVo: NoteGroupCreateVo): NoteGroup = NoteGroup(
@@ -35,7 +38,7 @@ class NoteGroup(
             imageUrl = noteGroupCreateVo.imageUrl,
             originalName = noteGroupCreateVo.name,
             originalDescription = noteGroupCreateVo.description,
-            originalImageUrl = noteGroupCreateVo.imageUrl
+            originalImageUrl = noteGroupCreateVo.imageUrl,
         )
     }
 
@@ -62,6 +65,8 @@ class NoteGroup(
     }
 
     override fun toString(): String {
-        return "NoteGroup(name='$name', description='${description.take(30)}', imageUrl='$imageUrl', originalName='$originalName', originalDescription='$${originalDescription.take(30)}', originalImageUrl='$originalImageUrl')"
+        return "NoteGroup(name='$name', description='${description.take(30)}', imageUrl='$imageUrl', originalName='$originalName', originalDescription='$${
+            originalDescription.take(30)
+        }', originalImageUrl='$originalImageUrl')"
     }
 }

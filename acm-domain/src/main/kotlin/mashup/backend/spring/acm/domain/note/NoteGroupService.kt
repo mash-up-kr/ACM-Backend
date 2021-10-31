@@ -1,5 +1,7 @@
 package mashup.backend.spring.acm.domain.note
 
+import mashup.backend.spring.acm.domain.exception.NoteGroupNotFoundException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -7,13 +9,14 @@ interface NoteGroupService {
     fun create(noteGroupCreateVo: NoteGroupCreateVo): NoteGroup
     fun getNoteGroupByName(originalName: String): NoteGroup?
     fun findAll(): List<NoteGroup>
+    fun getDetailById(noteGroupId: Long): NoteGroupDetailVo
 }
 
 @Service
 @Transactional(readOnly = true)
 class NoteGroupServiceImpl(
     private val noteGroupRepository: NoteGroupRepository,
-): NoteGroupService {
+) : NoteGroupService {
     @Transactional(readOnly = false)
     override fun create(noteGroupCreateVo: NoteGroupCreateVo): NoteGroup {
         if (noteGroupRepository.existsByOriginalName(noteGroupCreateVo.name)) {
@@ -22,7 +25,12 @@ class NoteGroupServiceImpl(
         return noteGroupRepository.save(NoteGroup.from(noteGroupCreateVo))
     }
 
-    override fun getNoteGroupByName(originalName: String): NoteGroup? = noteGroupRepository.findByOriginalName(originalName)
+    override fun getNoteGroupByName(originalName: String): NoteGroup? =
+        noteGroupRepository.findByOriginalName(originalName)
 
     override fun findAll(): List<NoteGroup> = noteGroupRepository.findAll()
+
+    override fun getDetailById(noteGroupId: Long): NoteGroupDetailVo = noteGroupRepository.findByIdOrNull(noteGroupId)
+        ?.let { NoteGroupDetailVo(it) }
+        ?: throw NoteGroupNotFoundException(noteGroupId = noteGroupId)
 }

@@ -2,6 +2,7 @@ package mashup.backend.spring.acm.domain.note
 
 import mashup.backend.spring.acm.domain.BaseEntity
 import javax.persistence.Entity
+import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 
 @Entity
@@ -11,6 +12,7 @@ class Note(
     val url: String,
     val thumbnailImageUrl: String,
     @ManyToOne
+    @JoinColumn
     var noteGroup: NoteGroup?
 ) : BaseEntity() {
     companion object {
