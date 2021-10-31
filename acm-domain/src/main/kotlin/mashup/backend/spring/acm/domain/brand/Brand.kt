@@ -1,6 +1,7 @@
 package mashup.backend.spring.acm.domain.brand
 
 import mashup.backend.spring.acm.domain.BaseEntity
+import java.lang.IllegalArgumentException
 import javax.persistence.Entity
 
 @Entity
@@ -8,7 +9,7 @@ class Brand(
     /**
      * 이름
      */
-    val name: String,
+    var name: String,
     /**
      * url
      */
@@ -44,6 +45,13 @@ class Brand(
         websiteUrl = brandCreateVo.websiteUrl,
         parentCompanyUrl = brandCreateVo.parentCompanyUrl,
     )
+
+    fun rename(name: String) {
+        if (name.isBlank()) {
+            throw IllegalArgumentException("'name' must not be null, empty or blank")
+        }
+        this.name = name
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
