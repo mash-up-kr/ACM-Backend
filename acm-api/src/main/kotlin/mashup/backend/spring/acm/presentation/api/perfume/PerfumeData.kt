@@ -107,82 +107,52 @@ data class PerfumeSimpleResponse(
 val SAMPLE_PERFUME_LIST: List<PerfumeSimpleResponse> = listOf(
     PerfumeSimpleResponse(
         id = -1,
-        name = "Tobacco Oud Tom Ford",
+        name = "Tobacco Oud",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.21402.jpg",
     ),
     PerfumeSimpleResponse(
         id = -2,
         name = "One-Man-Show-Emerald-Edition",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.46964.jpg"
     ),
     PerfumeSimpleResponse(
         id = -3,
         name = "Armani-Prive-Rouge-Malachite",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.34589.jpg",
     ),
     PerfumeSimpleResponse(
         id = -4,
-        name = "R-E-M",
+        name = "R.E.M.",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.62578.jpg",
     ),
     PerfumeSimpleResponse(
         id = -5,
-        name = "L-eau-A-la-Rose",
+        name = "L'eau À la Rose",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.55118.jpg",
     ),
     PerfumeSimpleResponse(
         id = -6,
         name = "Narciso",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.26127.jpg",
     ),
     PerfumeSimpleResponse(
         id = -7,
-        name = "1-Million-Prive",
+        name = "1 Million Prive",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.37698.jpg",
     ),
     PerfumeSimpleResponse(
         id = -8,
-        name = "Tres-Chere",
+        name = "Tres Chere",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.45116.jpg",
     ),
     PerfumeSimpleResponse(
         id = -9,
-        name = "Do-Son-Eau-de-Parfum",
+        name = "Do Son Eau de Parfum",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.49098.jpg",
     ),
     PerfumeSimpleResponse(
         id = -10,
         name = "Club-de-Nuit-Intense",
-    ),
-    PerfumeSimpleResponse(
-        id = -11,
-        name = "Oody-Woody",
-    ),
-    PerfumeSimpleResponse(
-        id = -12,
-        name = "Chloe-Eau-de-Parfum",
-    ),
-    PerfumeSimpleResponse(
-        id = -13,
-        name = "Hiris",
-    ),
-    PerfumeSimpleResponse(
-        id = -14,
-        name = "Reflection",
-    ),
-    PerfumeSimpleResponse(
-        id = -15,
-        name = "Golden-Autumn",
-    ),
-    PerfumeSimpleResponse(
-        id = -16,
-        name = "Lipstick-On",
-    ),
-    PerfumeSimpleResponse(
-        id = -17,
-        name = "Lettre-de-Pushkar",
-    ),
-    PerfumeSimpleResponse(
-        id = -18,
-        name = "L-Ombre-Dans-L-Eau",
-    ),
-    PerfumeSimpleResponse(
-        id = -19,
-        name = "Essence-de-Patchouli",
-    ),
-    PerfumeSimpleResponse(
-        id = -20,
-        name = "Lovely",
+        thumbnailImageUrl = "https://fimgs.net/mdimg/perfume/s.27656.jpg",
     ),
 )
