@@ -2,6 +2,7 @@ package mashup.backend.spring.acm.presentation.api.search
 
 import mashup.backend.spring.acm.presentation.api.brand.BrandSimpleResponse
 import mashup.backend.spring.acm.presentation.api.perfume.PerfumeSimpleResponse
+import javax.validation.constraints.NotBlank
 
 data class SearchData(
     val brands: List<BrandSimpleResponse>,
@@ -9,5 +10,6 @@ data class SearchData(
 )
 
 data class SearchRequest(
-    val name: String,
+    @field:NotBlank
+    val name: String?,
 )

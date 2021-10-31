@@ -6,4 +6,5 @@ interface PerfumeRepository : JpaRepository<Perfume, Long> {
     fun existsByUrl(url: String): Boolean
     fun findByUrl(url: String): Perfume?
     fun findPerfumeById(id: Long): Perfume?
+    fun findByName(name: String): List<Perfume>
 }

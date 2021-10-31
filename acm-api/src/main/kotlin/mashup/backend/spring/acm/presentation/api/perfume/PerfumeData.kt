@@ -101,4 +101,5 @@ data class PerfumeSearchResponse(
 data class PerfumeSimpleResponse(
     val id: Long,
     val name: String,
+    val thumbnailImageUrl: String,
 )
