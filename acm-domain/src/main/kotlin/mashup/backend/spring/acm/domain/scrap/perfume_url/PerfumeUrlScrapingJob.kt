@@ -29,6 +29,6 @@ class PerfumeUrlScrapingJob(
     }
 
     override fun toString(): String {
-        return "PerfumeUrl(url='$url')"
+        return "PerfumeUrl(url='$url', status='$status')"
     }
 }

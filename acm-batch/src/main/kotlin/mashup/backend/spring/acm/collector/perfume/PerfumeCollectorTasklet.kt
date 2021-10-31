@@ -55,7 +55,7 @@ class PerfumeCollectorTasklet : Tasklet {
                                     originalBrand = it.originalBrand,
                                     gender = genderType,
                                     url = it.url,
-                                    thumbnailImageUrl = it.thumbnailImageUrl
+                                    thumbnailImageUrl = it.thumbnailImageUrl,
                                 )
                             )
                         }

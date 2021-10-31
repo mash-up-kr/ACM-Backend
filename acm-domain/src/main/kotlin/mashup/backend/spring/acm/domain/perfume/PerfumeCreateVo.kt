@@ -7,5 +7,8 @@ data class PerfumeCreateVo(
     val originalBrand: String,
     val gender: Gender,
     val url: String,
-    val thumbnailImageUrl: String
+    val thumbnailImageUrl: String,
+    val imageUrl: String = "",
+    val description: String = "",
+    val perfumeAccordCreateVoList: List<PerfumeAccordCreateVo> = emptyList()
 )

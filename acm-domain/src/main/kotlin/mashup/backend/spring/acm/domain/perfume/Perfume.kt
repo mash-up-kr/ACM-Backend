@@ -1,10 +1,7 @@
 package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.BaseEntity
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 @Entity
 class Perfume(
@@ -18,9 +15,9 @@ class Perfume(
     val url: String,
     var imageUrl: String = "",
     val thumbnailImageUrl: String,
-    @OneToMany
+    @OneToMany(mappedBy = "perfume")
     val accords: List<PerfumeAccord> = ArrayList(),
-    @OneToMany
+    @OneToMany(mappedBy = "perfume")
     val notes: List<PerfumeNote> = ArrayList()
 ) : BaseEntity() {
     companion object {
@@ -30,8 +27,10 @@ class Perfume(
             brand = perfumeCreateVo.brand,
             originalBrand = perfumeCreateVo.originalBrand,
             gender = perfumeCreateVo.gender,
+            description = perfumeCreateVo.description,
             url = perfumeCreateVo.url,
-            thumbnailImageUrl = perfumeCreateVo.thumbnailImageUrl
+            thumbnailImageUrl = perfumeCreateVo.thumbnailImageUrl,
+            imageUrl = perfumeCreateVo.imageUrl,
         )
     }
 }

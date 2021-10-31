@@ -1,8 +1,9 @@
 package mashup.backend.spring.acm.domain.perfume
 
-import mashup.backend.spring.acm.domain.note.NoteService
+import mashup.backend.spring.acm.domain.accord.AccordService
 import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
+import mashup.backend.spring.acm.domain.note.NoteService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,14 +18,41 @@ interface PerfumeService {
 @Transactional(readOnly = true)
 class PerfumeServiceImpl(
     private val perfumeRepository: PerfumeRepository,
-    private val noteService: NoteService
+    private val perfumeAccordRepository: PerfumeAccordRepository,
+    private val perfumeNoteRepository: PerfumeNoteRepository,
+    private val noteService: NoteService,
+    private val accordService: AccordService,
 ) : PerfumeService {
     @Transactional
     override fun create(perfumeCreateVo: PerfumeCreateVo): Perfume {
         if (perfumeRepository.existsByUrl(perfumeCreateVo.url)) {
             throw DuplicatedPerfumeException("Perfume already exists. url: ${perfumeCreateVo.url}")
         }
-        return perfumeRepository.save(Perfume.from(perfumeCreateVo))
+        val perfume = perfumeRepository.save(Perfume.from(perfumeCreateVo))
+        perfumeCreateVo.perfumeAccordCreateVoList.forEach {
+            createPerfumeAccordIfNotExists(
+                perfume = perfume,
+                perfumeAccordCreateVo = it
+            )
+        }
+        return perfume
+    }
+
+    private fun createPerfumeAccordIfNotExists(
+        perfume: Perfume,
+        perfumeAccordCreateVo: PerfumeAccordCreateVo,
+    ): PerfumeAccord {
+        val accord = accordService.getById(accordId = perfumeAccordCreateVo.accordId)
+        val perfumeAccord = perfumeAccordRepository.findByPerfumeAndAccord(perfume = perfume, accord = accord)
+        if (perfumeAccord != null) {
+            return perfumeAccord
+        }
+        return perfumeAccordRepository.save(PerfumeAccord(
+            width = perfumeAccordCreateVo.width,
+            opacity = perfumeAccordCreateVo.opacity,
+            perfume = perfume,
+            accord = accord,
+        ))
     }
 
     @Transactional
@@ -37,7 +65,7 @@ class PerfumeServiceImpl(
             noteType = noteType
         )
         perfumeNote.noteType = noteType
-        perfumeRepository.save(perfume)
+        perfumeNoteRepository.save(perfumeNote)
     }
 
     @Transactional(readOnly = true)

@@ -1,4 +1,4 @@
-package mashup.backend.spring.acm.collector.mapping
+package mashup.backend.spring.acm.collector.perfume.detail
 
 data class SimpleNote(
     val name: String = "",
