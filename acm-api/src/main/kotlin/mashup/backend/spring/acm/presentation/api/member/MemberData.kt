@@ -1,5 +1,6 @@
 package mashup.backend.spring.acm.presentation.api.member
 
+import mashup.backend.spring.acm.domain.member.MemberGender
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderType
 import org.hibernate.validator.constraints.Length
 import javax.validation.constraints.NotBlank
