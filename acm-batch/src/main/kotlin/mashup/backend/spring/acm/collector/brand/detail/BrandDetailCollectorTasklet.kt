@@ -27,15 +27,17 @@ open class BrandDetailCollectorTasklet : Tasklet {
             return RepeatStatus.FINISHED
         }
         try {
-            val document = getDocument(url = brandUrlScrapingJob.url)
-            val brand = brandService.create(
-                brandCreateVo = BrandCreateVo(
-                    name = getName(document),
-                    url = brandUrlScrapingJob.url,
-                    description = getDescription(document),
-                    logoImageUrl = getLogoImageUrl(document)
-                )
+            val document = getDocument(url = "https://www.fragrantica.com/designers/Zara.html")
+            val brandCreateVo = BrandCreateVo(
+                name = getName(document),
+                url = brandUrlScrapingJob.url,
+                description = getDescription(document),
+                logoImageUrl = getLogoImageUrl(document),
+                countryName = getCountryName(document),
+                websiteUrl = getWebsiteUrl(document),
+                parentCompanyUrl = getParentCompanyUrl(document),
             )
+            val brand = brandService.create(brandCreateVo = brandCreateVo)
             brandUrlScrapingJobService.updateToSuccess(brandUrlScrapingJobId = brandUrlScrapingJob.id)
             log.info("브랜드 저장 성공. brand: $brand")
         } catch (e: Exception) {
@@ -58,6 +60,22 @@ open class BrandDetailCollectorTasklet : Tasklet {
         document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div.grid-x.grid-margin-x > div.cell.small-12.medium-4 > div > div.cell.small-4.medium-12 > img")
             .attr("src")
             .ifBlank { null }
+
+    private fun getCountryName(document: Document): String? =
+        document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div.grid-x.grid-margin-x > div.cell.small-12.medium-4 > div > div.cell.small-7.small-offset-1.medium-12 > a:nth-child(1) > b")
+            .text()
+            .ifBlank { null }
+
+    private fun getWebsiteUrl(document: Document): String? =
+        document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div.grid-x.grid-margin-x > div.cell.small-12.medium-4 > div > div.cell.small-7.small-offset-1.medium-12 > a:nth-child(5)")
+            .attr("href")
+            .ifBlank { null }
+
+    private fun getParentCompanyUrl(document: Document): String? =
+        document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-8.large-9.cell > div.grid-x.grid-margin-x > div.cell.small-12.medium-4 > div > div.cell.small-7.small-offset-1.medium-12 > a:nth-child(7)")
+            .attr("href")
+            .ifBlank { null }
+            ?.let { if (it.startsWith("https://www.fragrantica.com/")) it else "https://www.fragrantica.com$it" }
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(BrandDetailCollectorTasklet::class.java)
