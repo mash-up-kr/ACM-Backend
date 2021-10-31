@@ -64,9 +64,9 @@ data class SimplePerfumeAccord(
         }
 
         private fun of(perfumeAccord: PerfumeAccord) = SimplePerfumeAccord(
-            name = perfumeAccord.perfume.name,
-            description = perfumeAccord.perfume.description,
-            score = perfumeAccord.score
+            name = perfumeAccord.accord.name,
+            description = "",
+            score = perfumeAccord.width ?: 0.0
         )
     }
 }
