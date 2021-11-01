@@ -2,15 +2,16 @@ package mashup.backend.spring.acm.domain.exception
 
 import mashup.backend.spring.acm.domain.ResultCode
 
-class PerfumeNotFoundException(
+class AccordNotFoundException(
     override val message: String? = null,
     override val cause: Throwable? = null,
 ) : NotFoundException(
-    resultCode = ResultCode.PERFUME_NOT_FOUND,
+    resultCode = ResultCode.ACCORD_NOT_FOUND,
     message = message,
-    cause = cause
+    cause = cause,
 ) {
-    constructor(perfumeId: Long) : this(
-        message = "향수를 찾을 수 없습니다. perfumeId: $perfumeId",
+    constructor(accordId: Long) : this(
+        message = "어코드를 찾을 수 없습니다. accordId: $accordId",
     )
 }
+
