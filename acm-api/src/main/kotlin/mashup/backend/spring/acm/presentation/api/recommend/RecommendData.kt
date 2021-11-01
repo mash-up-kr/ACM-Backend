@@ -1,5 +1,7 @@
 package mashup.backend.spring.acm.presentation.api.recommend
 
+import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
+
 data class MainPopularResponse(
     val mainPopular: MainPopular
 )
@@ -7,7 +9,9 @@ data class MainPopularResponse(
 data class MainPopular(
     val myRecommendPerfumes: List<SimpleRecommendPerfume>,
     val popularBrands: List<PopularBrand>,
-    val recommendPerfumesList: List<List<SimpleRecommendPerfume>>,
+    val popularGenderOrRecommendMonthPerfumes: List<SimpleRecommendPerfume>,
+    val popularPerfumes: List<SimpleRecommendPerfume>,
+    val recommendGiftPerfumesOrRecommendNoteGroupPerfumes: List<SimpleRecommendPerfume>,
     val recommendNoteGroups : List<RecommendNoteGroup>
 )
 
@@ -34,7 +38,16 @@ data class SimpleRecommendPerfume(
     val image: String,
     val brand: String,
     val name: String
-)
+) {
+    companion object {
+        fun from(perfumeSimpleVo: PerfumeSimpleVo) = SimpleRecommendPerfume(
+            id = perfumeSimpleVo.id,
+            image = perfumeSimpleVo.thumbnailImageUrl,
+            brand = perfumeSimpleVo.brand,
+            name = perfumeSimpleVo.name
+        )
+    }
+}
 
 val SAMPLE_RECOMMEND_PERFUMES: List<SimpleRecommendPerfume> = listOf(
     SimpleRecommendPerfume(

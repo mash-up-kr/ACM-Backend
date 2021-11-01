@@ -3,6 +3,7 @@ package mashup.backend.spring.acm.domain.perfume
 import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.note.NoteService
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -10,6 +11,7 @@ interface PerfumeService {
     fun create(perfumeCreateVo: PerfumeCreateVo): Perfume
     fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType)
     fun getPerfume(id: Long): Perfume
+    fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo>
     fun getSimilarPerfume(id: Long): List<Perfume>
     fun searchByName(name: String): List<PerfumeSimpleVo>
 }
@@ -18,6 +20,7 @@ interface PerfumeService {
 @Transactional(readOnly = true)
 class PerfumeServiceImpl(
     private val perfumeRepository: PerfumeRepository,
+    private val perfumeNoteRepository: PerfumeNoteRepository,
     private val noteService: NoteService,
 ) : PerfumeService {
     @Transactional
@@ -48,6 +51,11 @@ class PerfumeServiceImpl(
 
     private fun getPerfume(url: String) = perfumeRepository.findByUrl(url)
         ?: throw PerfumeNotFoundException("Perfume not found. url: $url")
+
+    override fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo> {
+        return perfumeNoteRepository.findByNote_Id(noteId, PageRequest.of(0, size)).content
+            .map { PerfumeSimpleVo(it.perfume) }
+    }
 
     @Transactional(readOnly = true)
     override fun getSimilarPerfume(id: Long): List<Perfume> {
