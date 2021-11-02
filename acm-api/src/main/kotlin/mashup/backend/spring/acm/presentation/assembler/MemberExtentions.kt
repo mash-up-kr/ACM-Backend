@@ -17,9 +17,36 @@ fun MemberDetailVo.toMemberDetailResponse(): MemberDetailResponse = MemberDetail
     ageGroup = this.ageGroup?.name
 )
 
+fun MemberDetailVo.getPerfumeGender(): Gender {
+    return when (this.gender) {
+        MemberGender.FEMALE -> Gender.WOMAN
+        MemberGender.MALE -> Gender.MAN
+        else -> Gender.UNISEX
+    }
+}
+
 fun MemberDetailVo.toMemberInfoResponse(): MemberInfoResponse = MemberInfoResponse(
     member = this.toMemberDetailResponse()
 )
+
+fun MemberDetailVo.hasOnboard(): Boolean {
+    return this.hasGender() || this.hasAgeGroup() || this.hasNoteGroupIds()
+}
+
+fun MemberDetailVo.hasGender(): Boolean {
+    if (this.gender != null && this.gender != MemberGender.UNKNOWN) return true
+    return false
+}
+
+fun MemberDetailVo.hasAgeGroup(): Boolean {
+    if (this.ageGroup != null && this.ageGroup != AgeGroup.UNKNOWN) return true
+    return false
+}
+
+fun MemberDetailVo.hasNoteGroupIds(): Boolean {
+    if (this.noteGroupIds.isNullOrEmpty()) return false
+    return true
+}
 
 fun MemberInitializeRequest.toVo(): MemberInitializeRequestVo {
     return MemberInitializeRequestVo(

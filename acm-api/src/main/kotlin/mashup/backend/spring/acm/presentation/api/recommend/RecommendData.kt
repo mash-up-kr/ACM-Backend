@@ -38,16 +38,7 @@ data class SimpleRecommendPerfume(
     val image: String,
     val brand: String,
     val name: String
-) {
-    companion object {
-        fun from(perfumeSimpleVo: PerfumeSimpleVo) = SimpleRecommendPerfume(
-            id = perfumeSimpleVo.id,
-            image = perfumeSimpleVo.thumbnailImageUrl,
-            brand = perfumeSimpleVo.brand,
-            name = perfumeSimpleVo.name
-        )
-    }
-}
+)
 
 val SAMPLE_RECOMMEND_PERFUMES: List<SimpleRecommendPerfume> = listOf(
     SimpleRecommendPerfume(

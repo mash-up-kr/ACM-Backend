@@ -12,6 +12,7 @@ interface PerfumeService {
     fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType)
     fun getPerfume(id: Long): Perfume
     fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo>
+    fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo>
     fun getSimilarPerfume(id: Long): List<Perfume>
     fun searchByName(name: String): List<PerfumeSimpleVo>
 }
@@ -54,6 +55,11 @@ class PerfumeServiceImpl(
 
     override fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo> {
         return perfumeNoteRepository.findByNote_Id(noteId, PageRequest.of(0, size)).content
+            .map { PerfumeSimpleVo(it.perfume) }
+    }
+
+    override fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo> {
+        return perfumeNoteRepository.findByNote_IdAndPerfume_Gender(noteId, gender, PageRequest.of(0, size)).content
             .map { PerfumeSimpleVo(it.perfume) }
     }
 

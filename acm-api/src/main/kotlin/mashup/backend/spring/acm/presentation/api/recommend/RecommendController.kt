@@ -30,7 +30,7 @@ class RecommendController(
     @GetMapping("/main")
     fun getMainRecommend(@ApiIgnore @ModelAttribute("memberId") memberId: Long) : ApiResponse<MainPopularResponse> {
         // 1. 온보딩 추천 향수(온보딩) or 전체 인기 함수에서 랜덤 3개
-        val mockMyRecommendPerfumes = SAMPLE_RECOMMEND_PERFUMES
+        val myRecommendPerfumes = recommendApplicationService.getMyRecommendPerfumes(memberId)
         // 2. 인기 브랜드
         val popularBrands = brandApplicationService.getPopularBrand()
         // 3. gender 인기 향수(온보딩) or 이달의 추천 향수
@@ -43,7 +43,7 @@ class RecommendController(
         val mockRecommendNoteGroups = getMockRecommendNoteGroups()
 
         val mainPopular = MainPopular(
-            myRecommendPerfumes = mockMyRecommendPerfumes,
+            myRecommendPerfumes = myRecommendPerfumes,
             popularBrands = popularBrands,
             popularGenderOrRecommendMonthPerfumes = mockPopularGenderOrRecommendMonthPerfumes,
             popularPerfumes = popularPerfumes,

@@ -13,4 +13,5 @@ interface PerfumeRepository : JpaRepository<Perfume, Long> {
 
 interface PerfumeNoteRepository : JpaRepository<PerfumeNote, Long> {
     fun findByNote_Id(noteId: Long, pageable: Pageable): Page<PerfumeNote>
+    fun findByNote_IdAndPerfume_Gender(noteId: Long, perfumeGender: Gender, pageable: Pageable): Page<PerfumeNote>
 }
