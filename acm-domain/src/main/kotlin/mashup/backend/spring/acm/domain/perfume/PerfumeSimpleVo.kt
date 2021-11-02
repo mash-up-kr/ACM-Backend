@@ -10,6 +10,6 @@ data class PerfumeSimpleVo(
         id = perfume.id,
         name = perfume.name,
         thumbnailImageUrl = perfume.thumbnailImageUrl,
-        brand = perfume.brand
+        brand = perfume.brand!!.name
     )
 }
