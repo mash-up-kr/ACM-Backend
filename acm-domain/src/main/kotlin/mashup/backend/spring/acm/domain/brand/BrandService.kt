@@ -13,6 +13,7 @@ interface BrandService {
     fun searchByName(name: String): List<BrandSimpleVo>
     fun getDetail(brandId: Long): BrandDetailVo
     fun getPopularBrands(): List<BrandSimpleVo>
+    fun findByUrl(url: String): Brand?
 }
 
 @Service
@@ -48,6 +49,8 @@ class BrandServiceImpl(
     override fun getPopularBrands(): List<BrandSimpleVo> {
         return POPULAR_BRAND_URL_LIST.mapNotNull { brandRepository.findByUrl(it) }.map { BrandSimpleVo(it) }
     }
+
+    override fun findByUrl(url: String): Brand? = brandRepository.findByUrl(url)
 
     companion object {
         val POPULAR_BRAND_URL_LIST: List<String> = listOf(

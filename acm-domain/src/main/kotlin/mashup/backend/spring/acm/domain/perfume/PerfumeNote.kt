@@ -7,10 +7,10 @@ import javax.persistence.*
 @Entity
 class PerfumeNote(
     @ManyToOne
-    @JoinColumn(name = "perfumeId")
+    @JoinColumn
     val perfume: Perfume,
     @ManyToOne
-    @JoinColumn(name = "noteId")
+    @JoinColumn
     val note: Note,
     @Enumerated(EnumType.STRING)
     var noteType: PerfumeNoteType

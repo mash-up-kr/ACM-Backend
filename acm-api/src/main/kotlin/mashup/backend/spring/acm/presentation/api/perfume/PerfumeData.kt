@@ -23,7 +23,7 @@ data class PerfumeDetail(
         fun of(perfume: Perfume, similarPerfumes: List<SimpleSimilarPerfume>) = PerfumeDetail(
             id = perfume.id,
             name = perfume.name,
-            brand = perfume.brand,
+            brand = perfume.brand?.name ?: "",
             gender = perfume.gender,
             description = perfume.description,
             imageUrl = perfume.imageUrl,
@@ -64,9 +64,9 @@ data class SimplePerfumeAccord(
         }
 
         private fun of(perfumeAccord: PerfumeAccord) = SimplePerfumeAccord(
-            name = perfumeAccord.perfume.name,
-            description = perfumeAccord.perfume.description,
-            score = perfumeAccord.score
+            name = perfumeAccord.accord.name,
+            description = "",
+            score = perfumeAccord.width ?: 0.0
         )
     }
 }
