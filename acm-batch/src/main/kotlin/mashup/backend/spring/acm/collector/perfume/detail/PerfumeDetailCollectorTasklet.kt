@@ -7,6 +7,7 @@ import mashup.backend.spring.acm.domain.perfume.PerfumeAccordCreateVo
 import mashup.backend.spring.acm.domain.perfume.PerfumeCreateVo
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.scrap.perfume_url.PerfumeUrlScrapingJobService
+import mashup.backend.spring.acm.domain.util.Convert
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.slf4j.Logger
@@ -57,11 +58,11 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
                 )
             }
             val perfumeCreateVo = PerfumeCreateVo(
-                name = name,
+                name = Convert.toEnglish(name),
                 originalName = name,
                 gender = getGender(document),
                 url = perfumeUrlScrapingJob.url,
-                thumbnailImageUrl = getThumbnailImageUrl(document),
+                thumbnailImageUrl = getThumbnailImageUrl(perfumeUrlScrapingJob.url) ?: "",
                 imageUrl = getImageUrl(document),
                 description = getDescription(document),
                 perfumeAccordCreateVoList = perfumeAccordCreateVoList,
@@ -113,8 +114,8 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
             }
         }
 
-    // TODO: detail 페이지에는 섬네일 없음
-    private fun getThumbnailImageUrl(document: Document): String = ""
+    private fun getThumbnailImageUrl(url: String): String? =
+        PATTERN_PERFUME_URL.matchEntire(url)?.groups?.get(1)?.value?.let { "https://fimgs.net/mdimg/perfume/m.$it.jpg" }
 
     private fun getDescription(document: Document): String =
         document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(5) > div > p:nth-child(1)")
@@ -156,5 +157,6 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(PerfumeDetailCollectorTasklet::class.java)
+        val PATTERN_PERFUME_URL = Regex("https://www.fragrantica.com/perfume/.*/.*-(\\d+).html")
     }
 }
