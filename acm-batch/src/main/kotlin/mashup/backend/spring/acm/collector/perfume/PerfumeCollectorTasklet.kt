@@ -3,6 +3,7 @@ package mashup.backend.spring.acm.collector.perfume
 import mashup.backend.spring.acm.domain.perfume.Gender
 import mashup.backend.spring.acm.domain.perfume.PerfumeCreateVo
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
+import mashup.backend.spring.acm.domain.util.Convert
 import org.openqa.selenium.*
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
@@ -35,7 +36,7 @@ class PerfumeCollectorTasklet : Tasklet {
                             By.cssSelector("div.grid-x.grid-margin-x.grid-margin-y.text-center > div > button")
                         )
                         do {
-                            val lastPerfume = replacePerfumeName(frenchToEnglish(getLastPerfumeName()))
+                            val lastPerfume = replacePerfumeName(Convert.toEnglish(getLastPerfumeName()))
                             if (!isSameKeyword(keyword, lastPerfume)) break
                         } while (tryClick(button))
 
@@ -117,39 +118,6 @@ class PerfumeCollectorTasklet : Tasklet {
     }
 
     /**
-     * 프랑스 문자를 영문자로 변환
-     * à â æ À Â Æ ç Ç é è ë ê É È Ë Ê î ï Î Ï ô œ Ô Œ ù û ü Ù Û Ü
-     */
-    private fun frenchToEnglish(name: String): String {
-        val stringBuilder = StringBuilder()
-        for (c in name) {
-            var t: String
-            when (c) {
-                'à', 'â', 'ã', 'á' -> t = "a"
-                'æ' -> t = "ae"
-                'À', 'Â' -> t = "A"
-                'Æ' -> t = "AE"
-                'ç' -> t = "c"
-                'Ç' -> t = "C"
-                'é', 'è', 'ë', 'ê' -> t = "e"
-                'É', 'È', 'Ë', 'Ê' -> t = "E"
-                'î', 'ï' -> t = "i"
-                'Î', 'Ï' -> t = "I"
-                'ô', 'ó' -> t = "o"
-                'œ' -> t = "oe"
-                'Ô' -> t = "O"
-                'Œ' -> t = "OE"
-                'ù', 'û', 'ü', 'ú' -> t = "u"
-                'Ù', 'Û', 'Ü' -> t = "U"
-                'ķ' -> t = "k"
-                else -> t = c.toString()
-            }
-            stringBuilder.append(t)
-        }
-        return stringBuilder.toString()
-    }
-
-    /**
      * 향수 이름을 소문자로 변경하고, 특수문자 공백 처리
      */
     private fun replacePerfumeName(name: String): String {
@@ -180,16 +148,16 @@ class PerfumeCollectorTasklet : Tasklet {
         return webDriver.findElements(By.cssSelector("div.cell.card.fr-news-box"))
             .filter {
                 val perfumeName = it.findElement(By.cssSelector("div > p > a")).text
-                isSameKeyword(keyword, replacePerfumeName(frenchToEnglish(perfumeName)))
+                isSameKeyword(keyword, replacePerfumeName(Convert.toEnglish(perfumeName)))
             }.map {
                 val imageTag = it.findElement(By.cssSelector("div.card-section > img"))
                 val aTag = it.findElement(By.cssSelector("div > p > a"))
                 val smallTag = it.findElement(By.cssSelector("div > p > small"))
                 val url = aTag.getAttribute("href")
                 Perfume(
-                    name = frenchToEnglish(aTag.text),
+                    name = Convert.toEnglish(aTag.text),
                     originalName = aTag.text,
-                    brand = frenchToEnglish(smallTag.text),
+                    brand = Convert.toEnglish(smallTag.text),
                     originalBrand = smallTag.text,
                     url = url,
                     thumbnailImageUrl = imageTag.getAttribute("src")
