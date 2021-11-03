@@ -7,6 +7,7 @@ import mashup.backend.spring.acm.domain.perfume.PerfumeAccordCreateVo
 import mashup.backend.spring.acm.domain.perfume.PerfumeCreateVo
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.scrap.perfume_url.PerfumeUrlScrapingJobService
+import mashup.backend.spring.acm.domain.util.Convert
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.slf4j.Logger
@@ -57,7 +58,7 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
                 )
             }
             val perfumeCreateVo = PerfumeCreateVo(
-                name = name,
+                name = Convert.toEnglish(name),
                 originalName = name,
                 gender = getGender(document),
                 url = perfumeUrlScrapingJob.url,
