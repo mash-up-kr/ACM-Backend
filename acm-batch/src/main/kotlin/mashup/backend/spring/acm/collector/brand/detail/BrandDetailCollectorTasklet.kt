@@ -3,6 +3,7 @@ package mashup.backend.spring.acm.collector.brand.detail
 import mashup.backend.spring.acm.domain.brand.BrandCreateVo
 import mashup.backend.spring.acm.domain.brand.BrandService
 import mashup.backend.spring.acm.domain.scrap.brand_url.BrandUrlScrapingJobService
+import mashup.backend.spring.acm.domain.util.Convert
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.slf4j.Logger
@@ -28,8 +29,10 @@ open class BrandDetailCollectorTasklet : Tasklet {
         }
         try {
             val document = getDocument(url = brandUrlScrapingJob.url)
+            val brandName = getName(document)
             val brandCreateVo = BrandCreateVo(
-                name = getName(document),
+                name = Convert.toEnglish(brandName),
+                originalName = brandName,
                 url = brandUrlScrapingJob.url,
                 description = getDescription(document),
                 logoImageUrl = getLogoImageUrl(document),
