@@ -20,11 +20,4 @@ class BrandController(
             ),
         )
     }
-
-    @PostMapping("/search")
-    fun search(
-        @RequestBody brandSearchRequest: BrandSearchRequest,
-    ): ApiResponse<BrandSearchResponse> {
-        TODO()
-    }
 }
