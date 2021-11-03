@@ -43,7 +43,11 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
         log.info("perfumeUrlScrapingJob: $perfumeUrlScrapingJob")
         try {
             val document = getDocument(url = perfumeUrlScrapingJob.url)
+
             val name = getName(document)
+            val brandName = getBrandName(document)
+            // "{향수이름} {브랜드이름}" 으로 저장되어있어서, 브랜드이름 제거함
+            val perfumeName = brandName?.let { name.trim().removeSuffix(it).trim() } ?: name.trim()
             val perfumeAccordCreateVoList = getAccords(document).map {
                 PerfumeAccordCreateVo(
                     accordId = accordService.createIfNotExists(
@@ -58,8 +62,8 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
                 )
             }
             val perfumeCreateVo = PerfumeCreateVo(
-                name = Convert.toEnglish(name),
-                originalName = name,
+                name = Convert.toEnglish(perfumeName),
+                originalName = perfumeName,
                 gender = getGender(document),
                 url = perfumeUrlScrapingJob.url,
                 thumbnailImageUrl = getThumbnailImageUrl(perfumeUrlScrapingJob.url) ?: "",
@@ -79,11 +83,6 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
                 perfumeUrl = perfumeUrlScrapingJob.url,
                 brandUrl = getBrandUrl(document),
             )
-            // "{향수이름} {브랜드이름}" 으로 저장되어있어서, 브랜드이름 제거함
-            perfumeService.rename(
-                perfumeId = perfume.id,
-                name = perfume.name.trim().removeSuffix(brand.name).trim()
-            )
             perfumeUrlScrapingJobService.updateToSuccess(perfumeUrlScrapingJobId = perfumeUrlScrapingJob.id)
             log.info("향수 저장 성공. perfume: $perfume")
         } catch (e: Exception) {
@@ -100,6 +99,10 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
     private fun getBrandUrl(document: Document): String =
         document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > p > a")
             .attr("href")
+
+    private fun getBrandName(document: Document): String? =
+        document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > p > a > span")
+            .text()
 
     private fun getGender(document: Document): Gender =
         when (val gender = document.select("#toptop > h1")[0].child(0).text()) {
