@@ -12,6 +12,7 @@ import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.presentation.api.recommend.SAMPLE_RECOMMEND_PERFUMES
 import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfume
 import mashup.backend.spring.acm.presentation.assembler.getPerfumeGender
+import mashup.backend.spring.acm.presentation.assembler.hasNoteGroupIds
 import mashup.backend.spring.acm.presentation.assembler.toSimpleRecommendPerfume
 
 abstract class PerfumeRecommendApplicationService {
@@ -55,15 +56,34 @@ class MyOnboardPerfumesRecommendApplicationService(
         perfumes: MutableList<SimpleRecommendPerfume>,
         size: Int
     ): MutableList<SimpleRecommendPerfume> {
-        getMyRecommendPerfumesByNoteGroupAndGender(member.noteGroupIds, member.getPerfumeGender(), size)
+        if (!member.hasNoteGroupIds()) return perfumes
+        getMyRecommendPerfumesByNoteGroupAndGender(getNoteGroupId(perfumes, member.noteGroupIds), member.getPerfumeGender(), size - perfumes.size)
             .forEach { perfumes.add(it) }
         return perfumes
     }
 
-    private fun getMyRecommendPerfumesByNoteGroupAndGender(noteGroupIds: List<Long>, gender: Gender, size: Int): List<SimpleRecommendPerfume> {
+    fun getNoteGroupId(perfumes: List<SimpleRecommendPerfume>, noteGroupIds: List<Long>): NoteGroupDetailVo {
+        if (perfumes.isNullOrEmpty()) {
+            return noteGroupService.getDetailById(noteGroupIds.shuffled()[0])
+        }
+        if (perfumes.size == 1) {
+            val perfumeNoteGroupIds = perfumeService.getPerfume(perfumes[0].id).notes.mapNotNull { it.note.noteGroup?.id }
+            val sameNoteGroupIds = perfumeNoteGroupIds.filter { noteGroupIds.contains(it) }
+            if (sameNoteGroupIds.isEmpty()) return noteGroupService.getDetailById(perfumeNoteGroupIds[0])
+        }
+        val perfumeNoteGroupIdsList = perfumes.map { perfume -> perfumeService.getPerfume(perfume.id).notes.mapNotNull { it.note.noteGroup?.id } }
+        var sameNoteGroupIds = perfumeNoteGroupIdsList[0]
+        for (index in 1 until perfumeNoteGroupIdsList.size) {
+            sameNoteGroupIds = sameNoteGroupIds.filter { perfumeNoteGroupIdsList[index].contains(it) }
+        }
+
+        return noteGroupService.getDetailById(sameNoteGroupIds.shuffled()[0])
+    }
+
+    private fun getMyRecommendPerfumesByNoteGroupAndGender(noteGroup: NoteGroupDetailVo, gender: Gender, size: Int): List<SimpleRecommendPerfume> {
         val myRecommendPerfumes = mutableListOf<SimpleRecommendPerfume>()
         // 온보딩에서 선택한 노트그룹중 랜덤 1개
-        val notes = noteGroupService.getDetailById(noteGroupIds.shuffled().get(0)).notes.shuffled()
+        val notes = noteGroup.notes.shuffled()
         var count = size
 
         // 노트그룹의 노트 개수가 count 이상이면, 노트당 향수 하나씩 추천
@@ -109,7 +129,7 @@ class GenderPerfumesRecommendApplicationService(
         perfumes: MutableList<SimpleRecommendPerfume>,
         size: Int
     ): MutableList<SimpleRecommendPerfume> {
-        perfumeService.getPerfumesByGenderWithRandom(member.getPerfumeGender(), size)
+        perfumeService.getPerfumesByGenderWithRandom(member.getPerfumeGender(), size - perfumes.size)
             .forEach { perfumes.add(it.toSimpleRecommendPerfume()) }
         return perfumes
     }
@@ -174,20 +194,11 @@ class PopularNotePerfumesRecommendApplicationService(
 }
 
 @ApplicationService
-class SamplePerfumesRecommendApplicationService(
-): PerfumeRecommendApplicationService() {
-    override fun process(perfumes: MutableList<SimpleRecommendPerfume>, size: Int): MutableList<SimpleRecommendPerfume> {
-        SAMPLE_RECOMMEND_PERFUMES.shuffled().subList(0, size).forEach { perfumes.add(it) }
-        return perfumes
-    }
-}
-
-@ApplicationService
 class MonthlyPerfumesRecommendApplicationService(
 ): PerfumeRecommendApplicationService() {
     override fun process(perfumes: MutableList<SimpleRecommendPerfume>, size: Int): MutableList<SimpleRecommendPerfume> {
         // TODO : 이 달의 향수 선정해야 함.
-        SAMPLE_RECOMMEND_PERFUMES.shuffled().subList(0, size).forEach { perfumes.add(it) }
+        SAMPLE_RECOMMEND_PERFUMES.shuffled().subList(0, size - perfumes.size).forEach { perfumes.add(it) }
         return perfumes
     }
 }
@@ -197,7 +208,7 @@ class PresentPerfumesRecommendApplicationService(
 ): PerfumeRecommendApplicationService() {
     override fun process(perfumes: MutableList<SimpleRecommendPerfume>, size: Int): MutableList<SimpleRecommendPerfume> {
         // TODO : 선물하기 좋은 향수 선정해야 함.
-        SAMPLE_RECOMMEND_PERFUMES.shuffled().subList(0, size).forEach { perfumes.add(it) }
+        SAMPLE_RECOMMEND_PERFUMES.shuffled().subList(0, size - perfumes.size).forEach { perfumes.add(it) }
         return perfumes
     }
 }

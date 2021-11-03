@@ -39,7 +39,7 @@ class RecommendController(
         // 4. 전체 인기 향수
         val popularPerfumes = recommendApplicationService.getPopularPerfumes()
         // 5. 노트 그룹 기반 추천 향수(온보딩) or 선물하기 좋은 향수
-        val mockRecommendGiftPerfumesOrRecommendNoteGroupPerfumes = SimpleRecommendPerfumes(title = "상큼한향", perfumes = SAMPLE_RECOMMEND_PERFUMES)
+        val recommendGiftPerfumesOrRecommendNoteGroupPerfumes = recommendApplicationService.getRecommendNoteGroupPerfumes(memberId)
         // 6. 노트 그룹 안의 노트 추천
         val mockRecommendNoteGroups = getMockRecommendNoteGroups()
 
@@ -48,7 +48,7 @@ class RecommendController(
             popularBrands = popularBrands,
             popularGenderOrRecommendMonthPerfumes = popularGenderOrRecommendMonthPerfumes,
             popularPerfumes = popularPerfumes,
-            recommendGiftPerfumesOrRecommendNoteGroupPerfumes = mockRecommendGiftPerfumesOrRecommendNoteGroupPerfumes,
+            recommendGiftPerfumesOrRecommendNoteGroupPerfumes = recommendGiftPerfumesOrRecommendNoteGroupPerfumes,
             recommendNoteGroups = mockRecommendNoteGroups
         )
 
