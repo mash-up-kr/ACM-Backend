@@ -27,7 +27,7 @@ open class BrandOriginalNameMigrationTasklet : Tasklet {
                 brandId = brand.id,
                 name = afterName,
             )
-            BrandRenameTasklet.log.info("before: $beforeName, after: $afterName")
+            log.info("before: $beforeName, after: $afterName")
         }
         return RepeatStatus.FINISHED
     }
