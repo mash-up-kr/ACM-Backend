@@ -5,6 +5,7 @@ import mashup.backend.spring.acm.domain.brand.Brand
 import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.note.NoteService
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,6 +15,9 @@ interface PerfumeService {
     fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType)
     fun setBrand(perfumeUrl: String, brand: Brand)
     fun getPerfume(id: Long): Perfume
+    fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<PerfumeSimpleVo>
+    fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo>
+    fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo>
     fun getSimilarPerfume(id: Long): List<Perfume>
     fun searchByName(name: String): List<PerfumeSimpleVo>
 }
@@ -88,6 +92,19 @@ class PerfumeServiceImpl(
 
     private fun getPerfume(url: String) = perfumeRepository.findByUrl(url)
         ?: throw PerfumeNotFoundException("Perfume not found. url: $url")
+
+    override fun getPerfumesByGenderWithRandom(gender: Gender, size: Int) = perfumeRepository.findByGenderOrderByRandom(gender, PageRequest.ofSize(size))
+        .map { PerfumeSimpleVo(it) }
+
+    override fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo> {
+        return perfumeNoteRepository.findByNote_Id(noteId, PageRequest.of(0, size)).content
+            .map { PerfumeSimpleVo(it.perfume) }
+    }
+
+    override fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo> {
+        return perfumeNoteRepository.findByNote_IdAndPerfume_Gender(noteId, gender, PageRequest.of(0, size)).content
+            .map { PerfumeSimpleVo(it.perfume) }
+    }
 
     @Transactional(readOnly = true)
     override fun getSimilarPerfume(id: Long): List<Perfume> {

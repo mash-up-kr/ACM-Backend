@@ -1,14 +1,21 @@
 package mashup.backend.spring.acm.presentation.api.recommend
 
 import io.swagger.annotations.ApiOperation
+import mashup.backend.spring.acm.application.brand.BrandApplicationService
+import mashup.backend.spring.acm.application.recommend.RecommendApplicationService
 import mashup.backend.spring.acm.presentation.ApiResponse
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import springfox.documentation.annotations.ApiIgnore
 
 @RequestMapping("/api/v1/recommend")
 @RestController
-class RecommendController {
+class RecommendController(
+    private val brandApplicationService: BrandApplicationService,
+    private val recommendApplicationService: RecommendApplicationService
+    ) {
     @ApiOperation(
         value = "[v1] 메인페이지 추천 API",
         notes = "메인페이지 추천 내용\n"
@@ -21,28 +28,27 @@ class RecommendController {
                 + "- recommendPerfumesList는 위의 3,4,5를 순서대로 정렬하여 내려줍니다."
     )
     @GetMapping("/main")
-    fun getMainRecommend() : ApiResponse<MainPopularResponse> {
+    fun getMainRecommend(@ApiIgnore @ModelAttribute("memberId") memberId: Long) : ApiResponse<MainPopularResponse> {
+        // todo : meta
         // 1. 온보딩 추천 향수(온보딩) or 전체 인기 함수에서 랜덤 3개
-        val mockMyRecommendPerfumes = getMockRecommendPerfumes()
+        val myRecommendPerfumes = recommendApplicationService.getMyRecommendPerfumes(memberId)
         // 2. 인기 브랜드
-        val mockPopularBrands = List(10) { PopularBrand("test-brand", "http://assets.stickpng.com/images/5a1ac5e0f65d84088faf1344.png")}
+        val popularBrands = brandApplicationService.getPopularBrand()
         // 3. gender 인기 향수(온보딩) or 이달의 추천 향수
-        val mockPopularGenderOrRecommendMonthPerfumes = getMockRecommendPerfumes()
+        val popularGenderOrRecommendMonthPerfumes = recommendApplicationService.getGenderRecommendPerfumes(memberId)
         // 4. 전체 인기 향수
-        val mockPopularPerfumes = getMockRecommendPerfumes()
+        val popularPerfumes = recommendApplicationService.getPopularPerfumes()
         // 5. 노트 그룹 기반 추천 향수(온보딩) or 선물하기 좋은 향수
-        val mockRecommendGiftPerfumesOrRecommendNoteGroupPerfumes = getMockRecommendPerfumes()
-
-        // 섹션 순서대로(3,4,5) 정렬
-        val recommendPerfumesList = listOf(mockPopularGenderOrRecommendMonthPerfumes, mockPopularPerfumes, mockRecommendGiftPerfumesOrRecommendNoteGroupPerfumes)
-
+        val recommendGiftPerfumesOrRecommendNoteGroupPerfumes = recommendApplicationService.getRecommendNoteGroupPerfumes(memberId)
         // 6. 노트 그룹 안의 노트 추천
         val mockRecommendNoteGroups = getMockRecommendNoteGroups()
 
         val mainPopular = MainPopular(
-            myRecommendPerfumes = mockMyRecommendPerfumes,
-            popularBrands = mockPopularBrands,
-            recommendPerfumesList = recommendPerfumesList,
+            myRecommendPerfumes = myRecommendPerfumes,
+            popularBrands = popularBrands,
+            popularGenderOrRecommendMonthPerfumes = popularGenderOrRecommendMonthPerfumes,
+            popularPerfumes = popularPerfumes,
+            recommendGiftPerfumesOrRecommendNoteGroupPerfumes = recommendGiftPerfumesOrRecommendNoteGroupPerfumes,
             recommendNoteGroups = mockRecommendNoteGroups
         )
 
@@ -58,7 +64,7 @@ class RecommendController {
                 val recommendNote = RecommendNote(
                     name = "note-${i}",
                     images =  List(3) { "http://assets.stickpng.com/images/5a1ac5e0f65d84088faf1344.png"},
-                    recommendPerfumes = getMockRecommendPerfumes()
+                    recommendPerfumes = SAMPLE_RECOMMEND_PERFUMES
                 )
 
                 recommendNotes.add(recommendNote)
@@ -69,13 +75,4 @@ class RecommendController {
         return recommendNoteGroups
     }
 
-    // FIXME : api개발 완료되면 삭제
-    private fun getMockRecommendPerfumes(): List<SimpleRecommendPerfume> {
-        val mockPopularPerfumes = mutableListOf<SimpleRecommendPerfume>()
-        for (i in 0..10) {
-            mockPopularPerfumes.add(SimpleRecommendPerfume(1L,"https://fimgs.net/mdimg/perfume/375x500.1834.jpg", "brand-${i}", "name-${i}"))
-        }
-
-        return mockPopularPerfumes
-    }
 }

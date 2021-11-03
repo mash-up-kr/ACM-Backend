@@ -13,6 +13,7 @@ interface MemberService {
     fun findById(memberId: Long): Member?
     fun findByIdProviderVo(idProviderInfo: IdProviderInfo): Member?
     fun findDetailById(memberId: Long): MemberDetailVo?
+    fun findAllMemberDetail(): List<SimpleMemberDetailVo>
     fun join(idProviderInfo: IdProviderInfo): MemberDetailVo
     fun withdraw()
     fun updateNickname(memberId: Long, nickname: String)
@@ -23,6 +24,7 @@ interface MemberService {
 @Transactional(readOnly = true)
 class MemberServiceImpl(
     private val memberRepository: MemberRepository,
+    private val memberDetailRepository: MemberDetailRepository
 ) : MemberService {
     override fun findById(memberId: Long): Member? {
         return memberRepository.findByIdOrNull(memberId)
@@ -34,6 +36,10 @@ class MemberServiceImpl(
 
     override fun findDetailById(memberId: Long): MemberDetailVo {
         return getMemberDetailById(memberId)
+    }
+
+    override fun findAllMemberDetail(): List<SimpleMemberDetailVo> {
+        return memberDetailRepository.findByNoteGroupIdsIsNotNull().map { SimpleMemberDetailVo(it) }
     }
 
     @Transactional

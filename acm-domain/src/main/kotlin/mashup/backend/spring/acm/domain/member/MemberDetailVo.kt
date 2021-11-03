@@ -6,12 +6,14 @@ data class MemberDetailVo(
     val name: String?,
     val gender: MemberGender?,
     val ageGroup: AgeGroup?,
+    val noteGroupIds: List<Long>
 ) {
     constructor(member: Member) : this(
         id = member.id,
         status = member.memberStatus,
         name = member.memberDetail.name,
         gender = member.memberDetail.gender,
-        ageGroup = member.memberDetail.ageGroup
+        ageGroup = member.memberDetail.ageGroup,
+        noteGroupIds = member.memberDetail.noteGroupIds
     )
 }

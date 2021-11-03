@@ -14,6 +14,8 @@ enum class ResultCode(val message: String = "") {
     MEMBER_STATUS_ALREADY_ACTIVE("이미 초기화된 회원입니다"),
     MEMBER_NICKNAME_ALREADY_EXIST("이미 사용중인 닉네임입니다"),
     MEMBER_NICKNAME_INVALID("사용할 수 없는 닉네임입니다"),
+    // onboard
+    ONBOARD_DATA_NOT_EXIST("온보딩 데이터가 전혀 존재하지않습니다."),
     // note
     NOTE_NOT_FOUND("노트 조회 실패"),
     NOTE_ALREADY_EXIST("노트 중복"),
@@ -21,6 +23,7 @@ enum class ResultCode(val message: String = "") {
     NOTE_GROUP_NOT_FOUND("노트 그룹 조회 실패"),
     // perfume
     PERFUME_NOT_FOUND("향수 조회 실패"),
+    PERFUME_DATA_NOT_EXIST("향수 데이터가 전혀 존재하지않습니다."),
     // accord
     ACCORD_NOT_FOUND("어코드 조회 실패"),
     // brand

@@ -13,7 +13,7 @@ interface BrandService {
     fun findAll(): List<Brand>
     fun searchByName(name: String): List<BrandSimpleVo>
     fun getDetail(brandId: Long): BrandDetailVo
-    fun getPopularBrands(): List<Brand>
+    fun getPopularBrands(): List<BrandSimpleVo>
     fun findByUrl(url: String): Brand?
 }
 
@@ -52,7 +52,9 @@ class BrandServiceImpl(
         ?.let { BrandDetailVo(it) }
         ?: throw BrandNotFoundException(brandId = brandId)
 
-    override fun getPopularBrands(): List<Brand> = POPULAR_BRAND_URL_LIST.mapNotNull { brandRepository.findByUrl(it) }
+    override fun getPopularBrands(): List<BrandSimpleVo> {
+        return POPULAR_BRAND_URL_LIST.mapNotNull { brandRepository.findByUrl(it) }.map { BrandSimpleVo(it) }
+    }
 
     override fun findByUrl(url: String): Brand? = brandRepository.findByUrl(url)
 
