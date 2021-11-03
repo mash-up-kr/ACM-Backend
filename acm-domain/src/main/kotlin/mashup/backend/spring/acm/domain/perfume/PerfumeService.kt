@@ -13,7 +13,6 @@ interface PerfumeService {
     fun create(perfumeCreateVo: PerfumeCreateVo): Perfume
     fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType)
     fun setBrand(perfumeUrl: String, brand: Brand)
-    fun rename(perfumeId: Long, name: String)
     fun getPerfume(id: Long): Perfume
     fun getSimilarPerfume(id: Long): List<Perfume>
     fun searchByName(name: String): List<PerfumeSimpleVo>
@@ -81,11 +80,6 @@ class PerfumeServiceImpl(
         }
         perfume.brand = brand
     }
-
-    @Transactional
-    override fun rename(perfumeId: Long, name: String) = perfumeRepository.findByIdOrNull(perfumeId)
-        ?.run { this.name = name }
-        ?: throw PerfumeNotFoundException(perfumeId = perfumeId)
 
     @Transactional(readOnly = true)
     override fun getPerfume(id: Long) = perfumeRepository.findPerfumeById(id)
