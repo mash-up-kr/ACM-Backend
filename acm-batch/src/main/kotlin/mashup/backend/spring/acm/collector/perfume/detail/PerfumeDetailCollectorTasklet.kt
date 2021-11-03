@@ -75,17 +75,15 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
                 perfumeUrl = perfumeUrlScrapingJob.url
             )
             // 향수 - 브랜드 매핑
-            perfumeBrandMappingService.saveBrand(
+            val brand = perfumeBrandMappingService.saveBrand(
                 perfumeUrl = perfumeUrlScrapingJob.url,
                 brandUrl = getBrandUrl(document),
             )
             // "{향수이름} {브랜드이름}" 으로 저장되어있어서, 브랜드이름 제거함
-            perfume.brand?.run {
-                perfumeService.rename(
-                    perfumeId = perfume.id,
-                    name = perfume.name.replace(this.name, "").trim()
-                )
-            }
+            perfumeService.rename(
+                perfumeId = perfume.id,
+                name = perfume.name.trim().removeSuffix(brand.name).trim()
+            )
             perfumeUrlScrapingJobService.updateToSuccess(perfumeUrlScrapingJobId = perfumeUrlScrapingJob.id)
             log.info("향수 저장 성공. perfume: $perfume")
         } catch (e: Exception) {
