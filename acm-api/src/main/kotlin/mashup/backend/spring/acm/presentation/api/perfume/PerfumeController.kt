@@ -16,11 +16,4 @@ class PerfumeController(val perfumeService: PerfumeService) {
 
         return ApiResponse.success(PerfumeDetailResponse(PerfumeDetail.of(perfumes, similarPerfumes)))
     }
-
-    @PostMapping("/search")
-    fun search(
-        @RequestBody perfumeSearchRequest: PerfumeSearchRequest,
-    ): ApiResponse<PerfumeSearchResponse> {
-        TODO()
-    }
 }
