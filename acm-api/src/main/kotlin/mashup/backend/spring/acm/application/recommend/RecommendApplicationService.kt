@@ -1,16 +1,14 @@
 package mashup.backend.spring.acm.application.recommend
 
 import mashup.backend.spring.acm.application.ApplicationService
-import mashup.backend.spring.acm.domain.ResultCode
-import mashup.backend.spring.acm.domain.exception.BusinessException
 import mashup.backend.spring.acm.domain.member.MemberService
-import mashup.backend.spring.acm.domain.note.NoteGroupDetailVo
 import mashup.backend.spring.acm.domain.note.NoteGroupService
 import mashup.backend.spring.acm.domain.perfume.Gender
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
-import mashup.backend.spring.acm.presentation.api.recommend.SAMPLE_RECOMMEND_PERFUMES
 import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfume
+import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfumes
 import mashup.backend.spring.acm.presentation.assembler.getPerfumeGender
+import mashup.backend.spring.acm.presentation.assembler.hasGender
 import mashup.backend.spring.acm.presentation.assembler.hasOnboard
 import mashup.backend.spring.acm.presentation.assembler.toSimpleRecommendPerfume
 import org.slf4j.Logger
@@ -18,128 +16,80 @@ import org.slf4j.LoggerFactory
 
 @ApplicationService
 class RecommendApplicationService(
-    private val memberService: MemberService,
-    private val noteGroupService: NoteGroupService,
-    private val perfumeService: PerfumeService
+    private val myOnboardPerfumesWithCollectionRecommendApplicationService: MyOnboardPerfumesWithCollectionRecommendApplicationService,
+    private val myOnboardPerfumesRecommendApplicationService: MyOnboardPerfumesRecommendApplicationService,
+    private val genderPerfumesWithOnboardRecommendApplicationService: GenderPerfumesWithOnboardRecommendApplicationService,
+    private val genderPerfumesRecommendApplicationService: GenderPerfumesRecommendApplicationService,
+    private val recentCollectionPerfumesRecommendApplicationService: RecentCollectionPerfumesRecommendApplicationService,
+    private val samplePerfumesRecommendApplicationService: SamplePerfumesRecommendApplicationService,
+    private val popularNotePerfumesRecommendApplicationService: PopularNotePerfumesRecommendApplicationService,
+    private val monthlyPerfumesRecommendApplicationService: MonthlyPerfumesRecommendApplicationService,
+    private val memberService: MemberService
 ) {
-    fun getMyRecommendPerfumes(memberId: Long): List<SimpleRecommendPerfume> {
+    fun getMyRecommendPerfumes(memberId: Long): SimpleRecommendPerfumes {
         val member = memberService.findDetailById(memberId)
 
         // 온보딩이 존재 하지 않은 경우 인기 향수에서 랜덤 3개
         if (!member!!.hasOnboard()) {
-            return getOnboardPopularPerfumes().shuffled().subList(0, DEFAULT_MY_RECOMMEND_COUNT)
+            return SimpleRecommendPerfumes(
+                title = "온보딩 추천 향수(인기향수에서 랜덤 3개)",
+                perfumes = getPopularPerfumes().perfumes.shuffled().subList(0, DEFAULT_MY_RECOMMEND_COUNT)
+            )
         }
 
-        // 온보딩 3개(나이대,노트 선택,성별)
-        val myRecommendPerfumes = mutableListOf<SimpleRecommendPerfume>()
-        var cnt = DEFAULT_MY_RECOMMEND_COUNT
+        // 온보딩이 있을 경우 3개(나이대,노트 선택,성별)
+        var myRecommendPerfumes = mutableListOf<SimpleRecommendPerfume>()
 
-        // FIXME : 1. 온보딩 기반으로 컬렉션 조회
-
-        // 2. 온보딩 기반으로 향수 검색
-        if (cnt > 0) {
-            // 온보딩(노트, 성별) 기반으로 향수 검색
-            getMyRecommendPerfumesByNoteGroupAndGender(member.noteGroupIds, member.getPerfumeGender(), cnt ).forEach {
-                myRecommendPerfumes.add(it)
-                cnt--
-            }
-        }
-
+        // 1. 온보딩 기반으로 다른 사람들의 컬렉션에 담긴 향수 찾기
+        myRecommendPerfumes = myOnboardPerfumesWithCollectionRecommendApplicationService.recommendPerfumes(member, myRecommendPerfumes, DEFAULT_MY_RECOMMEND_COUNT)
+        // 2. 온보딩 기반으로 비슷한 향수 검색
+        myRecommendPerfumes = myOnboardPerfumesRecommendApplicationService.recommendPerfumes(member, myRecommendPerfumes, DEFAULT_MY_RECOMMEND_COUNT)
         // 3. 디폴트 추천
-        if (cnt > 0) {
-            getOnboardPopularPerfumes().shuffled().subList(0, cnt).forEach { myRecommendPerfumes.add(it) }
-        }
+        myRecommendPerfumes = samplePerfumesRecommendApplicationService.recommendPerfumes(myRecommendPerfumes, DEFAULT_MY_RECOMMEND_COUNT)
 
-        return myRecommendPerfumes
+        return SimpleRecommendPerfumes(title = "온보딩 추천 향수", perfumes = myRecommendPerfumes)
     }
 
-    private fun getMyRecommendPerfumesByNoteGroupAndGender(noteGroupIds: List<Long>, gender: Gender, size: Int): List<SimpleRecommendPerfume> {
-        val myRecommendPerfumes = mutableListOf<SimpleRecommendPerfume>()
-        // 온보딩에서 선택한 노트그룹중 랜덤 1개
-        val notes = noteGroupService.getDetailById(noteGroupIds.shuffled().get(0)).notes.shuffled()
-        var count = size
+    fun getGenderRecommendPerfumes(memberId: Long): SimpleRecommendPerfumes {
+        val member = memberService.findDetailById(memberId)
+        var genderRecommendPerfumes = mutableListOf<SimpleRecommendPerfume>()
 
-        // 노트그룹의 노트 개수가 count 이상이면, 노트당 향수 하나씩 추천
-        if (notes.size > count) {
-            notes.subList(0, count).forEach { note ->
-                perfumeService.getPerfumesByNoteIdAndGender(note.id, gender, 1).forEach { perfume ->
-                    myRecommendPerfumes.add(perfume.toSimpleRecommendPerfume())
-                    count--
-                }
-            }
-
-            return myRecommendPerfumes
+        // 온보딩이 존재 하지 않은 경우 이 달의 향수
+        if (!member!!.hasGender()) {
+            return SimpleRecommendPerfumes(
+                title = "이달의 향수",
+                perfumes = monthlyPerfumesRecommendApplicationService.recommendPerfumes(genderRecommendPerfumes, DEFAULT_RECOMMEND_COUNT)
+            )
         }
 
-        // 노트그룹의 노트 개수가 count 미만이면, 하나의 노트에서 count 만큼 향수 추천
-        perfumeService.getPerfumesByNoteIdAndGender(notes[0].id, gender, count).forEach {
-            myRecommendPerfumes.add(it.toSimpleRecommendPerfume())
-            count--
-        }
+        // 1. 같은 gender 들의 온보딩 노트 + 컬렉션 노트 중 가장 많이 선택한 노트 + 1) 해당 노트 중 컬렉션에 가장 많이 담긴 향수 or 2) 랜덤 추천
+        genderRecommendPerfumes = genderPerfumesWithOnboardRecommendApplicationService.recommendPerfumes(member, genderRecommendPerfumes, DEFAULT_RECOMMEND_COUNT)
+        // 2. 같은 gender 향수 랜덤 추천
+        genderRecommendPerfumes = genderPerfumesRecommendApplicationService.recommendPerfumes(member, genderRecommendPerfumes, DEFAULT_RECOMMEND_COUNT)
+        // 3. 샘플에서 추천
+        genderRecommendPerfumes = samplePerfumesRecommendApplicationService.recommendPerfumes(genderRecommendPerfumes, DEFAULT_RECOMMEND_COUNT)
 
-        return myRecommendPerfumes
+        return SimpleRecommendPerfumes(title = "온보딩 추천 향수", metaData = member.gender!!.name, perfumes = genderRecommendPerfumes)
     }
 
-    fun getOnboardPopularPerfumes(): List<SimpleRecommendPerfume> {
-        val recommendPerfumes = mutableListOf<SimpleRecommendPerfume>()
 
-        // TODO : 1. 최근 보관함에 많이 담은 향수
-        var cnt = DEFAULT_RECOMMEND_COUNT - recommendPerfumes.size
+    fun getPopularPerfumes(): SimpleRecommendPerfumes {
+        var recommendPerfumes = mutableListOf<SimpleRecommendPerfume>()
 
+        // 1. 최근 보관함에 많이 담은 향수
+        recommendPerfumes = recentCollectionPerfumesRecommendApplicationService.recommendPerfumes(recommendPerfumes, DEFAULT_RECOMMEND_COUNT)
         // 2. 인기많은 노트의 향수
-        if (cnt > 0) {
-            val noteGroup = getBestOnboardNoteGroup()
+        recommendPerfumes = popularNotePerfumesRecommendApplicationService.recommendPerfumes(recommendPerfumes, DEFAULT_RECOMMEND_COUNT)
+        // 3. 샘플에서 추천
+        recommendPerfumes = samplePerfumesRecommendApplicationService.recommendPerfumes(recommendPerfumes, DEFAULT_RECOMMEND_COUNT)
 
-            for (note in noteGroup.notes) {
-                if (recommendPerfumes.size >= DEFAULT_RECOMMEND_COUNT) break
 
-                val perfumes = perfumeService.getPerfumesByNoteId(note.id, cnt).map { it.toSimpleRecommendPerfume() }
-                cnt -= perfumes.size
-                perfumes.forEach { recommendPerfumes.add(it) }
-            }
-        }
-
-        // 3. 위의 내용으로도 향수가 부족할 경우
-        if (cnt > 0) {
-            SAMPLE_RECOMMEND_PERFUMES.shuffled().subList(0, cnt).forEach { recommendPerfumes.add(it) }
-        }
-
-        return recommendPerfumes
-    }
-
-    // FIXME: 회원수 많아짐에 따라 배치 작업으로 돌려야 함
-    fun getBestOnboardNoteGroup(): NoteGroupDetailVo {
-        var maxCount = 0L
-        var bestOnboardNoteGroupId = -1L
-        val countMap = mutableMapOf<Long, Long>()
-
-        val noteGroupIdsList = memberService.findAllMemberDetail().map { it.noteGroupIds }
-        for (noteGroupIds in noteGroupIdsList) {
-            noteGroupIds.forEach {
-                if (countMap.containsKey(it)) {
-                    countMap[it] = countMap[it]!!.plus(1)
-                } else {
-                    countMap[it] = 1
-                }
-
-                if (maxCount < countMap[it]!!) {
-                    maxCount = countMap[it]!!
-                    bestOnboardNoteGroupId = it
-                }
-            }
-        }
-
-        if (bestOnboardNoteGroupId == -1L) {
-            log.error("온보딩 내용이 전혀 없는 경우 발생!")
-            throw BusinessException(ResultCode.ONBOARD_DATA_NOT_EXIST, ResultCode.ONBOARD_DATA_NOT_EXIST.message)
-        }
-
-        return noteGroupService.getDetailById(bestOnboardNoteGroupId)
+        return SimpleRecommendPerfumes(title = "03. 인기 향수", perfumes = recommendPerfumes)
     }
 
     companion object {
-        private const val DEFAULT_RECOMMEND_COUNT = 10
-        private const val DEFAULT_MY_RECOMMEND_COUNT = 3
         val log: Logger = LoggerFactory.getLogger(RecommendApplicationService::class.java)
+        const val DEFAULT_RECOMMEND_COUNT = 10
+        const val DEFAULT_MY_RECOMMEND_COUNT = 3
     }
 }

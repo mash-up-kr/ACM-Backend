@@ -29,23 +29,24 @@ class RecommendController(
     )
     @GetMapping("/main")
     fun getMainRecommend(@ApiIgnore @ModelAttribute("memberId") memberId: Long) : ApiResponse<MainPopularResponse> {
+        // todo : meta
         // 1. 온보딩 추천 향수(온보딩) or 전체 인기 함수에서 랜덤 3개
         val myRecommendPerfumes = recommendApplicationService.getMyRecommendPerfumes(memberId)
         // 2. 인기 브랜드
         val popularBrands = brandApplicationService.getPopularBrand()
         // 3. gender 인기 향수(온보딩) or 이달의 추천 향수
-        val mockPopularGenderOrRecommendMonthPerfumes = SAMPLE_RECOMMEND_PERFUMES
+        val popularGenderOrRecommendMonthPerfumes = recommendApplicationService.getGenderRecommendPerfumes(memberId)
         // 4. 전체 인기 향수
-        val popularPerfumes = recommendApplicationService.getOnboardPopularPerfumes()
+        val popularPerfumes = recommendApplicationService.getPopularPerfumes()
         // 5. 노트 그룹 기반 추천 향수(온보딩) or 선물하기 좋은 향수
-        val mockRecommendGiftPerfumesOrRecommendNoteGroupPerfumes = SAMPLE_RECOMMEND_PERFUMES
+        val mockRecommendGiftPerfumesOrRecommendNoteGroupPerfumes = SimpleRecommendPerfumes(title = "상큼한향", perfumes = SAMPLE_RECOMMEND_PERFUMES)
         // 6. 노트 그룹 안의 노트 추천
         val mockRecommendNoteGroups = getMockRecommendNoteGroups()
 
         val mainPopular = MainPopular(
             myRecommendPerfumes = myRecommendPerfumes,
             popularBrands = popularBrands,
-            popularGenderOrRecommendMonthPerfumes = mockPopularGenderOrRecommendMonthPerfumes,
+            popularGenderOrRecommendMonthPerfumes = popularGenderOrRecommendMonthPerfumes,
             popularPerfumes = popularPerfumes,
             recommendGiftPerfumesOrRecommendNoteGroupPerfumes = mockRecommendGiftPerfumesOrRecommendNoteGroupPerfumes,
             recommendNoteGroups = mockRecommendNoteGroups

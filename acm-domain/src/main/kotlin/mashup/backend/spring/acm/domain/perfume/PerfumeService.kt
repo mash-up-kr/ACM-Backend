@@ -16,6 +16,7 @@ interface PerfumeService {
     fun setBrand(perfumeUrl: String, brand: Brand)
     fun rename(perfumeId: Long, name: String)
     fun getPerfume(id: Long): Perfume
+    fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<PerfumeSimpleVo>
     fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo>
     fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo>
     fun getSimilarPerfume(id: Long): List<Perfume>
@@ -97,6 +98,9 @@ class PerfumeServiceImpl(
 
     private fun getPerfume(url: String) = perfumeRepository.findByUrl(url)
         ?: throw PerfumeNotFoundException("Perfume not found. url: $url")
+
+    override fun getPerfumesByGenderWithRandom(gender: Gender, size: Int) = perfumeRepository.findByGenderOrderByRandom(gender, PageRequest.ofSize(size))
+        .map { PerfumeSimpleVo(it) }
 
     override fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo> {
         return perfumeNoteRepository.findByNote_Id(noteId, PageRequest.of(0, size)).content
