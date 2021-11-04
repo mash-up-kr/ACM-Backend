@@ -29,7 +29,6 @@ class RecommendController(
     )
     @GetMapping("/main")
     fun getMainRecommend(@ApiIgnore @ModelAttribute("memberId") memberId: Long) : ApiResponse<MainPopularResponse> {
-        // todo : meta
         // 1. 온보딩 추천 향수(온보딩) or 전체 인기 함수에서 랜덤 3개
         val myRecommendPerfumes = recommendApplicationService.getMyRecommendPerfumes(memberId)
         // 2. 인기 브랜드
@@ -41,7 +40,7 @@ class RecommendController(
         // 5. 노트 그룹 기반 추천 향수(온보딩) or 선물하기 좋은 향수
         val recommendGiftPerfumesOrRecommendNoteGroupPerfumes = recommendApplicationService.getRecommendNoteGroupPerfumes(memberId)
         // 6. 노트 그룹 안의 노트 추천
-        val mockRecommendNoteGroups = getMockRecommendNoteGroups()
+        val recommendNotes = recommendApplicationService.getRecommendNotes(memberId)
 
         val mainPopular = MainPopular(
             myRecommendPerfumes = myRecommendPerfumes,
@@ -49,30 +48,10 @@ class RecommendController(
             popularGenderOrRecommendMonthPerfumes = popularGenderOrRecommendMonthPerfumes,
             popularPerfumes = popularPerfumes,
             recommendGiftPerfumesOrRecommendNoteGroupPerfumes = recommendGiftPerfumesOrRecommendNoteGroupPerfumes,
-            recommendNoteGroups = mockRecommendNoteGroups
+            recommendNotes = recommendNotes
         )
 
         return ApiResponse.success(MainPopularResponse(mainPopular))
-    }
-
-    // FIXME : api개발 완료되면 삭제
-    private fun getMockRecommendNoteGroups(): List<RecommendNoteGroup> {
-        val recommendNoteGroups = mutableListOf<RecommendNoteGroup>()
-        for (i in 0..3) {
-            val recommendNotes = mutableListOf<RecommendNote>()
-            for (j in 0..10) {
-                val recommendNote = RecommendNote(
-                    name = "note-${i}",
-                    images =  List(3) { "http://assets.stickpng.com/images/5a1ac5e0f65d84088faf1344.png"},
-                    recommendPerfumes = SAMPLE_RECOMMEND_PERFUMES
-                )
-
-                recommendNotes.add(recommendNote)
-            }
-            recommendNoteGroups.add(RecommendNoteGroup("noteGroup-${i}", recommendNotes))
-        }
-
-        return recommendNoteGroups
     }
 
 }
