@@ -1,5 +1,6 @@
 package mashup.backend.spring.acm.collector.perfume.detail
 
+import mashup.backend.spring.acm.collector.brand.detail.BrandDetailParser
 import mashup.backend.spring.acm.infrastructure.BatchConfig
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
@@ -44,6 +45,9 @@ class PerfumeDetailCollectorConfig(
 
     @Bean
     fun perfumeBrandMappingService() = PerfumeBrandMappingService()
+
+    @Bean
+    fun brandDetailParser() = BrandDetailParser()
 
     companion object {
         const val JOB_NAME = "perfumeDetailCollectorJob"
