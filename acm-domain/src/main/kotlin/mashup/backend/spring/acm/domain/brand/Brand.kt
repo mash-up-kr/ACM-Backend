@@ -7,9 +7,13 @@ import javax.persistence.Entity
 @Entity
 class Brand(
     /**
-     * 이름
+     * 보정된 이름
      */
     var name: String,
+    /**
+     * 원래 이름
+     */
+    var originalName: String?,
     /**
      * url
      */
@@ -38,6 +42,7 @@ class Brand(
 
     constructor(brandCreateVo: BrandCreateVo) : this(
         name = brandCreateVo.name,
+        originalName = brandCreateVo.name,
         url = brandCreateVo.url,
         description = brandCreateVo.description,
         logoImageUrl = brandCreateVo.logoImageUrl,
@@ -60,6 +65,7 @@ class Brand(
         other as Brand
 
         if (name != other.name) return false
+        if (originalName != other.originalName) return false
         if (url != other.url) return false
         if (logoImageUrl != other.logoImageUrl) return false
         if (countryName != other.countryName) return false
@@ -71,6 +77,7 @@ class Brand(
 
     override fun hashCode(): Int {
         var result = name.hashCode()
+        result = 31 * result + (originalName?.hashCode() ?: 0)
         result = 31 * result + url.hashCode()
         result = 31 * result + (logoImageUrl?.hashCode() ?: 0)
         result = 31 * result + (countryName?.hashCode() ?: 0)
@@ -80,6 +87,6 @@ class Brand(
     }
 
     override fun toString(): String {
-        return "Brand(name='$name', url='$url', description='${description.take(30)}', logoImageUrl=$logoImageUrl, countryName=$countryName, websiteUrl=$websiteUrl, parentCompanyUrl=$parentCompanyUrl)"
+        return "Brand(name='$name', originalName='$originalName', url='$url', description='${description.take(30)}', logoImageUrl=$logoImageUrl, countryName=$countryName, websiteUrl=$websiteUrl, parentCompanyUrl=$parentCompanyUrl)"
     }
 }

@@ -1,9 +1,4 @@
 spring:
-# TODO: production db
-#  datasource:
-#    url: jdbc:mysql://acm-db-01.cycmo96vm8ng.ap-northeast-2.rds.amazonaws.com:3306/perfuming_dev
-#    username: acm
-#    password: Aotnldjq$%^456
   jpa:
     hibernate:
       ddl-auto: none

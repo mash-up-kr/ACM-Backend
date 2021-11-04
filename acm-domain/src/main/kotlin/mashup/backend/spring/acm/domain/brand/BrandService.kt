@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 interface BrandService {
     fun create(brandCreateVo: BrandCreateVo): Brand
     fun rename(brandId: Long, name: String)
+    fun updateOriginalName(brandId: Long, originalName: String)
     fun findAll(): List<Brand>
     fun searchByName(name: String): List<BrandSimpleVo>
     fun getDetail(brandId: Long): BrandDetailVo
@@ -35,6 +36,11 @@ class BrandServiceImpl(
     @Transactional
     override fun rename(brandId: Long, name: String) = brandRepository.findByIdOrNull(brandId)
         ?.run { this.rename(name) }
+        ?: throw RuntimeException("브랜드를 찾을 수 없습니다. brandId: $brandId")
+
+    @Transactional
+    override fun updateOriginalName(brandId: Long, originalName: String) = brandRepository.findByIdOrNull(brandId)
+        ?.run { this.originalName = originalName }
         ?: throw RuntimeException("브랜드를 찾을 수 없습니다. brandId: $brandId")
 
     override fun findAll(): List<Brand> = brandRepository.findAll()

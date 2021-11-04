@@ -6,15 +6,11 @@ import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.note.NoteService
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 interface PerfumeService {
     fun create(perfumeCreateVo: PerfumeCreateVo): Perfume
-    fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType)
-    fun setBrand(perfumeUrl: String, brand: Brand)
-    fun rename(perfumeId: Long, name: String)
     fun getPerfume(id: Long): Perfume
     fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int): List<PerfumeSimpleVo>
     fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<PerfumeSimpleVo>
@@ -39,11 +35,27 @@ class PerfumeServiceImpl(
             throw DuplicatedPerfumeException("Perfume already exists. url: ${perfumeCreateVo.url}")
         }
         val perfume = perfumeRepository.save(Perfume.from(perfumeCreateVo))
+        // accord
         perfumeCreateVo.perfumeAccordCreateVoList.forEach {
             createPerfumeAccordIfNotExists(
                 perfume = perfume,
                 perfumeAccordCreateVo = it
             )
+        }
+        // note
+        perfumeCreateVo.perfumeNoteCreateVoList.forEach { vo ->
+            val note = noteService.getNote(vo.noteUrl)
+            val perfumeNote = perfume.notes.firstOrNull { it.note === note } ?: PerfumeNote(
+                perfume = perfume,
+                note = note,
+                noteType = vo.noteType
+            )
+            perfumeNote.noteType = vo.noteType
+            perfumeNoteRepository.save(perfumeNote)
+        }
+        // brand
+        perfumeCreateVo.brand?.run {
+            perfume.brand = this
         }
         return perfume
     }
@@ -65,33 +77,6 @@ class PerfumeServiceImpl(
         ))
     }
 
-    @Transactional
-    override fun add(perfumeUrl: String, noteUrl: String, noteType: PerfumeNoteType) {
-        val perfume = getPerfume(perfumeUrl)
-        val note = noteService.getNote(noteUrl)
-        val perfumeNote = perfume.notes.firstOrNull { it.note === note } ?: PerfumeNote(
-            perfume = perfume,
-            note = note,
-            noteType = noteType
-        )
-        perfumeNote.noteType = noteType
-        perfumeNoteRepository.save(perfumeNote)
-    }
-
-    @Transactional
-    override fun setBrand(perfumeUrl: String, brand: Brand) {
-        val perfume = getPerfume(url = perfumeUrl)
-        if (perfume.brand == brand) {
-            return
-        }
-        perfume.brand = brand
-    }
-
-    @Transactional
-    override fun rename(perfumeId: Long, name: String) = perfumeRepository.findByIdOrNull(perfumeId)
-        ?.run { this.name = name }
-        ?: throw PerfumeNotFoundException(perfumeId = perfumeId)
-
     @Transactional(readOnly = true)
     override fun getPerfume(id: Long) = perfumeRepository.findPerfumeById(id)
         ?: throw PerfumeNotFoundException("Perfume not found. id: $id")
@@ -105,6 +90,7 @@ class PerfumeServiceImpl(
 
     override fun getPerfumesByGenderWithRandom(gender: Gender, size: Int) =
         perfumeRepository.findByGenderOrderByRandom(gender, PageRequest.ofSize(size)).map { PerfumeSimpleVo(it) }
+
 
     override fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo> {
         return perfumeNoteRepository.findByNote_Id(noteId, PageRequest.of(0, size)).content
