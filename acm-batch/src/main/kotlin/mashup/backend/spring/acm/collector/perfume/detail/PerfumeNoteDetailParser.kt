@@ -1,22 +1,18 @@
 package mashup.backend.spring.acm.collector.perfume.detail
 
+import mashup.backend.spring.acm.domain.perfume.PerfumeNoteCreateVo
 import mashup.backend.spring.acm.domain.perfume.PerfumeNoteType
-import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 
-open class PerfumeNoteMappingService {
-    @Autowired
-    lateinit var perfumeService: PerfumeService
+open class PerfumeNoteDetailParser {
 
-    fun saveNotes(document: Document, perfumeUrl: String): SimplePerfume {
+    fun parse(document: Document, perfumeUrl: String): List<PerfumeNoteCreateVo> {
         val simplePerfume = parsePerfume(document = document, perfumeUrl = perfumeUrl)
-        save(simplePerfume = simplePerfume)
         log.info("simplePerfume: $simplePerfume")
-        return simplePerfume
+        return convert(simplePerfume = simplePerfume)
     }
 
     /**
@@ -77,59 +73,37 @@ open class PerfumeNoteMappingService {
         }
     }
 
-    /**
-     * 향수-노트 매핑 정보를 저장
-     * 향수나 노트가 디비에 존재하지 않아서 실패하는 것들은 무시
-     */
-    private fun save(simplePerfume: SimplePerfume) {
-        simplePerfume.topNotes.forEach { note ->
-            addNoteToPerfume(
-                perfumeUrl = simplePerfume.url,
-                noteUrl = note.url,
-                perfumeNoteType = PerfumeNoteType.TOP
+    private fun convert(simplePerfume: SimplePerfume): List<PerfumeNoteCreateVo> {
+        val topNotes = simplePerfume.topNotes.map {
+            PerfumeNoteCreateVo(
+                noteUrl = correctUrl(it.url),
+                noteType = PerfumeNoteType.TOP
             )
         }
-        simplePerfume.middleNotes.forEach { note ->
-            addNoteToPerfume(
-                perfumeUrl = simplePerfume.url,
-                noteUrl = note.url,
-                perfumeNoteType = PerfumeNoteType.MIDDLE
+        val middleNotes = simplePerfume.middleNotes.map {
+            PerfumeNoteCreateVo(
+                noteUrl = correctUrl(it.url),
+                noteType = PerfumeNoteType.MIDDLE
             )
         }
-        simplePerfume.baseNotes.forEach { note ->
-            addNoteToPerfume(
-                perfumeUrl = simplePerfume.url,
-                noteUrl = note.url,
-                perfumeNoteType = PerfumeNoteType.BASE
+        val baseNotes = simplePerfume.baseNotes.map {
+            PerfumeNoteCreateVo(
+                noteUrl = correctUrl(it.url),
+                noteType = PerfumeNoteType.BASE
             )
         }
-        simplePerfume.otherNotes.forEach { note ->
-            addNoteToPerfume(
-                perfumeUrl = simplePerfume.url,
-                noteUrl = note.url,
-                perfumeNoteType = PerfumeNoteType.UNKNOWN
+        val unknownNotes = simplePerfume.otherNotes.map {
+            PerfumeNoteCreateVo(
+                noteUrl = correctUrl(it.url),
+                noteType = PerfumeNoteType.UNKNOWN
             )
         }
-    }
-
-    private fun addNoteToPerfume(perfumeUrl: String, noteUrl: String, perfumeNoteType: PerfumeNoteType) {
-        val correctedPerfumeUrl = correctUrl(perfumeUrl)
-        val correctedNoteUrl = correctUrl(noteUrl)
-        try {
-            perfumeService.add(
-                perfumeUrl = correctedPerfumeUrl,
-                noteUrl = correctedNoteUrl,
-                noteType = perfumeNoteType
-            )
-        } catch (e: Exception) {
-            log.error("Failed mapping. perfumeUrl: $correctedPerfumeUrl, noteUrl: $correctedNoteUrl, type: $perfumeNoteType",
-                e)
-        }
+        return topNotes + middleNotes + baseNotes + unknownNotes
     }
 
     private fun correctUrl(url: String): String = url.replace("--", "-")
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(PerfumeNoteMappingService::class.java)
+        val log: Logger = LoggerFactory.getLogger(PerfumeNoteDetailParser::class.java)
     }
 }

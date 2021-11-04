@@ -38,6 +38,9 @@ class BrandDetailCollectorConfig(
     @Bean
     fun brandDetailCollectorTasklet(): Tasklet = BrandDetailCollectorTasklet()
 
+    @Bean
+    fun brandDetailParser() = BrandDetailParser()
+
     companion object {
         const val JOB_NAME = "brandDetailCollectorJob"
         const val STEP_NAME = "brandDetailCollectorStep"
