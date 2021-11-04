@@ -1,7 +1,5 @@
 package mashup.backend.spring.acm.presentation.api.recommend
 
-import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
-
 data class MainPopularResponse(
     val mainPopular: MainPopular
 )
@@ -12,7 +10,7 @@ data class MainPopular(
     val popularGenderOrRecommendMonthPerfumes: SimpleRecommendPerfumes,
     val popularPerfumes: SimpleRecommendPerfumes,
     val recommendGiftPerfumesOrRecommendNoteGroupPerfumes: SimpleRecommendPerfumes,
-    val recommendNoteGroups : List<RecommendNoteGroup>
+    val recommendNotes : List<RecommendNote>
 )
 
 data class SimpleRecommendPerfumes(
@@ -21,14 +19,9 @@ data class SimpleRecommendPerfumes(
     val perfumes: List<SimpleRecommendPerfume>
 )
 
-data class RecommendNoteGroup(
-    val name: String,
-    val recommendNotes: List<RecommendNote>
-)
-
 data class RecommendNote(
+    val id: Long,
     val name: String,
-    val images: List<String>,
     val recommendPerfumes: List<SimpleRecommendPerfume>
 )
 
@@ -46,6 +39,21 @@ data class SimpleRecommendPerfume(
     val name: String
 )
 
+val NOTE_GROUP_ORIGINAL_NAMES = listOf(
+    "CIRTUS SMELLS",
+    "FRUITS, VEGETABLES AND NUTS",
+    "FLOWERS",
+    "WHITE FLOWERS",
+    "GREENS, HERBS AND FOUGERES",
+    "SPICES",
+    "SWEETS AND GOURMAND SMELLS",
+    "WOODS AND MOSSES",
+    "RESINS AND BALSAMS",
+    "MUSK, AMBER, ANIMALIC SMELLS",
+    "BEVERAGES",
+    "NATURAL AND SYNTHETIC, POPULAR AND WEIRD",
+    "UNCATEGORIZED"
+)
 val SAMPLE_RECOMMEND_PERFUMES: List<SimpleRecommendPerfume> = listOf(
     SimpleRecommendPerfume(
         id = -1,

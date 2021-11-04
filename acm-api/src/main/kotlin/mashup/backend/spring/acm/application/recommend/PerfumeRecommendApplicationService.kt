@@ -34,7 +34,7 @@ abstract class PerfumeRecommendWithMemberApplicationService {
 }
 
 @ApplicationService
-class MyOnboardPerfumesWithCollectionRecommendApplicationService(
+class MyOnboardPerfumesWithDiggingRecommendApplicationService(
 ): PerfumeRecommendWithMemberApplicationService() {
     override fun process(
         member: MemberDetailVo,
@@ -57,9 +57,7 @@ class MyOnboardPerfumesRecommendApplicationService(
         size: Int
     ): MutableList<SimpleRecommendPerfume> {
         if (!member.hasNoteGroupIds()) return perfumes
-        getMyRecommendPerfumesByNoteGroupAndGender(getNoteGroupId(perfumes, member.noteGroupIds), member.getPerfumeGender(), size - perfumes.size)
-            .forEach { perfumes.add(it) }
-        return perfumes
+        return getMyRecommendPerfumesByNoteGroupAndGender(perfumes, getNoteGroupId(perfumes, member.noteGroupIds), member.getPerfumeGender(), size - perfumes.size)
     }
 
     fun getNoteGroupId(perfumes: List<SimpleRecommendPerfume>, noteGroupIds: List<Long>): NoteGroupDetailVo {
@@ -69,7 +67,7 @@ class MyOnboardPerfumesRecommendApplicationService(
         if (perfumes.size == 1) {
             val perfumeNoteGroupIds = perfumeService.getPerfume(perfumes[0].id).notes.mapNotNull { it.note.noteGroup?.id }
             val sameNoteGroupIds = perfumeNoteGroupIds.filter { noteGroupIds.contains(it) }
-            if (sameNoteGroupIds.isEmpty()) return noteGroupService.getDetailById(perfumeNoteGroupIds[0])
+            if (sameNoteGroupIds.isNullOrEmpty()) return noteGroupService.getDetailById(perfumeNoteGroupIds[0])
         }
         val perfumeNoteGroupIdsList = perfumes.map { perfume -> perfumeService.getPerfume(perfume.id).notes.mapNotNull { it.note.noteGroup?.id } }
         var sameNoteGroupIds = perfumeNoteGroupIdsList[0]
@@ -80,18 +78,14 @@ class MyOnboardPerfumesRecommendApplicationService(
         return noteGroupService.getDetailById(sameNoteGroupIds.shuffled()[0])
     }
 
-    private fun getMyRecommendPerfumesByNoteGroupAndGender(noteGroup: NoteGroupDetailVo, gender: Gender, size: Int): List<SimpleRecommendPerfume> {
-        val myRecommendPerfumes = mutableListOf<SimpleRecommendPerfume>()
-        // 온보딩에서 선택한 노트그룹중 랜덤 1개
+    private fun getMyRecommendPerfumesByNoteGroupAndGender(myRecommendPerfumes: MutableList<SimpleRecommendPerfume>, noteGroup: NoteGroupDetailVo, gender: Gender, size: Int): MutableList<SimpleRecommendPerfume> {
         val notes = noteGroup.notes.shuffled()
-        var count = size
 
         // 노트그룹의 노트 개수가 count 이상이면, 노트당 향수 하나씩 추천
-        if (notes.size > count) {
-            notes.subList(0, count).forEach { note ->
+        if (notes.size > size) {
+            notes.subList(0, size - myRecommendPerfumes.size).forEach { note ->
                 perfumeService.getPerfumesByNoteIdAndGender(note.id, gender, 1).forEach { perfume ->
                     myRecommendPerfumes.add(perfume.toSimpleRecommendPerfume())
-                    count--
                 }
             }
 
@@ -99,10 +93,10 @@ class MyOnboardPerfumesRecommendApplicationService(
         }
 
         // 노트그룹의 노트 개수가 count 미만이면, 하나의 노트에서 count 만큼 향수 추천
-        perfumeService.getPerfumesByNoteIdAndGender(notes[0].id, gender, count).forEach {
+        perfumeService.getPerfumesByNoteIdAndGender(notes[0].id, gender, size - myRecommendPerfumes.size).forEach {
             myRecommendPerfumes.add(it.toSimpleRecommendPerfume())
-            count--
         }
+
         return myRecommendPerfumes
     }
 }
@@ -136,7 +130,7 @@ class GenderPerfumesRecommendApplicationService(
 }
 
 @ApplicationService
-class RecentCollectionPerfumesRecommendApplicationService(
+class RecentDiggingPerfumesRecommendApplicationService(
 ): PerfumeRecommendApplicationService() {
     override fun process(perfumes: MutableList<SimpleRecommendPerfume>, size: Int): MutableList<SimpleRecommendPerfume> {
         // TODO : v2 개발에 따라 구현해야합니다.
