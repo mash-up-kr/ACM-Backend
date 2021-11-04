@@ -1,7 +1,10 @@
 package mashup.backend.spring.acm.collector.perfume.detail
 
+import mashup.backend.spring.acm.collector.brand.detail.BrandDetailParser
 import mashup.backend.spring.acm.domain.accord.AccordCreateVo
 import mashup.backend.spring.acm.domain.accord.AccordService
+import mashup.backend.spring.acm.domain.brand.Brand
+import mashup.backend.spring.acm.domain.brand.BrandService
 import mashup.backend.spring.acm.domain.perfume.Gender
 import mashup.backend.spring.acm.domain.perfume.PerfumeAccordCreateVo
 import mashup.backend.spring.acm.domain.perfume.PerfumeCreateVo
@@ -14,6 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired
 class PerfumeDetailParser {
     @Autowired
     lateinit var accordService: AccordService
+
+    @Autowired
+    lateinit var perfumeNoteDetailParser: PerfumeNoteDetailParser
+
+    @Autowired
+    lateinit var brandService: BrandService
+
+    @Autowired
+    lateinit var brandDetailParser: BrandDetailParser
 
     fun parse(document: Document, perfumeUrl: String): PerfumeCreateVo {
         val name = getName(document)
@@ -33,6 +45,10 @@ class PerfumeDetailParser {
                 opacity = it.opacity
             )
         }
+        val perfumeNoteCreateVoList = perfumeNoteDetailParser.parse(
+            document = document,
+            perfumeUrl = perfumeUrl
+        )
         return PerfumeCreateVo(
             name = Convert.toEnglish(perfumeName),
             originalName = perfumeName,
@@ -42,6 +58,8 @@ class PerfumeDetailParser {
             imageUrl = getImageUrl(document),
             description = getDescription(document),
             perfumeAccordCreateVoList = perfumeAccordCreateVoList,
+            perfumeNoteCreateVoList = perfumeNoteCreateVoList,
+            brand = getOrCreateBrand(brandUrl = getBrandUrl(document))
         )
     }
 
@@ -94,6 +112,19 @@ class PerfumeDetailParser {
             }
 
     private fun convertPercentToDouble(value: String): Double = value.replace("%", "").toDouble()
+
+    private fun getBrandUrl(document: Document): String =
+        document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > p > a")
+            .attr("href")
+
+    private fun getOrCreateBrand(brandUrl: String): Brand {
+        val brand = brandService.findByUrl(url = brandUrl)
+        if (brand != null) {
+            return brand
+        }
+        val brandCreateVo = brandDetailParser.parse(url = brandUrl)
+        return brandService.create(brandCreateVo = brandCreateVo)
+    }
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(PerfumeDetailParser::class.java)

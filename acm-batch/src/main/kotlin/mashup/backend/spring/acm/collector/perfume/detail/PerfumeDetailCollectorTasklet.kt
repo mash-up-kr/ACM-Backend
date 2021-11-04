@@ -1,5 +1,7 @@
 package mashup.backend.spring.acm.collector.perfume.detail
 
+import mashup.backend.spring.acm.domain.brand.Brand
+import mashup.backend.spring.acm.domain.brand.BrandService
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.scrap.perfume_url.PerfumeUrlScrapingJobService
 import org.jsoup.Jsoup
@@ -20,12 +22,6 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
     lateinit var perfumeUrlScrapingJobService: PerfumeUrlScrapingJobService
 
     @Autowired
-    lateinit var perfumeNoteMappingService: PerfumeNoteMappingService
-
-    @Autowired
-    lateinit var perfumeBrandMappingService: PerfumeBrandMappingService
-
-    @Autowired
     lateinit var perfumeDetailParser: PerfumeDetailParser
 
     override fun execute(contribution: StepContribution, chunkContext: ChunkContext): RepeatStatus {
@@ -42,22 +38,12 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
                 document = document,
                 perfumeUrl = perfumeUrl
             )
-            // 향수 생성, 향수 - 어코드 매핑
+            // 향수 생성 (어코드, 노트, 브랜드 매핑)
             val perfume = perfumeService.create(perfumeCreateVo = perfumeCreateVo)
-            // 향수 - 노트 매핑
-            perfumeNoteMappingService.saveNotes(
-                document = document,
-                perfumeUrl = perfumeUrlScrapingJob.url
-            )
-            // 향수 - 브랜드 매핑
-            val brand = perfumeBrandMappingService.saveBrand(
-                perfumeUrl = perfumeUrlScrapingJob.url,
-                brandUrl = getBrandUrl(document),
-            )
             perfumeUrlScrapingJobService.updateToSuccess(perfumeUrlScrapingJobId = perfumeUrlScrapingJob.id)
             log.info("향수 저장 성공. perfume: $perfume")
         } catch (e: Exception) {
-            log.error("향수 크롤링 실패. url: ${perfumeUrlScrapingJob.url}", e)
+            log.error("향수 크롤링 실패. url: $perfumeUrl", e)
             perfumeUrlScrapingJobService.updateToFailure(perfumeUrlScrapingJobId = perfumeUrlScrapingJob.id)
         }
         return RepeatStatus.FINISHED
@@ -65,9 +51,6 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
 
     private fun getDocument(url: String): Document = Jsoup.connect(url).get()
 
-    private fun getBrandUrl(document: Document): String =
-        document.select("#main-content > div.grid-x.grid-margin-x > div.small-12.medium-12.large-9.cell > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > p > a")
-            .attr("href")
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(PerfumeDetailCollectorTasklet::class.java)

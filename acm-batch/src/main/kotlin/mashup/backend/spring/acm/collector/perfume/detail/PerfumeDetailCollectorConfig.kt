@@ -41,10 +41,7 @@ class PerfumeDetailCollectorConfig(
     fun perfumeDetailCollectorTasklet() = PerfumeDetailCollectorTasklet()
 
     @Bean
-    fun perfumeNoteMappingService() = PerfumeNoteMappingService()
-
-    @Bean
-    fun perfumeBrandMappingService() = PerfumeBrandMappingService()
+    fun perfumeNoteMappingService() = PerfumeNoteDetailParser()
 
     @Bean
     fun brandDetailParser() = BrandDetailParser()
