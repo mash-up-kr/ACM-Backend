@@ -1,6 +1,7 @@
 package mashup.backend.spring.acm.presentation.api.perfume
 
-import mashup.backend.spring.acm.domain.perfume.*
+import mashup.backend.spring.acm.domain.perfume.Gender
+import mashup.backend.spring.acm.domain.perfume.Perfume
 import kotlin.streams.toList
 
 data class PerfumeDetailResponse(
@@ -10,30 +11,30 @@ data class PerfumeDetailResponse(
 data class PerfumeDetail(
     val id: Long,
     val name: String,
-    val brand: String,
+    val brandName: String,
     val gender: Gender,
     val description: String,
     val imageUrl: String,
     val thumbnailImageUrl: String,
     val accords: List<SimplePerfumeAccord>,
-    val notes: List<SimplePerfumeNote>,
+    val notes: SimplePerfumeNotes,
     val similarPerfumes: List<SimpleSimilarPerfume> = emptyList()
-) {
-    companion object {
-        fun of(perfume: Perfume, similarPerfumes: List<SimpleSimilarPerfume>) = PerfumeDetail(
-            id = perfume.id,
-            name = perfume.name,
-            brand = perfume.brand?.name ?: "",
-            gender = perfume.gender,
-            description = perfume.description,
-            imageUrl = perfume.imageUrl,
-            thumbnailImageUrl = perfume.thumbnailImageUrl,
-            accords = SimplePerfumeAccord.of(perfume.accords),
-            notes = SimplePerfumeNote.of(perfume.notes),
-            similarPerfumes = similarPerfumes
-        )
-    }
-}
+)
+
+data class SimplePerfumeNotes(
+    val top: List<String>,
+    val middle: List<String>,
+    val base: List<String>,
+    val unknown: List<String>
+)
+
+data class SimplePerfumeAccord(
+    val name: String,
+    val score: Double?,
+    val opacity: Double?,
+    val backgroundColor: String,
+    val textColor: String,
+)
 
 data class SimpleSimilarPerfume(
     val id: Long,
@@ -49,43 +50,6 @@ data class SimpleSimilarPerfume(
             id = perfume.id,
             thumbnailImageUrl = perfume.thumbnailImageUrl,
             name = perfume.name
-        )
-    }
-}
-
-data class SimplePerfumeAccord(
-    val name: String,
-    val description: String,
-    val score: Double
-) {
-    companion object {
-        fun of(perfumeAccords: List<PerfumeAccord>) : List<SimplePerfumeAccord> {
-            return perfumeAccords.stream().map(Companion::of).toList()
-        }
-
-        private fun of(perfumeAccord: PerfumeAccord) = SimplePerfumeAccord(
-            name = perfumeAccord.accord.name,
-            description = "",
-            score = perfumeAccord.width ?: 0.0
-        )
-    }
-}
-
-data class SimplePerfumeNote(
-    var noteType: PerfumeNoteType,
-    val name: String,
-    val description: String = "",
-    val thumbnailImageUrl: String
-) {
-    companion object {
-        fun of(perfumeNotes: List<PerfumeNote>) : List<SimplePerfumeNote> {
-            return perfumeNotes.stream().map(Companion::of).toList()
-        }
-        private fun of(perfumeNote: PerfumeNote) = SimplePerfumeNote(
-            noteType = perfumeNote.noteType,
-            name = perfumeNote.note.name,
-            description = perfumeNote.note.description,
-            thumbnailImageUrl = perfumeNote.note.thumbnailImageUrl
         )
     }
 }
