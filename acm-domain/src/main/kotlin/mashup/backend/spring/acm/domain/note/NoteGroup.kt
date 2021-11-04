@@ -28,6 +28,7 @@ class NoteGroup(
     val originalName: String,
     val originalDescription: String,
     val originalImageUrl: String,
+    val customName: String? = null,
     @OneToMany(mappedBy = "noteGroup")
     val notes: List<Note> = ArrayList(),
 ) : BaseEntity() {
@@ -52,6 +53,7 @@ class NoteGroup(
         if (imageUrl != other.imageUrl) return false
         if (originalName != other.originalName) return false
         if (originalImageUrl != other.originalImageUrl) return false
+        if (customName != other.customName) return false
 
         return true
     }
@@ -61,12 +63,13 @@ class NoteGroup(
         result = 31 * result + imageUrl.hashCode()
         result = 31 * result + originalName.hashCode()
         result = 31 * result + originalImageUrl.hashCode()
+        result = 31 * result + (customName?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "NoteGroup(name='$name', description='${description.take(30)}', imageUrl='$imageUrl', originalName='$originalName', originalDescription='$${
+        return "NoteGroup(name='$name', description='${description.take(30)}', imageUrl='$imageUrl', originalName='$originalName', originalDescription='${
             originalDescription.take(30)
-        }', originalImageUrl='$originalImageUrl')"
+        }', originalImageUrl='$originalImageUrl', customName=$customName, notes=$notes)"
     }
 }
