@@ -7,6 +7,7 @@ data class NoteGroupListData(
 data class NoteGroupSimpleResponse(
     val id: Long,
     val name: String,
+    val customName: String?,
 )
 
 data class NoteGroupDetailData(
@@ -16,6 +17,7 @@ data class NoteGroupDetailData(
 data class NoteGroupDetailResponse(
     val id: Long,
     val name: String,
+    val customName: String?,
     val description: String,
     val notes: List<NoteSimpleResponse>,
 )

@@ -12,11 +12,13 @@ import mashup.backend.spring.acm.presentation.api.note.NoteSimpleResponse
 fun NoteGroupSimpleVo.toDto() = NoteGroupSimpleResponse(
     id = this.id,
     name = this.name,
+    customName = this.customName,
 )
 
 fun NoteGroupDetailVo.toDto() = NoteGroupDetailResponse(
     id = this.id,
     name = this.name,
+    customName = this.customName,
     description = this.description,
     notes = this.notes.map { it.toDto() }
 )
