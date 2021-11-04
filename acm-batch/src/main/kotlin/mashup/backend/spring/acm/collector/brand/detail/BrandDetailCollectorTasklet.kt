@@ -26,7 +26,8 @@ open class BrandDetailCollectorTasklet : Tasklet {
     override fun execute(contribution: StepContribution, chunkContext: ChunkContext): RepeatStatus {
         val brandUrl = chunkContext.stepContext.jobParameters["brandUrl"]?.toString()
         if (!brandUrl.isNullOrBlank()) {
-            parseAndCreateBrand(brandUrl = brandUrl)
+            val brand = parseAndCreateBrand(brandUrl = brandUrl)
+            log.info("브랜드 저장 성공. brand: $brand")
             return RepeatStatus.FINISHED
         }
         val brandUrlScrapingJob = brandUrlScrapingJobService.findFirstByUrlForScrap()
