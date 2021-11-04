@@ -2,8 +2,11 @@ package mashup.backend.spring.acm.collector.brand.detail
 
 import mashup.backend.spring.acm.infrastructure.BatchConfig
 import org.springframework.batch.core.Job
+import org.springframework.batch.core.Step
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
+import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
+import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.core.repository.JobRepository
 import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager
@@ -26,16 +29,19 @@ class BrandDetailCollectorConfig(
     fun brandDetailCollectorJob(): Job {
         return jobBuilderFactory[JOB_NAME]
             .repository(jobRepository)
-            .start(
-                stepBuilderFactory[STEP_NAME]
-                    .tasklet(brandDetailCollectorTasklet())
-                    .transactionManager(resourcelessTransactionManager)
-                    .build()
-            )
+            .start(brandDetailCollectorStep())
             .build()
     }
 
     @Bean
+    @JobScope
+    fun brandDetailCollectorStep(): Step = stepBuilderFactory[STEP_NAME]
+        .tasklet(brandDetailCollectorTasklet())
+        .transactionManager(resourcelessTransactionManager)
+        .build()
+
+    @Bean
+    @StepScope
     fun brandDetailCollectorTasklet(): Tasklet = BrandDetailCollectorTasklet()
 
     @Bean
