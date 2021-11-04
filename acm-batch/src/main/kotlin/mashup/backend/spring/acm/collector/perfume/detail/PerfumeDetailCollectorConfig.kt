@@ -49,6 +49,9 @@ class PerfumeDetailCollectorConfig(
     @Bean
     fun brandDetailParser() = BrandDetailParser()
 
+    @Bean
+    fun perfumeDetailParser() = PerfumeDetailParser()
+
     companion object {
         const val JOB_NAME = "perfumeDetailCollectorJob"
         const val STEP_NAME = "perfumeDetailCollectorStep"
