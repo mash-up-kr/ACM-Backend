@@ -15,7 +15,7 @@ class Recommender<T : BaseEntity>(
             }
             val recommendRequestVo = RecommendRequestVo(
                 memberDetailVo = memberDetailVo,
-                size = perfumes.size - size,
+                size = size - perfumes.size,
                 exceptIds = perfumes.map { it.id }.toSet()
             )
             if (recommendService.supports(recommendRequestVo = recommendRequestVo)) {
