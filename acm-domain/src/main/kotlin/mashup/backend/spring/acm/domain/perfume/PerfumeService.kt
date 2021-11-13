@@ -107,6 +107,6 @@ class PerfumeServiceImpl(
         return emptyList()
     }
 
-    override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findByNameContaining(name)
+    override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findTop30ByNameContaining(name)
         .map { PerfumeSimpleVo(it) }
 }

@@ -45,7 +45,7 @@ class BrandServiceImpl(
 
     override fun findAll(): List<Brand> = brandRepository.findAll()
 
-    override fun searchByName(name: String): List<BrandSimpleVo> = brandRepository.findByNameContaining(name)
+    override fun searchByName(name: String): List<BrandSimpleVo> = brandRepository.findTop30ByNameContaining(name)
         .map { BrandSimpleVo(it) }
 
     override fun getDetail(brandId: Long): BrandDetailVo = brandRepository.findByIdOrNull(brandId)
