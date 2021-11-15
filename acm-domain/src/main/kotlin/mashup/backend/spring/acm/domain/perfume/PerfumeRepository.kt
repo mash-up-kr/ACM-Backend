@@ -8,7 +8,6 @@ interface PerfumeRepository : JpaRepository<Perfume, Long> {
     fun existsByUrl(url: String): Boolean
     fun findByUrl(url: String): Perfume?
     fun findPerfumeById(id: Long): Perfume?
-
     @Query(value = "SELECT p FROM Perfume p WHERE p.gender = :gender ORDER BY function('RAND')")
     fun findByGenderOrderByRandom(gender: Gender, pageable: Pageable): List<Perfume>
     @Query(value="SELECT p FROM Perfume p WHERE p.brand.id = :brandId ORDER BY function('RAND')")

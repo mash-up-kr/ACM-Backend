@@ -1,22 +1,30 @@
 package mashup.backend.spring.acm.application.brand
 
 import mashup.backend.spring.acm.application.ApplicationService
-import mashup.backend.spring.acm.application.recommend.RecommendApplicationService.Companion.DEFAULT_RECOMMEND_PERFUMES_COUNT
+import mashup.backend.spring.acm.application.recommend.RecommendApplicationServiceImpl.Companion.DEFAULT_RECOMMEND_PERFUMES_COUNT
 import mashup.backend.spring.acm.domain.brand.BrandDetailVo
 import mashup.backend.spring.acm.domain.brand.BrandService
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.presentation.api.recommend.PopularBrand
 import mashup.backend.spring.acm.presentation.assembler.toPopularBrand
 import mashup.backend.spring.acm.presentation.assembler.toSimpleRecommendPerfume
+import org.springframework.cache.annotation.Cacheable
+
+interface BrandApplicationService {
+    fun getBrand(brandId: Long): BrandDetailVo
+    fun getPopularBrands(): List<PopularBrand>
+}
 
 @ApplicationService
-class BrandApplicationService(
+class BrandApplicationServiceImpl(
     private val brandService: BrandService,
     private val perfumeService: PerfumeService
-) {
-    fun getBrand(brandId: Long): BrandDetailVo = brandService.getDetail(brandId = brandId)
+): BrandApplicationService {
+    override fun getBrand(brandId: Long): BrandDetailVo = brandService.getDetail(brandId = brandId)
 
-    fun getPopularBrand(): List<PopularBrand> {
+
+    @Cacheable("popularBrands")
+    override fun getPopularBrands(): List<PopularBrand> {
         return brandService.getPopularBrands()
             .map { brand ->
                 brand.toPopularBrand(
