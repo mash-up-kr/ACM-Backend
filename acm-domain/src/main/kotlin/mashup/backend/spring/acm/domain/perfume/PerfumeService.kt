@@ -11,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional
 interface PerfumeService {
     fun create(perfumeCreateVo: PerfumeCreateVo): Perfume
     fun getPerfume(id: Long): Perfume
+    fun getPerfumeByUrl(url: String): Perfume
     fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int): List<PerfumeSimpleVo>
-    fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<PerfumeSimpleVo>
-    fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo>
-    fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo>
+    fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<Perfume>
+    fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume>
+    fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume>
+    fun getPerfumesByNoteGroupIdAndGender(noteGroupId: Long, gender: Gender, size: Int): List<Perfume>
     fun getSimilarPerfume(id: Long): List<Perfume>
     fun searchByName(name: String): List<PerfumeSimpleVo>
 }
@@ -80,25 +82,30 @@ class PerfumeServiceImpl(
     override fun getPerfume(id: Long) = perfumeRepository.findPerfumeById(id)
         ?: throw PerfumeNotFoundException("Perfume not found. id: $id")
 
-
-    private fun getPerfume(url: String) = perfumeRepository.findByUrl(url)
+    override fun getPerfumeByUrl(url: String) = perfumeRepository.findByUrl(url)
         ?: throw PerfumeNotFoundException("Perfume not found. url: $url")
 
     override fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int) =
         perfumeRepository.findByBrand_IdOrderByRandom(brandId, PageRequest.ofSize(size)).map { PerfumeSimpleVo(it) }
 
     override fun getPerfumesByGenderWithRandom(gender: Gender, size: Int) =
-        perfumeRepository.findByGenderOrderByRandom(gender, PageRequest.ofSize(size)).map { PerfumeSimpleVo(it) }
+        perfumeRepository.findByGenderOrderByRandom(gender, PageRequest.ofSize(size))
 
 
-    override fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo> {
-        return perfumeNoteRepository.findByNote_Id(noteId, PageRequest.of(0, size)).content
-            .map { PerfumeSimpleVo(it.perfume) }
+    override fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume> {
+        return perfumeNoteRepository.findByNoteId(noteId, PageRequest.ofSize(size)).content
+            .map { it.perfume }
     }
 
-    override fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo> {
-        return perfumeNoteRepository.findByNote_IdAndPerfume_Gender(noteId, gender, PageRequest.of(0, size)).content
-            .map { PerfumeSimpleVo(it.perfume) }
+    override fun getPerfumesByNoteGroupIdAndGender(noteGroupId: Long, gender: Gender, size: Int): List<Perfume> {
+        return perfumeNoteRepository.findByPerfumeGenderAndNoteNoteGroupId(gender, noteGroupId, PageRequest.ofSize(size))
+            .content
+            .map { it.perfume }
+    }
+
+    override fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume> {
+        return perfumeNoteRepository.findByNoteIdAndPerfumeGender(noteId, gender, PageRequest.of(0, size)).content
+            .map { it.perfume }
     }
 
     @Transactional(readOnly = true)

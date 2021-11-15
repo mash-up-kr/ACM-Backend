@@ -1,5 +1,8 @@
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine:2.9.2")
+
     api("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3")
     runtimeOnly("mysql:mysql-connector-java")
     testRuntimeOnly("com.h2database:h2")

@@ -6,4 +6,6 @@ interface NoteGroupRepository : JpaRepository<NoteGroup, Long> {
     fun existsByOriginalName(originalName: String): Boolean
 
     fun findByOriginalName(originalName: String): NoteGroup?
+
+    fun findNoteGroupById(id: Long): NoteGroup?
 }
