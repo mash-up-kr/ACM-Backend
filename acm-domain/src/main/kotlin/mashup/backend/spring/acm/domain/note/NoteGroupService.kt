@@ -6,6 +6,8 @@ import mashup.backend.spring.acm.domain.exception.NoteGroupNotFoundException
 import mashup.backend.spring.acm.domain.member.MemberService
 import mashup.backend.spring.acm.domain.recommend.perfume.RecommendPerfumesByPopularNoteGroupService
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,6 +19,7 @@ interface NoteGroupService {
     fun getDetailById(noteGroupId: Long): NoteGroupDetailVo
     fun getById(noteGroupId: Long): NoteGroup?
     fun getPopularNoteGroup(): NoteGroupDetailVo
+    fun getNoteGroups(pageable: Pageable): Page<NoteGroup>
 }
 
 @Service
@@ -75,4 +78,6 @@ class NoteGroupServiceImpl(
 
         return getDetailById(popularOnboardNoteGroupId)
     }
+
+    override fun getNoteGroups(pageable: Pageable): Page<NoteGroup> = noteGroupRepository.findAll(pageable)
 }
