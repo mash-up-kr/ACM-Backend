@@ -13,6 +13,9 @@ import org.springframework.batch.repeat.RepeatStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 
+/**
+ * 브랜드 url 을 입력받아서 브랜드 데이터를 크롤링하는 작업
+ */
 open class BrandDetailCollectorTasklet : Tasklet {
     @Autowired
     lateinit var brandUrlScrapingJobService: BrandUrlScrapingJobService

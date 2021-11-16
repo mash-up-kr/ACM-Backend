@@ -9,6 +9,9 @@ import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.repeat.RepeatStatus
 import org.springframework.beans.factory.annotation.Autowired
 
+/**
+ * 브랜드 이름에 포함된 ' perfumes and colognes' 문자열 삭제
+ */
 open class BrandRenameTasklet : Tasklet {
     @Autowired
     lateinit var brandService: BrandService
