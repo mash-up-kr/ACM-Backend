@@ -4,6 +4,7 @@ import mashup.backend.spring.acm.domain.member.MemberDetailVo
 import mashup.backend.spring.acm.domain.perfume.Perfume
 import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
 import mashup.backend.spring.acm.domain.recommend.RecommenderBuilder
+import mashup.backend.spring.acm.infrastructure.CacheType
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
@@ -44,7 +45,7 @@ class PerfumeRecommenderService(
         .recommend(memberDetailVo)
         .map { PerfumeSimpleVo(it) }
 
-    @Cacheable(value = ["recommendGenderPerfumes"], key = "#memberDetailVo.gender.name() + #size")
+    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_GENDER_PERFUMES], key = "#memberDetailVo.gender.name() + #size")
     fun recommendPerfumesByGender(memberDetailVo: MemberDetailVo, size: Int) = RecommenderBuilder<Perfume>()
         .recommendService(listOf(
             recommendPerfumesByNoteGroupIdsAndGenderService,
@@ -56,7 +57,7 @@ class PerfumeRecommenderService(
         .recommend(memberDetailVo)
         .map { PerfumeSimpleVo(it) }
 
-    @Cacheable(value = ["recommendPopularPerfumes"], key = "#size")
+    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_POPULAR_PERFUMES], key = "#size")
     fun recommendPopularPerfumes(memberDetailVo: MemberDetailVo, size: Int) = RecommenderBuilder<Perfume>()
         .recommendService(listOf(
             // TODO : 최근 보관함에 많이 담긴 향수

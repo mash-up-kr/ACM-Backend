@@ -7,6 +7,7 @@ import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
 import mashup.backend.spring.acm.domain.recommend.note.NoteRecommenderService
 import mashup.backend.spring.acm.domain.recommend.perfume.PerfumeRecommenderService
+import mashup.backend.spring.acm.infrastructure.CacheType
 import mashup.backend.spring.acm.presentation.api.recommend.MainRecommend
 import mashup.backend.spring.acm.presentation.api.recommend.RecommendNote
 import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfumes
@@ -29,7 +30,7 @@ class RecommendApplicationServiceImpl(
 ): RecommendApplicationService {
 
     // FIXME : 온보딩 수정하면 캐시내용 지워줘야 함.
-    @Cacheable(value = ["recommendMainPerfumes"], key = "#memberId")
+    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_MAIN_PERFUMES], key = "#memberId")
     override fun recommendMainPerfumes(memberId: Long): MainRecommend {
         val member = memberApplicationService.getMemberInfo(memberId)
         val title = if (!member.hasOnboard()) "디깅의 추천 향수" else "당신을 위한 추천향수"
@@ -106,6 +107,7 @@ class RecommendApplicationServiceImpl(
         )
     }
 
+    // FIXME : 해당 메소드에서 10초 이상 시간을 소요함
     private fun recommendNotesByOnboard(memberId: Long, noteSize: Int, perfumeSize: Int): List<RecommendNote> {
         val member = memberApplicationService.getMemberInfo(memberId)
         return noteRecommenderService.recommendNotesByNoteGroupIds(member, noteSize)

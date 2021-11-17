@@ -5,6 +5,7 @@ import mashup.backend.spring.acm.application.recommend.RecommendApplicationServi
 import mashup.backend.spring.acm.domain.brand.BrandDetailVo
 import mashup.backend.spring.acm.domain.brand.BrandService
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
+import mashup.backend.spring.acm.infrastructure.CacheType
 import mashup.backend.spring.acm.presentation.api.recommend.PopularBrand
 import mashup.backend.spring.acm.presentation.assembler.toPopularBrand
 import mashup.backend.spring.acm.presentation.assembler.toSimpleRecommendPerfume
@@ -23,7 +24,7 @@ class BrandApplicationServiceImpl(
     override fun getBrand(brandId: Long): BrandDetailVo = brandService.getDetail(brandId = brandId)
 
 
-    @Cacheable("popularBrands")
+    @Cacheable(CacheType.CacheNames.POPULAR_BRANDS)
     override fun getPopularBrands(): List<PopularBrand> {
         return brandService.getPopularBrands()
             .map { brand ->

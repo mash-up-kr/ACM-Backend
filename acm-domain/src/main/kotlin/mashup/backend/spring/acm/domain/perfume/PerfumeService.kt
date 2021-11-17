@@ -4,6 +4,8 @@ import mashup.backend.spring.acm.domain.accord.AccordService
 import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.note.NoteService
+import mashup.backend.spring.acm.infrastructure.CacheType
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -91,7 +93,7 @@ class PerfumeServiceImpl(
     override fun getPerfumesByGenderWithRandom(gender: Gender, size: Int) =
         perfumeRepository.findByGenderOrderByRandom(gender, PageRequest.ofSize(size))
 
-
+    @Cacheable(CacheType.CacheNames.PERFUMES_BY_NOTE_ID, key = "#noteId.toString().concat(':').concat(#size)")
     override fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume> {
         return perfumeNoteRepository.findByNoteId(noteId, PageRequest.ofSize(size)).content
             .map { it.perfume }

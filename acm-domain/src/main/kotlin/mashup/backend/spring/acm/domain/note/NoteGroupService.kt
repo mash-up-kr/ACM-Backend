@@ -6,6 +6,7 @@ import mashup.backend.spring.acm.domain.exception.NoteGroupNotFoundException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.member.MemberService
 import mashup.backend.spring.acm.domain.perfume.PerfumeRepository
+import mashup.backend.spring.acm.infrastructure.CacheType
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -93,7 +94,7 @@ class NoteGroupServiceImpl(
         return noteGroupRepository.findNoteGroupById(noteGroupId)
     }
 
-    @Cacheable(value = ["popularNoteGroup"])
+    @Cacheable(CacheType.CacheNames.POPULAR_NOTE_GROUP)
     override fun getPopularNoteGroup(): NoteGroupDetailVo {
         var maxCount = 0L
         var popularOnboardNoteGroupId = -1L
