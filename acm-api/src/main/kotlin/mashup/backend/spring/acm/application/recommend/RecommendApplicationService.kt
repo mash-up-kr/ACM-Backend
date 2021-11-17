@@ -3,9 +3,6 @@ package mashup.backend.spring.acm.application.recommend
 import mashup.backend.spring.acm.application.ApplicationService
 import mashup.backend.spring.acm.application.brand.BrandApplicationService
 import mashup.backend.spring.acm.application.member.MemberApplicationService
-import mashup.backend.spring.acm.domain.member.hasGender
-import mashup.backend.spring.acm.domain.member.hasNoteGroupIds
-import mashup.backend.spring.acm.domain.member.hasOnboard
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
 import mashup.backend.spring.acm.domain.recommend.note.NoteRecommenderService
@@ -56,7 +53,7 @@ class RecommendApplicationServiceImpl(
         return MainRecommend(
             title = title,
             popularBrands = popularBrands,
-            recommendPerfumesList = listOf(
+            recommendPerfumeList = listOf(
                 perfumesByOnboard,
                 perfumesByGender,
                 popularPerfumes,

@@ -18,6 +18,17 @@ class PerfumeRecommenderService(
     private val recommendPerfumesForPresentService: RecommendPerfumesForPresentService,
     private val recommendPerfumesByDefaultService: RecommendPerfumesByDefaultService
 ) {
+    private val recommenderBuilder = RecommenderBuilder<Perfume>()
+        .recommendService(listOf(
+            recommendPerfumesByNoteGroupIdsAndGenderAndAgeService,
+            recommendPerfumesByNoteGroupIdsAndGenderService,
+            recommendPerfumesByGenderService,
+            recommendPerfumesByUnisexGenderService,
+            recommendPerfumesByPopularNoteGroupService,
+            recommendMonthlyPerfumesService
+        ))
+        .size(10)
+        .build()
     fun recommendPerfumesByOnboard(memberDetailVo: MemberDetailVo, size: Int) = RecommenderBuilder<Perfume>()
         .recommendService(listOf(
             // todo : digging 개발에 따라 추가 추천 로직 개발해야 함

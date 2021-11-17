@@ -1,7 +1,6 @@
 package mashup.backend.spring.acm.presentation.api.recommend
 
 import io.swagger.annotations.ApiOperation
-import mashup.backend.spring.acm.application.brand.BrandApplicationService
 import mashup.backend.spring.acm.application.recommend.RecommendApplicationService
 import mashup.backend.spring.acm.presentation.ApiResponse
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,10 +26,10 @@ class RecommendController(
                 + "- recommendPerfumesList는 위의 3,4,5를 순서대로 정렬하여 내려줍니다."
     )
     @GetMapping("/main")
-    fun getMainRecommend(@ApiIgnore @ModelAttribute("memberId") memberId: Long) : ApiResponse<MainRecommendResponse> {
+    fun getMainRecommend(@ApiIgnore @ModelAttribute("memberId") memberId: Long) : ApiResponse<MainRecommendData> {
         val mainPopular = recommendApplicationService.recommendMainPerfumes(memberId)
 
-        return ApiResponse.success(MainRecommendResponse(mainPopular))
+        return ApiResponse.success(MainRecommendData(mainPopular))
     }
 
 }

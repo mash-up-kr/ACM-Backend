@@ -24,7 +24,7 @@ class CacheConfig {
                         .maximumSize(cache.maximumSize)
                         .build()
                 )
-            }.toList()
+            }
         cacheManager.setCaches(caches)
 
         return cacheManager
@@ -33,7 +33,7 @@ class CacheConfig {
 
 enum class CacheType(
     val cacheName: String,
-    val expiredAfterWrite: Long,
+    val expiredAfterWrite: Long, // second
     val maximumSize: Long
 ) {
     // note group
@@ -46,7 +46,6 @@ enum class CacheType(
     RECOMMEND_MONTHLY_PERFUMES("recommendMonthlyPerfumes", 24 * 60 * 60, 1),
     RECOMMEND_DEFAULT_PERFUMES("recommendDefaultPerfumes", 24 * 60 * 60, 1),
     RECOMMEND_PRESENT_PERFUMES("recommendPresentPerfumes", 24 * 60 * 60, 1),
-
 
     // brand
     POPULAR_BRANDS("popularBrands", 24 * 60 * 60, 10),

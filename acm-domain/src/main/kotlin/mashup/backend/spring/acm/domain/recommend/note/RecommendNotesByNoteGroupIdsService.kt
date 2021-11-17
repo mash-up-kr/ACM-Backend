@@ -1,10 +1,7 @@
 package mashup.backend.spring.acm.domain.recommend.note
 
-import mashup.backend.spring.acm.domain.member.hasNoteGroupIds
 import mashup.backend.spring.acm.domain.note.Note
 import mashup.backend.spring.acm.domain.note.NoteGroupService
-import mashup.backend.spring.acm.domain.perfume.PerfumeService
-import mashup.backend.spring.acm.domain.recommend.AbstractRecommendService
 import mashup.backend.spring.acm.domain.recommend.RecommendRequestVo
 import org.springframework.stereotype.Service
 
@@ -19,7 +16,7 @@ class RecommendNotesByNoteGroupIdsService(
     }
 
     override fun getItems(recommendRequestVo: RecommendRequestVo): List<Note> {
-        val member = recommendRequestVo.memberDetailVo ?: return emptyList()
+        val member = recommendRequestVo.memberDetailVo!!
         return member.noteGroupIds.mapNotNull { noteGroupService.getById(it)?.notes }
             .flatten()
             .distinctBy { it.id }

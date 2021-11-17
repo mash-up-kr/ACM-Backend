@@ -1,13 +1,13 @@
 package mashup.backend.spring.acm.presentation.api.recommend
 
-data class MainRecommendResponse(
+data class MainRecommendData(
     val mainRecommend: MainRecommend
 )
 
 data class MainRecommend(
     val title: String,
     val popularBrands: List<PopularBrand>,
-    val recommendPerfumesList: List<SimpleRecommendPerfumes>,
+    val recommendPerfumeList: List<SimpleRecommendPerfumes>,
     val recommendNotes : List<RecommendNote>
 )
 

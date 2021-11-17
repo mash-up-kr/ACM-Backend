@@ -1,7 +1,6 @@
 package mashup.backend.spring.acm.domain.recommend.perfume
 
 import mashup.backend.spring.acm.domain.member.MemberGender
-import mashup.backend.spring.acm.domain.member.getPerfumeGender
 import mashup.backend.spring.acm.domain.perfume.Perfume
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.recommend.RecommendRequestVo
