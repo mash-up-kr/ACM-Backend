@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service
 
 @Service
 class PerfumeRecommenderService(
-    private val recommendPerfumesByNoteGroupIdsAndGenderAndAgeService: RecommendPerfumesByNoteGroupIdsAndGenderAndAgeService,
-    private val recommendPerfumesByNoteGroupIdsAndGenderService: RecommendPerfumesByNoteGroupIdsAndGenderService,
-    private val recommendPerfumesByGenderService: RecommendPerfumesByGenderService,
-    private val recommendPerfumesByUnisexGenderService: RecommendPerfumesByUnisexGenderService,
-    private val recommendPerfumesByPopularNoteGroupService: RecommendPerfumesByPopularNoteGroupService,
-    private val recommendMonthlyPerfumesService: RecommendMonthlyPerfumesService,
-    private val recommendPerfumesForPresentService: RecommendPerfumesForPresentService,
-    private val recommendPerfumesByDefaultService: RecommendPerfumesByDefaultService
+    recommendPerfumesByNoteGroupIdsAndGenderAndAgeService: RecommendPerfumesByNoteGroupIdsAndGenderAndAgeService,
+    recommendPerfumesByNoteGroupIdsAndGenderService: RecommendPerfumesByNoteGroupIdsAndGenderService,
+    recommendPerfumesByGenderService: RecommendPerfumesByGenderService,
+    recommendPerfumesByUnisexGenderService: RecommendPerfumesByUnisexGenderService,
+    recommendPerfumesByPopularNoteGroupService: RecommendPerfumesByPopularNoteGroupService,
+    recommendMonthlyPerfumesService: RecommendMonthlyPerfumesService,
+    recommendPerfumesForPresentService: RecommendPerfumesForPresentService,
+    recommendPerfumesByDefaultService: RecommendPerfumesByDefaultService
 ) {
-    fun recommendPerfumesByOnboard(memberDetailVo: MemberDetailVo, size: Int) = RecommenderBuilder<Perfume>()
+    private val perfumesByOnboardRecommender = RecommenderBuilder<Perfume>()
         .recommendService(listOf(
             // todo : digging 개발에 따라 추가 추천 로직 개발해야 함
             recommendPerfumesByNoteGroupIdsAndGenderAndAgeService,
@@ -29,44 +29,48 @@ class PerfumeRecommenderService(
             recommendPerfumesByPopularNoteGroupService,
             recommendMonthlyPerfumesService
         ))
-        .size(size)
         .build()
-        .recommend(memberDetailVo)
-        .map { PerfumeSimpleVo(it) }
 
-    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_GENDER_PERFUMES], key = "#memberDetailVo.gender.name() + #size")
-    fun recommendPerfumesByGender(memberDetailVo: MemberDetailVo, size: Int) = RecommenderBuilder<Perfume>()
+    private val perfumesByGenderRecommender = RecommenderBuilder<Perfume>()
         .recommendService(listOf(
-            recommendPerfumesByNoteGroupIdsAndGenderService,
-            recommendPerfumesByGenderService,
-            recommendPerfumesByUnisexGenderService
+        recommendPerfumesByNoteGroupIdsAndGenderService,
+        recommendPerfumesByGenderService,
+        recommendPerfumesByUnisexGenderService
         ))
-        .size(size)
         .build()
-        .recommend(memberDetailVo)
-        .map { PerfumeSimpleVo(it) }
 
-    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_POPULAR_PERFUMES], key = "#size")
-    fun recommendPopularPerfumes(memberDetailVo: MemberDetailVo, size: Int) = RecommenderBuilder<Perfume>()
+    private val popularPerfumesRecommender = RecommenderBuilder<Perfume>()
         .recommendService(listOf(
             // TODO : 최근 보관함에 많이 담긴 향수
             recommendPerfumesByPopularNoteGroupService,
             recommendMonthlyPerfumesService
         ))
-        .size(size)
         .build()
-        .recommend(memberDetailVo)
+
+    private val perfumesByNoteGroupRecommender = RecommenderBuilder<Perfume>()
+        .recommendService(listOf(
+        // TODO : 디깅 개발하면서 추가 개발해야 함.
+        recommendPerfumesByNoteGroupIdsAndGenderAndAgeService,
+        recommendPerfumesByNoteGroupIdsAndGenderService,
+        recommendPerfumesForPresentService,
+        ))
+        .build()
+
+    fun recommendPerfumesByOnboard(memberDetailVo: MemberDetailVo, size: Int) = perfumesByOnboardRecommender
+        .recommend(memberDetailVo, size)
         .map { PerfumeSimpleVo(it) }
 
-    fun recommendPerfumesByNoteGroup(memberDetailVo: MemberDetailVo, size: Int) = RecommenderBuilder<Perfume>()
-        .recommendService(listOf(
-            // TODO : 디깅 개발하면서 추가 개발해야 함.
-            recommendPerfumesByNoteGroupIdsAndGenderAndAgeService,
-            recommendPerfumesByNoteGroupIdsAndGenderService,
-            recommendPerfumesForPresentService,
-        ))
-        .size(size)
-        .build()
-        .recommend(memberDetailVo)
+    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_GENDER_PERFUMES], key = "#memberDetailVo.gender.name() + #size")
+    fun recommendPerfumesByGender(memberDetailVo: MemberDetailVo, size: Int) = perfumesByGenderRecommender
+        .recommend(memberDetailVo, size)
+        .map { PerfumeSimpleVo(it) }
+
+    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_POPULAR_PERFUMES], key = "#size")
+    fun recommendPopularPerfumes(memberDetailVo: MemberDetailVo, size: Int) = popularPerfumesRecommender
+        .recommend(memberDetailVo, size)
+        .map { PerfumeSimpleVo(it) }
+
+    fun recommendPerfumesByNoteGroup(memberDetailVo: MemberDetailVo, size: Int) = perfumesByNoteGroupRecommender
+        .recommend(memberDetailVo, size)
         .map { PerfumeSimpleVo(it) }
 }

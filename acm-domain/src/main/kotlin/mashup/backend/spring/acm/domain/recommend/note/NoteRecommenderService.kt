@@ -8,16 +8,16 @@ import org.springframework.stereotype.Service
 
 @Service
 class NoteRecommenderService(
-    private val recommendNotesByNoteGroupIdsService: RecommendNotesByNoteGroupIdsService,
-    private val recommendNotesByDefaultService: RecommendNotesByDefaultService
+    recommendNotesByNoteGroupIdsService: RecommendNotesByNoteGroupIdsService,
+    recommendNotesByDefaultService: RecommendNotesByDefaultService
 ) {
-    fun recommendNotesByNoteGroupIds(memberDetailVo: MemberDetailVo, size: Int) = RecommenderBuilder<Note>()
+    private val notesByNoteGroupIdsRecommender = RecommenderBuilder<Note>()
         .recommendService(listOf(
             recommendNotesByNoteGroupIdsService,
             recommendNotesByDefaultService
         ))
-        .size(size)
         .build()
-        .recommend(memberDetailVo)
+    fun recommendNotesByNoteGroupIds(memberDetailVo: MemberDetailVo, size: Int) = notesByNoteGroupIdsRecommender
+        .recommend(memberDetailVo, size)
         .map { NoteSimpleVo(it) }
 }
