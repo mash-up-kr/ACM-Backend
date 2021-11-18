@@ -1,6 +1,5 @@
 package mashup.backend.spring.acm.domain.recommend.perfume
 
-import mashup.backend.spring.acm.domain.member.MemberService
 import mashup.backend.spring.acm.domain.note.NoteGroupService
 import mashup.backend.spring.acm.domain.perfume.Perfume
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class RecommendPerfumesByPopularNoteGroupService(
-    private val memberService: MemberService,
     private val noteGroupService: NoteGroupService,
     private val perfumeService: PerfumeService
 ): RecommendPerfumesService {

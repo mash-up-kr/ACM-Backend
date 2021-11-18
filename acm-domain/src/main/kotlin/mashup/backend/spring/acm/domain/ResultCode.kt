@@ -30,6 +30,9 @@ enum class ResultCode(val message: String = "") {
     BRAND_ALREADY_EXIST("브랜드 중복"),
     BRAND_NOT_FOUND("브랜드 조회 실패"),
     // job
-    SCRAPING_JOB_ALREADY_EXIST("스크래핑 작업 중복")
+    SCRAPING_JOB_ALREADY_EXIST("스크래핑 작업 중복"),
+
+    // cache
+    CACHE_NOT_FOUND("캐시 조회 실패")
     ;
 }

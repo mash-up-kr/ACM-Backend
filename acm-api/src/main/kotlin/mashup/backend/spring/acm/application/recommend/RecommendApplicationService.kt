@@ -7,14 +7,12 @@ import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
 import mashup.backend.spring.acm.domain.recommend.note.NoteRecommenderService
 import mashup.backend.spring.acm.domain.recommend.perfume.PerfumeRecommenderService
-import mashup.backend.spring.acm.infrastructure.CacheType
 import mashup.backend.spring.acm.presentation.api.recommend.MainRecommend
 import mashup.backend.spring.acm.presentation.api.recommend.RecommendNote
 import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfumes
 import mashup.backend.spring.acm.presentation.assembler.toSimpleRecommendPerfume
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.cache.annotation.Cacheable
 
 interface RecommendApplicationService {
     fun recommendMainPerfumes(memberId: Long): MainRecommend
@@ -29,8 +27,6 @@ class RecommendApplicationServiceImpl(
     private val brandApplicationService: BrandApplicationService
 ): RecommendApplicationService {
 
-    // FIXME : 온보딩 수정하면 캐시내용 지워줘야 함.
-    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_MAIN_PERFUMES], key = "#memberId")
     override fun recommendMainPerfumes(memberId: Long): MainRecommend {
         val member = memberApplicationService.getMemberInfo(memberId)
         val title = if (!member.hasOnboard()) "디깅의 추천 향수" else "당신을 위한 추천향수"
@@ -65,6 +61,7 @@ class RecommendApplicationServiceImpl(
     }
 
     private fun recommendPerfumesByOnboard(memberId: Long, size: Int): SimpleRecommendPerfumes {
+        log.info("[RECOMMEND_PERFUMES][recommendPerfumesByOnboard] memberId=$memberId, size:$size")
         val member = memberApplicationService.getMemberInfo(memberId)
 
         return SimpleRecommendPerfumes(
@@ -75,6 +72,7 @@ class RecommendApplicationServiceImpl(
     }
 
     private fun recommendPerfumesByGender(memberId: Long, size: Int): SimpleRecommendPerfumes {
+        log.info("[RECOMMEND_PERFUMES][recommendPerfumesByGender] memberId=$memberId, size:$size")
         val member = memberApplicationService.getMemberInfo(memberId)
 
         return SimpleRecommendPerfumes(
@@ -85,6 +83,7 @@ class RecommendApplicationServiceImpl(
     }
 
     private fun recommendPopularPerfumes(memberId: Long, size: Int): SimpleRecommendPerfumes {
+        log.info("[RECOMMEND_PERFUMES][recommendPopularPerfumes] memberId=$memberId, size:$size")
         val member = memberApplicationService.getMemberInfo(memberId)
 
         return SimpleRecommendPerfumes(
@@ -95,8 +94,8 @@ class RecommendApplicationServiceImpl(
     }
 
     private fun recommendPerfumesByNoteGroup(memberId: Long, size: Int): SimpleRecommendPerfumes {
+        log.info("[RECOMMEND_PERFUMES][recommendPerfumesByNoteGroup] memberId=$memberId, size:$size")
         val member = memberApplicationService.getMemberInfo(memberId)
-
         val hasGroupIds =  member.hasNoteGroupIds()
         val title = if (hasGroupIds) "취향을 맞춘 노트" else "내가 좋아할 노트"
 
@@ -107,8 +106,8 @@ class RecommendApplicationServiceImpl(
         )
     }
 
-    // FIXME : 해당 메소드에서 10초 이상 시간을 소요함
     private fun recommendNotesByOnboard(memberId: Long, noteSize: Int, perfumeSize: Int): List<RecommendNote> {
+        log.info("[RECOMMEND_PERFUMES][recommendNotesByOnboard] memberId=$memberId, noteSize:$noteSize, perfumeSize:$perfumeSize")
         val member = memberApplicationService.getMemberInfo(memberId)
         return noteRecommenderService.recommendNotesByNoteGroupIds(member, noteSize)
             .map { note ->
