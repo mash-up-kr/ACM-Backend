@@ -12,6 +12,9 @@ import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.repeat.RepeatStatus
 import org.springframework.beans.factory.annotation.Autowired
 
+/**
+ * 노트 목록 크롤링
+ */
 open class NoteCollectorTasklet : Tasklet {
     @Autowired
     lateinit var noteService: NoteService

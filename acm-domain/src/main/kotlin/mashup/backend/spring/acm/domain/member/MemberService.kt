@@ -5,6 +5,8 @@ import mashup.backend.spring.acm.domain.exception.MemberNicknameInvalidException
 import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderInfo
 import mashup.backend.spring.acm.domain.member.idprovider.MemberIdProvider
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,6 +16,7 @@ interface MemberService {
     fun findByIdProviderVo(idProviderInfo: IdProviderInfo): Member?
     fun findDetailById(memberId: Long): MemberDetailVo?
     fun findAllMemberDetail(): List<SimpleMemberDetailVo>
+    fun getMembers(pageable: Pageable): Page<MemberDetailVo>
     fun join(idProviderInfo: IdProviderInfo): MemberDetailVo
     fun withdraw()
     fun updateNickname(memberId: Long, nickname: String)
@@ -41,6 +44,9 @@ class MemberServiceImpl(
     override fun findAllMemberDetail(): List<SimpleMemberDetailVo> {
         return memberDetailRepository.findByNoteGroupIdsIsNotNull().map { SimpleMemberDetailVo(it) }
     }
+
+    override fun getMembers(pageable: Pageable): Page<MemberDetailVo> =
+        memberRepository.findAll(pageable).map { MemberDetailVo(it) }
 
     @Transactional
     override fun join(idProviderInfo: IdProviderInfo): MemberDetailVo {

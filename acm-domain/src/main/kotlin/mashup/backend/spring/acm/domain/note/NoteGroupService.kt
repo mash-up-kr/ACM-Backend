@@ -9,6 +9,7 @@ import mashup.backend.spring.acm.domain.perfume.PerfumeRepository
 import mashup.backend.spring.acm.infrastructure.CacheType
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -24,6 +25,7 @@ interface NoteGroupService {
     fun getById(noteGroupId: Long): NoteGroup?
     fun getPopularNoteGroup(): NoteGroupDetailVo
     fun cachePutGetPopularNoteGroup(): NoteGroupDetailVo
+    fun getNoteGroups(pageable: Pageable): Page<NoteGroup>
 }
 
 @Service
@@ -133,4 +135,6 @@ class NoteGroupServiceImpl(
 
         return getDetailById(popularOnboardNoteGroupId)
     }
+
+    override fun getNoteGroups(pageable: Pageable): Page<NoteGroup> = noteGroupRepository.findAll(pageable)
 }

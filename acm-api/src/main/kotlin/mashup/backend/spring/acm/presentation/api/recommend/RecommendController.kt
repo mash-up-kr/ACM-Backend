@@ -1,5 +1,6 @@
 package mashup.backend.spring.acm.presentation.api.recommend
 
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import mashup.backend.spring.acm.application.recommend.RecommendApplicationService
 import mashup.backend.spring.acm.presentation.ApiResponse
@@ -9,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import springfox.documentation.annotations.ApiIgnore
 
+@Api(
+    description = "메인 화면",
+    tags = ["main"],
+)
 @RequestMapping("/api/v1/recommend")
 @RestController
 class RecommendController(

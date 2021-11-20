@@ -9,6 +9,3 @@ interface MemberRepository: JpaRepository<Member, Long> {
     fun existsByMemberDetail_name(name: String): Boolean
 }
 
-interface MemberDetailRepository: JpaRepository<MemberDetail, Long> {
-    fun findByNoteGroupIdsIsNotNull(): List<MemberDetail>
-}

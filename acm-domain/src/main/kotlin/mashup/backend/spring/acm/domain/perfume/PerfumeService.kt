@@ -6,7 +6,9 @@ import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.note.NoteService
 import mashup.backend.spring.acm.infrastructure.CacheType
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -14,6 +16,7 @@ interface PerfumeService {
     fun create(perfumeCreateVo: PerfumeCreateVo): Perfume
     fun getPerfume(id: Long): Perfume
     fun getPerfumeByUrl(url: String): Perfume
+    fun getPerfumes(pageable: Pageable): Page<PerfumeSimpleVo>
     fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int): List<PerfumeSimpleVo>
     fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<Perfume>
     fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume>
@@ -87,6 +90,9 @@ class PerfumeServiceImpl(
     override fun getPerfumeByUrl(url: String) = perfumeRepository.findByUrl(url)
         ?: throw PerfumeNotFoundException("Perfume not found. url: $url")
 
+    override fun getPerfumes(pageable: Pageable): Page<PerfumeSimpleVo> =
+        perfumeRepository.findAll(pageable).map { PerfumeSimpleVo(it) }
+
     override fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int) =
         perfumeRepository.findByBrand_IdOrderByRandom(brandId, PageRequest.ofSize(size)).map { PerfumeSimpleVo(it) }
 
@@ -116,6 +122,6 @@ class PerfumeServiceImpl(
         return emptyList()
     }
 
-    override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findByNameContaining(name)
+    override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findTop30ByNameContaining(name)
         .map { PerfumeSimpleVo(it) }
 }
