@@ -9,11 +9,13 @@ import mashup.backend.spring.acm.infrastructure.CacheType
 import mashup.backend.spring.acm.presentation.api.recommend.PopularBrand
 import mashup.backend.spring.acm.presentation.assembler.toPopularBrand
 import mashup.backend.spring.acm.presentation.assembler.toSimpleRecommendPerfume
+import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 
 interface BrandApplicationService {
     fun getBrand(brandId: Long): BrandDetailVo
     fun getPopularBrands(): List<PopularBrand>
+    fun cachePutGetPopularBrands(): List<PopularBrand>
 }
 
 @ApplicationService
@@ -25,7 +27,12 @@ class BrandApplicationServiceImpl(
 
 
     @Cacheable(CacheType.CacheNames.POPULAR_BRANDS)
-    override fun getPopularBrands(): List<PopularBrand> {
+    override fun getPopularBrands() = findPopularBrands()
+
+    @CachePut(CacheType.CacheNames.POPULAR_BRANDS)
+    override fun cachePutGetPopularBrands() = findPopularBrands()
+
+    private fun findPopularBrands(): List<PopularBrand> {
         return brandService.getPopularBrands()
             .map { brand ->
                 brand.toPopularBrand(

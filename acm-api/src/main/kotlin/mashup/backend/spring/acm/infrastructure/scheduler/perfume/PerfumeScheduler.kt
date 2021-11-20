@@ -8,8 +8,6 @@ import mashup.backend.spring.acm.domain.member.MemberStatus
 import mashup.backend.spring.acm.domain.note.NoteService
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.recommend.perfume.PerfumeRecommenderService
-import mashup.backend.spring.acm.infrastructure.CacheType
-import mashup.backend.spring.acm.infrastructure.cache.CacheService
 import mashup.backend.spring.acm.infrastructure.scheduler.Scheduler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -20,15 +18,15 @@ import org.springframework.stereotype.Component
 class PerfumeScheduler(
     private val noteService: NoteService,
     private val perfumeService: PerfumeService,
-    private val perfumeRecommendService: PerfumeRecommenderService,
-    private val cacheService: CacheService
+    private val perfumeRecommendService: PerfumeRecommenderService
 ): Scheduler {
     override fun init() {
-//        perfumesByNoteId()
-//        recommendPopularPerfumes()
+        perfumesByNoteId()
+        recommendPopularPerfumes()
+        recommendPerfumesByGender()
     }
 
-    @Scheduled(cron = "0 0 3 * * MON")
+    @Scheduled(cron = "0 0 2 * * MON")
     fun perfumesByNoteId() {
         log.info("[PERFUME_SCHEDULER] perfumesByNoteId >> start")
         val notes = noteService.getAllNotes()
@@ -39,23 +37,37 @@ class PerfumeScheduler(
     }
 
 
-    @Scheduled(cron = "0 0 4 * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     fun recommendPopularPerfumes() {
         log.info("[PERFUME_SCHEDULER] recommendPopularPerfumes >> start")
+        perfumeRecommendService.cachePutRecommendPopularPerfumes(
+            createMockMemberDetailVoByGender(MemberGender.UNKNOWN),
+            DEFAULT_RECOMMEND_PERFUMES_COUNT
+        )
+        log.info("[PERFUME_SCHEDULER] recommendPopularPerfumes << end")
+    }
 
-        cacheService.clear(CacheType.RECOMMEND_POPULAR_PERFUMES)
-        val mockMemberDetailVo = MemberDetailVo(
+    @Scheduled(cron = "0 0 4 * * *")
+    fun recommendPerfumesByGender() {
+        log.info("[PERFUME_SCHEDULER] recommendPerfumesByGender >> start")
+        listOf(
+            createMockMemberDetailVoByGender(MemberGender.MALE),
+            createMockMemberDetailVoByGender(MemberGender.FEMALE),
+            createMockMemberDetailVoByGender(MemberGender.UNKNOWN)
+        ).forEach { perfumeRecommendService.cachePutRecommendPerfumesByGender(it, DEFAULT_RECOMMEND_PERFUMES_COUNT) }
+        log.info("[PERFUME_SCHEDULER] recommendPerfumesByGender << end")
+
+    }
+
+    private fun createMockMemberDetailVoByGender(memberGender: MemberGender): MemberDetailVo {
+        return MemberDetailVo(
             id = -1,
             status = MemberStatus.ACTIVE,
             name = "MOCK",
-            gender = MemberGender.UNKNOWN,
+            gender = memberGender,
             ageGroup = AgeGroup.UNKNOWN,
             noteGroupIds = emptyList()
         )
-        perfumeRecommendService.recommendPopularPerfumes(mockMemberDetailVo, DEFAULT_RECOMMEND_PERFUMES_COUNT)
-
-        log.info("[PERFUME_SCHEDULER] recommendPopularPerfumes << end")
-
     }
 
     companion object {

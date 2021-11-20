@@ -3,9 +3,8 @@ package mashup.backend.spring.acm.domain.recommend.note
 import mashup.backend.spring.acm.domain.note.Note
 import mashup.backend.spring.acm.domain.note.NoteGroupService
 import mashup.backend.spring.acm.domain.recommend.RecommendRequestVo
-import mashup.backend.spring.acm.infrastructure.CacheType
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class RecommendNotesByDefaultService(
@@ -15,7 +14,7 @@ class RecommendNotesByDefaultService(
         return true
     }
 
-    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_DEFAULT_NOTES], key = "#recommendRequestVo.size")
+    @Transactional
     override fun getItems(recommendRequestVo: RecommendRequestVo): List<Note> {
         return noteGroupService.getByRandom(recommendRequestVo.size)
             .map { it.notes }

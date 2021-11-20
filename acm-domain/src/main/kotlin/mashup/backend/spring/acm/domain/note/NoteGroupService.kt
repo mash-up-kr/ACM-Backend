@@ -7,6 +7,7 @@ import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.member.MemberService
 import mashup.backend.spring.acm.domain.perfume.PerfumeRepository
 import mashup.backend.spring.acm.infrastructure.CacheType
+import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -22,6 +23,7 @@ interface NoteGroupService {
     fun getDetailById(noteGroupId: Long): NoteGroupDetailVo
     fun getById(noteGroupId: Long): NoteGroup?
     fun getPopularNoteGroup(): NoteGroupDetailVo
+    fun cachePutGetPopularNoteGroup(): NoteGroupDetailVo
 }
 
 @Service
@@ -44,7 +46,7 @@ class NoteGroupServiceImpl(
 
     override fun findAll(): List<NoteGroup> = noteGroupRepository.findAll()
 
-
+    @Cacheable(value = [CacheType.CacheNames.RECOMMEND_DEFAULT_NOTES], key = "#size")
     override fun getByRandom(size: Int): List<NoteGroup> = noteGroupRepository.findByRandom(Pageable.ofSize(size))
 
     /**
@@ -96,6 +98,15 @@ class NoteGroupServiceImpl(
 
     @Cacheable(CacheType.CacheNames.POPULAR_NOTE_GROUP)
     override fun getPopularNoteGroup(): NoteGroupDetailVo {
+        return findPopularNoteGroup()
+    }
+
+    @CachePut(CacheType.CacheNames.POPULAR_NOTE_GROUP)
+    override fun cachePutGetPopularNoteGroup(): NoteGroupDetailVo {
+        return findPopularNoteGroup()
+    }
+
+    private fun findPopularNoteGroup(): NoteGroupDetailVo {
         var maxCount = 0L
         var popularOnboardNoteGroupId = -1L
         val countMap = mutableMapOf<Long, Long>()

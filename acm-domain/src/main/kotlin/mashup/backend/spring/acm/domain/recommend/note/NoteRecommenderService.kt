@@ -17,6 +17,7 @@ class NoteRecommenderService(
             recommendNotesByDefaultService
         ))
         .build()
+
     fun recommendNotesByNoteGroupIds(memberDetailVo: MemberDetailVo, size: Int) = notesByNoteGroupIdsRecommender
         .recommend(memberDetailVo, size)
         .map { NoteSimpleVo(it) }
