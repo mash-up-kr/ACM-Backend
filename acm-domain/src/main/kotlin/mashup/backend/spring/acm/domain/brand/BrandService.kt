@@ -2,6 +2,8 @@ package mashup.backend.spring.acm.domain.brand
 
 import mashup.backend.spring.acm.domain.exception.BrandDuplicatedException
 import mashup.backend.spring.acm.domain.exception.BrandNotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,6 +17,7 @@ interface BrandService {
     fun getDetail(brandId: Long): BrandDetailVo
     fun getPopularBrands(): List<BrandSimpleVo>
     fun findByUrl(url: String): Brand?
+    fun getBrands(pageable: Pageable): Page<BrandSimpleVo>
 }
 
 @Service
@@ -57,6 +60,9 @@ class BrandServiceImpl(
     }
 
     override fun findByUrl(url: String): Brand? = brandRepository.findByUrl(url)
+
+    override fun getBrands(pageable: Pageable): Page<BrandSimpleVo> =
+        brandRepository.findAll(pageable).map { BrandSimpleVo(it) }
 
     companion object {
         val POPULAR_BRAND_URL_LIST: List<String> = listOf(
