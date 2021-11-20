@@ -1,6 +1,5 @@
 package mashup.backend.spring.acm.domain.recommend.perfume
 
-import mashup.backend.spring.acm.domain.member.MemberGender
 import mashup.backend.spring.acm.domain.perfume.Gender
 import mashup.backend.spring.acm.domain.perfume.Perfume
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
@@ -14,7 +13,7 @@ class RecommendPerfumesByUnisexGenderService(
     override fun supports(recommendRequestVo: RecommendRequestVo): Boolean {
         val member = recommendRequestVo.memberDetailVo ?: return true
 
-        return member.gender == MemberGender.UNKNOWN
+        return !member.hasGender()
     }
 
     override fun getItems(recommendRequestVo: RecommendRequestVo): List<Perfume> {

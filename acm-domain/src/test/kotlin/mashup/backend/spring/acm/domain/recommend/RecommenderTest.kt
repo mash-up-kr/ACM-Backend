@@ -28,7 +28,7 @@ internal class RecommenderTest {
             noteGroupIds = emptyList(),
         )
         // when
-        val actual = sut.recommend(memberDetailVo = memberDetailVo)
+        val actual = sut.recommend(memberDetailVo = memberDetailVo, 3)
         // then
         assertTrue(actual.isEmpty())
     }

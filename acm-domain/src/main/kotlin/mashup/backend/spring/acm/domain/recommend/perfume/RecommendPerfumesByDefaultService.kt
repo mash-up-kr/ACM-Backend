@@ -3,6 +3,7 @@ package mashup.backend.spring.acm.domain.recommend.perfume
 import mashup.backend.spring.acm.domain.perfume.Perfume
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.recommend.RecommendRequestVo
+import mashup.backend.spring.acm.infrastructure.CacheType
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
@@ -14,7 +15,7 @@ class RecommendPerfumesByDefaultService(
         return true
     }
 
-    @Cacheable("recommendDefaultPerfumes")
+    @Cacheable(CacheType.CacheNames.RECOMMEND_DEFAULT_PERFUMES)
     override fun getItems(recommendRequestVo: RecommendRequestVo): List<Perfume> {
         return DEFAULT_RECOMMEND_PERFUMES_URL.map { perfumeService.getPerfumeByUrl(it) }
     }
