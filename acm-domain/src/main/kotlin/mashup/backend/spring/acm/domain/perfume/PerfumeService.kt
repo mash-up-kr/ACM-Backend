@@ -22,7 +22,6 @@ interface PerfumeService {
     fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume>
     fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume>
     fun getPerfumesByNoteGroupIdAndGender(noteGroupId: Long, gender: Gender, size: Int): List<Perfume>
-    fun getSimilarPerfume(id: Long): List<Perfume>
     fun searchByName(name: String): List<PerfumeSimpleVo>
 }
 
@@ -112,14 +111,8 @@ class PerfumeServiceImpl(
     }
 
     override fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume> {
-        return perfumeNoteRepository.findByNoteIdAndPerfumeGender(noteId, gender, PageRequest.of(0, size)).content
+        return perfumeNoteRepository.findByNoteIdAndPerfumeGender(noteId, gender, PageRequest.ofSize(size)).content
             .map { it.perfume }
-    }
-
-    @Transactional(readOnly = true)
-    override fun getSimilarPerfume(id: Long): List<Perfume> {
-        // TODO: 구현해야 함.
-        return emptyList()
     }
 
     override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findTop30ByNameContaining(name)

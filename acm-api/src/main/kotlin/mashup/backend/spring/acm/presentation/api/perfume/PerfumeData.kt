@@ -1,8 +1,7 @@
 package mashup.backend.spring.acm.presentation.api.perfume
 
 import mashup.backend.spring.acm.domain.perfume.Gender
-import mashup.backend.spring.acm.domain.perfume.Perfume
-import kotlin.streams.toList
+import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfume
 
 data class PerfumeDetailResponse(
     val perfumeDetail: PerfumeDetail
@@ -18,7 +17,7 @@ data class PerfumeDetail(
     val thumbnailImageUrl: String,
     val accords: List<SimplePerfumeAccord>,
     val notes: SimplePerfumeNotes,
-    val similarPerfumes: List<SimpleSimilarPerfume> = emptyList()
+    val similarPerfumes: List<SimpleRecommendPerfume> = emptyList()
 )
 
 data class SimplePerfumeNotes(
@@ -35,24 +34,6 @@ data class SimplePerfumeAccord(
     val backgroundColor: String,
     val textColor: String,
 )
-
-data class SimpleSimilarPerfume(
-    val id: Long,
-    val thumbnailImageUrl: String,
-    val name: String
-) {
-    companion object {
-        fun of(perfume: List<Perfume>) : List<SimpleSimilarPerfume> {
-            return perfume.stream().map(Companion::of).toList()
-        }
-
-        private fun of(perfume: Perfume) = SimpleSimilarPerfume(
-            id = perfume.id,
-            thumbnailImageUrl = perfume.thumbnailImageUrl,
-            name = perfume.name
-        )
-    }
-}
 
 data class PerfumeSearchRequest(
     val name: String,

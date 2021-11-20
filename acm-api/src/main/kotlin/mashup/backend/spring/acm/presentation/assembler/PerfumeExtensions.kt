@@ -7,7 +7,7 @@ import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
 import mashup.backend.spring.acm.presentation.api.perfume.*
 import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfume
 
-fun Perfume.toPerfumeDetail(similarPerfumes: List<SimpleSimilarPerfume>): PerfumeDetail {
+fun Perfume.toPerfumeDetail(similarPerfumes: List<SimpleRecommendPerfume>): PerfumeDetail {
     val topNotes = mutableListOf<String>()
     val middleNotes = mutableListOf<String>()
     val baseNotes = mutableListOf<String>()
@@ -17,7 +17,7 @@ fun Perfume.toPerfumeDetail(similarPerfumes: List<SimpleSimilarPerfume>): Perfum
             PerfumeNoteType.TOP -> topNotes.add(perfumeNote.note.name)
             PerfumeNoteType.MIDDLE -> middleNotes.add(perfumeNote.note.name)
             PerfumeNoteType.BASE -> baseNotes.add(perfumeNote.note.name)
-            else -> unknownNotes.add(perfumeNote.note.name)
+            PerfumeNoteType.UNKNOWN -> unknownNotes.add(perfumeNote.note.name)
         }
     }
 
@@ -39,7 +39,6 @@ fun Perfume.toPerfumeDetail(similarPerfumes: List<SimpleSimilarPerfume>): Perfum
         similarPerfumes = similarPerfumes
     )
 }
-
 
 fun PerfumeAccord.toSimplePerfumeAccord() = SimplePerfumeAccord(
     name = this.accord.name,

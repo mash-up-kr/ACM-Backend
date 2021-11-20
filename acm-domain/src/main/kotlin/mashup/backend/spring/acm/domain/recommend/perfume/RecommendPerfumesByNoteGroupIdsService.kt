@@ -40,7 +40,7 @@ class RecommendPerfumesByNoteGroupIdsAndGenderAndAgeService(
             perfumes.add(it)
         }
 
-        return emptyList()
+        return perfumes
     }
 
 

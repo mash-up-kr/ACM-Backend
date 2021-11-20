@@ -2,6 +2,7 @@ package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.BaseEntity
 import mashup.backend.spring.acm.domain.brand.Brand
+import mashup.backend.spring.acm.domain.member.MemberGender
 import javax.persistence.*
 
 @Entity
@@ -31,5 +32,13 @@ class Perfume(
             thumbnailImageUrl = perfumeCreateVo.thumbnailImageUrl,
             imageUrl = perfumeCreateVo.imageUrl,
         )
+    }
+
+    fun getMemberGender(): MemberGender {
+        return when (this.gender) {
+            Gender.WOMAN -> MemberGender.FEMALE
+            Gender.MAN -> MemberGender.MALE
+            Gender.UNISEX, Gender.UNKNOWN ->  MemberGender.UNKNOWN
+        }
     }
 }

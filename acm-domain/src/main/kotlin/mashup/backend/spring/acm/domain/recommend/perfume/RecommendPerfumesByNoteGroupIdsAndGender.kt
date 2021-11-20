@@ -23,6 +23,6 @@ class RecommendPerfumesByNoteGroupIdsAndGenderService(
         val size = recommendRequestVo.size
         val noteGroup = noteGroupService.getRecommendNoteGroupId(recommendRequestVo.exceptIds ?: emptySet(), recommendRequestVo.memberDetailVo.noteGroupIds)
 
-        return perfumeService.getPerfumesByNoteIdAndGender(noteGroup.id, member.getPerfumeGender(), size)
+        return perfumeService.getPerfumesByNoteGroupIdAndGender(noteGroup.id, member.getPerfumeGender(), size)
     }
 }

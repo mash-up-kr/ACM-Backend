@@ -3,18 +3,23 @@ package mashup.backend.spring.acm.application.recommend
 import mashup.backend.spring.acm.application.ApplicationService
 import mashup.backend.spring.acm.application.brand.BrandApplicationService
 import mashup.backend.spring.acm.application.member.MemberApplicationService
+import mashup.backend.spring.acm.domain.member.AgeGroup
+import mashup.backend.spring.acm.domain.member.MemberDetailVo
+import mashup.backend.spring.acm.domain.member.MemberStatus
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
 import mashup.backend.spring.acm.domain.recommend.note.NoteRecommenderService
 import mashup.backend.spring.acm.domain.recommend.perfume.PerfumeRecommenderService
 import mashup.backend.spring.acm.presentation.api.recommend.MainRecommend
 import mashup.backend.spring.acm.presentation.api.recommend.RecommendNote
+import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfume
 import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfumes
 import mashup.backend.spring.acm.presentation.assembler.toSimpleRecommendPerfume
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 interface RecommendApplicationService {
+    fun recommendSimilarlyPerfumes(perfumeId: Long): List<SimpleRecommendPerfume>
     fun recommendMainPerfumes(memberId: Long): MainRecommend
 }
 
@@ -26,6 +31,23 @@ class RecommendApplicationServiceImpl(
     private val noteRecommenderService: NoteRecommenderService,
     private val brandApplicationService: BrandApplicationService
 ): RecommendApplicationService {
+    override fun recommendSimilarlyPerfumes(perfumeId: Long): List<SimpleRecommendPerfume> {
+        log.info("[RECOMMEND_PERFUMES][recommendSimilarlyPerfumes] perfumeId=$perfumeId")
+        val perfume = perfumeService.getPerfume(perfumeId)
+        val memberForSimilarlyPerfumes = MemberDetailVo(
+            id = -1L,
+            status = MemberStatus.WITHDRAWAL,
+            name = "memberForSimilarlyPerfumes",
+            gender = perfume.getMemberGender(),
+            ageGroup = AgeGroup.UNKNOWN,
+            noteGroupIds = perfume.notes.mapNotNull { it.note.noteGroup?.id }.distinctBy { it }
+        )
+
+        return perfumeRecommenderService.recommendSimilarlyPerfumes(
+            memberForSimilarlyPerfumes,
+            DEFAULT_RECOMMEND_SIMILARLY_PERFUMES_COUNT
+        ).map { it.toSimpleRecommendPerfume() }
+    }
 
     override fun recommendMainPerfumes(memberId: Long): MainRecommend {
         val member = memberApplicationService.getMemberInfo(memberId)
@@ -124,6 +146,7 @@ class RecommendApplicationServiceImpl(
         val log: Logger = LoggerFactory.getLogger(RecommendApplicationService::class.java)
         const val DEFAULT_RECOMMEND_PERFUMES_COUNT = 10
         const val DEFAULT_MY_RECOMMEND_PERFUMES_COUNT = 3
+        const val DEFAULT_RECOMMEND_SIMILARLY_PERFUMES_COUNT = 3
         const val DEFAULT_RECOMMEND_NOTES_COUNT = 3
     }
 }
