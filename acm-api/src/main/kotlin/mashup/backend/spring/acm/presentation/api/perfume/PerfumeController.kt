@@ -20,11 +20,10 @@ class PerfumeController(
     val recommendApplicationService: RecommendApplicationService
 ) {
     @ApiOperation(value = "향수 상세보기 API")
-    @GetMapping("/{id}")
-    fun getPerfumeDetail(@PathVariable id: Long): ApiResponse<PerfumeDetailResponse> {
-        val perfume = perfumeService.getPerfume(id)
-        val similarPerfumes = recommendApplicationService.recommendSimilarlyPerfumes(id)
-        println(similarPerfumes)
+    @GetMapping("/{perfumeId}")
+    fun getPerfumeDetail(@PathVariable perfumeId: Long): ApiResponse<PerfumeDetailResponse> {
+        val perfume = perfumeService.getPerfume(perfumeId)
+        val similarPerfumes = recommendApplicationService.recommendSimilarPerfumes(perfumeId)
 
         return ApiResponse.success(PerfumeDetailResponse(perfume.toPerfumeDetail(similarPerfumes)))
     }

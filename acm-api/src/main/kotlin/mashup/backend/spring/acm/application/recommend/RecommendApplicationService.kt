@@ -19,7 +19,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 interface RecommendApplicationService {
-    fun recommendSimilarlyPerfumes(perfumeId: Long): List<SimpleRecommendPerfume>
+    fun recommendSimilarPerfumes(perfumeId: Long): List<SimpleRecommendPerfume>
     fun recommendMainPerfumes(memberId: Long): MainRecommend
 }
 
@@ -31,21 +31,21 @@ class RecommendApplicationServiceImpl(
     private val noteRecommenderService: NoteRecommenderService,
     private val brandApplicationService: BrandApplicationService
 ): RecommendApplicationService {
-    override fun recommendSimilarlyPerfumes(perfumeId: Long): List<SimpleRecommendPerfume> {
-        log.info("[RECOMMEND_PERFUMES][recommendSimilarlyPerfumes] perfumeId=$perfumeId")
+    override fun recommendSimilarPerfumes(perfumeId: Long): List<SimpleRecommendPerfume> {
+        log.info("[RECOMMEND_PERFUMES][recommendSimilarPerfumes] perfumeId=$perfumeId")
         val perfume = perfumeService.getPerfume(perfumeId)
-        val memberForSimilarlyPerfumes = MemberDetailVo(
+        val memberForSimilarPerfumes = MemberDetailVo(
             id = -1L,
             status = MemberStatus.WITHDRAWAL,
-            name = "memberForSimilarlyPerfumes",
-            gender = perfume.getMemberGender(),
+            name = "memberForSimilarPerfumes",
+            gender = perfume.gender.getMemberGender(),
             ageGroup = AgeGroup.UNKNOWN,
             noteGroupIds = perfume.notes.mapNotNull { it.note.noteGroup?.id }.distinctBy { it }
         )
 
-        return perfumeRecommenderService.recommendSimilarlyPerfumes(
-            memberForSimilarlyPerfumes,
-            DEFAULT_RECOMMEND_SIMILARLY_PERFUMES_COUNT
+        return perfumeRecommenderService.recommendSimilarPerfumes(
+            memberForSimilarPerfumes,
+            DEFAULT_RECOMMEND_SIMILAR_PERFUMES_COUNT
         ).map { it.toSimpleRecommendPerfume() }
     }
 
@@ -146,7 +146,7 @@ class RecommendApplicationServiceImpl(
         val log: Logger = LoggerFactory.getLogger(RecommendApplicationService::class.java)
         const val DEFAULT_RECOMMEND_PERFUMES_COUNT = 10
         const val DEFAULT_MY_RECOMMEND_PERFUMES_COUNT = 3
-        const val DEFAULT_RECOMMEND_SIMILARLY_PERFUMES_COUNT = 3
+        const val DEFAULT_RECOMMEND_SIMILAR_PERFUMES_COUNT = 3
         const val DEFAULT_RECOMMEND_NOTES_COUNT = 3
     }
 }

@@ -33,12 +33,4 @@ class Perfume(
             imageUrl = perfumeCreateVo.imageUrl,
         )
     }
-
-    fun getMemberGender(): MemberGender {
-        return when (this.gender) {
-            Gender.WOMAN -> MemberGender.FEMALE
-            Gender.MAN -> MemberGender.MALE
-            Gender.UNISEX, Gender.UNKNOWN ->  MemberGender.UNKNOWN
-        }
-    }
 }

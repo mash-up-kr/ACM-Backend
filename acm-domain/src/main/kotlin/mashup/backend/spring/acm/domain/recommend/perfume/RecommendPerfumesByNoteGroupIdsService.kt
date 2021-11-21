@@ -32,7 +32,7 @@ class RecommendPerfumesByNoteGroupIdsAndGenderAndAgeService(
                 }
             }
 
-            return perfumes
+            return perfumes.toList()
         }
 
         // 노트그룹의 노트 개수가 count 미만이면, 하나의 노트에서 count 만큼 향수 추천
@@ -40,7 +40,7 @@ class RecommendPerfumesByNoteGroupIdsAndGenderAndAgeService(
             perfumes.add(it)
         }
 
-        return perfumes
+        return perfumes.toList()
     }
 
 

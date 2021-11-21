@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 internal class RecommenderTest {
 
     @Autowired
-    lateinit var sut: Recommender<Perfume>
+    lateinit var perfumeRecommenderByGender: Recommender<Perfume>
 
     @Test
     fun recommend() {
@@ -28,7 +28,7 @@ internal class RecommenderTest {
             noteGroupIds = emptyList(),
         )
         // when
-        val actual = sut.recommend(memberDetailVo = memberDetailVo, 3)
+        val actual = perfumeRecommenderByGender.recommend(memberDetailVo = memberDetailVo, 3)
         // then
         assertTrue(actual.isEmpty())
     }
