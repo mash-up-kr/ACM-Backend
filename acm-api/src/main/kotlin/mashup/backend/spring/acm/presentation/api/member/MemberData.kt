@@ -1,5 +1,6 @@
 package mashup.backend.spring.acm.presentation.api.member
 
+import mashup.backend.spring.acm.domain.member.AgeGroup
 import mashup.backend.spring.acm.domain.member.MemberGender
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderType
 import org.hibernate.validator.constraints.Length
@@ -45,8 +46,8 @@ data class LoginRequest(
 )
 
 data class MemberInitializeRequest(
-    val gender: String?,
-    val ageGroup: String?,
+    val gender: MemberGender?,
+    val ageGroup: AgeGroup?,
     val noteGroupIds: List<Long>?,
 )
 

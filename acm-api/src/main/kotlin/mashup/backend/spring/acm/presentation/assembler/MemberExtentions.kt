@@ -23,8 +23,8 @@ fun MemberDetailVo.toMemberInfoResponse(): MemberInfoResponse = MemberInfoRespon
 
 fun MemberInitializeRequest.toVo(): MemberInitializeRequestVo {
     return MemberInitializeRequestVo(
-        gender = this.gender?.let { MemberGender.valueOf(it) } ?: MemberGender.UNKNOWN,
-        ageGroup = this.ageGroup?.let { AgeGroup.valueOf(it) } ?: AgeGroup.UNKNOWN,
+        gender = this.gender ?: MemberGender.UNKNOWN,
+        ageGroup = this.ageGroup ?: AgeGroup.UNKNOWN,
         noteGroupIds = this.noteGroupIds,
     )
 }
