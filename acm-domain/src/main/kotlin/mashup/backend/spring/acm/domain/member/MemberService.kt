@@ -35,26 +35,24 @@ class MemberServiceImpl(
         return memberRepository.findByIdOrNull(memberId)
     }
 
-    override fun findByIdProviderVo(idProviderInfo: IdProviderInfo): Member? {
-        return memberRepository.findByMemberIdProviders_IdProviderInfo(idProviderInfo)
-    }
+    override fun findByIdProviderVo(idProviderInfo: IdProviderInfo): Member? =
+        memberRepository.findByMemberIdProviders_IdProviderInfo(idProviderInfo)
 
-    override fun findDetailById(memberId: Long): MemberDetailVo {
-        return getMemberDetailById(memberId)
-    }
+    override fun findDetailById(memberId: Long): MemberDetailVo =
+        getMemberDetailById(memberId)
 
-    override fun findAllMemberDetail(): List<SimpleMemberDetailVo> {
-        return memberDetailRepository.findByNoteGroupIdsIsNotNull().map { SimpleMemberDetailVo(it) }
-    }
+    override fun findAllMemberDetail(): List<SimpleMemberDetailVo> =
+        memberDetailRepository.findByNoteGroupIdsIsNotNull()
+            .map { SimpleMemberDetailVo(it) }
 
     override fun getMembers(pageable: Pageable): Page<MemberDetailVo> =
         memberRepository.findAll(pageable)
-            .map {
-                MemberDetailVo(
-                    member = it,
-                    noteGroupSimpleVoList = noteGroupService.getNoteGroupsByIdIn(it.memberDetail.noteGroupIds)
-                )
-            }
+            .map { toMemberDetailVo(it) }
+
+    private fun toMemberDetailVo(member: Member): MemberDetailVo = MemberDetailVo(
+        member = member,
+        noteGroupSimpleVoList = noteGroupService.getNoteGroupsByIdIn(member.memberDetail.noteGroupIds)
+    )
 
     @Transactional
     override fun join(idProviderInfo: IdProviderInfo): MemberDetailVo {
@@ -76,14 +74,10 @@ class MemberServiceImpl(
         }
     }
 
-    private fun getMemberDetailById(memberId: Long): MemberDetailVo {
-        val member = memberRepository.findByIdOrNull(memberId)
+    private fun getMemberDetailById(memberId: Long): MemberDetailVo =
+        memberRepository.findByIdOrNull(memberId)
+            ?.let { toMemberDetailVo(it) }
             ?: throw MemberNotFoundException(memberId = memberId)
-        return MemberDetailVo(
-            member = member,
-            noteGroupSimpleVoList = noteGroupService.getNoteGroupsByIdIn(member.memberDetail.noteGroupIds)
-        )
-    }
 
     @Transactional
     override fun withdraw() {
