@@ -1,3 +1,6 @@
 jwt:
   token-issuer:
   token-signing-key:
+spring:
+  main:
+    allow-bean-definition-overriding: true
