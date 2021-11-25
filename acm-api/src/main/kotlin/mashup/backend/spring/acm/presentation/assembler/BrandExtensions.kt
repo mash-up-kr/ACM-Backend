@@ -26,5 +26,5 @@ fun BrandDetailVo.toDto() = BrandDetailResponse(
     id = this.id,
     name = this.name,
     thumbnailImageUrl = this.thumbnailImageUrl,
-    perfumes = SAMPLE_PERFUME_LIST,
+    perfumes = perfumeSimpleVoList.map { it.toDto() },
 )
