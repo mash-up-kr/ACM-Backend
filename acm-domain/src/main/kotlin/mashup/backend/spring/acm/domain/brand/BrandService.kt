@@ -2,6 +2,7 @@ package mashup.backend.spring.acm.domain.brand
 
 import mashup.backend.spring.acm.domain.exception.BrandDuplicatedException
 import mashup.backend.spring.acm.domain.exception.BrandNotFoundException
+import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -24,6 +25,7 @@ interface BrandService {
 @Transactional(readOnly = true)
 class BrandServiceImpl(
     private val brandRepository: BrandRepository,
+    private val perfumeService: PerfumeService,
 ) : BrandService {
 
     @Transactional
@@ -52,7 +54,7 @@ class BrandServiceImpl(
         .map { BrandSimpleVo(it) }
 
     override fun getDetail(brandId: Long): BrandDetailVo = brandRepository.findByIdOrNull(brandId)
-        ?.let { BrandDetailVo(it) }
+        ?.let { BrandDetailVo(it, perfumeService.getPerfumesByBrand(brand = it)) }
         ?: throw BrandNotFoundException(brandId = brandId)
 
     override fun getPopularBrands(): List<BrandSimpleVo> {

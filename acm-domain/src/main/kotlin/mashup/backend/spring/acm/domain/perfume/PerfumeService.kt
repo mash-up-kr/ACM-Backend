@@ -1,6 +1,7 @@
 package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.accord.AccordService
+import mashup.backend.spring.acm.domain.brand.Brand
 import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.note.NoteService
@@ -18,6 +19,7 @@ interface PerfumeService {
     fun getPerfumeByUrl(url: String): Perfume
     fun getPerfumes(pageable: Pageable): Page<PerfumeSimpleVo>
     fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int): List<PerfumeSimpleVo>
+    fun getPerfumesByBrand(brand: Brand): List<PerfumeSimpleVo>
     fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<Perfume>
     fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume>
     fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume>
@@ -95,6 +97,9 @@ class PerfumeServiceImpl(
 
     override fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int) =
         perfumeRepository.findByBrand_IdOrderByRandom(brandId, PageRequest.ofSize(size)).map { PerfumeSimpleVo(it) }
+
+    override fun getPerfumesByBrand(brand: Brand): List<PerfumeSimpleVo> =
+        perfumeRepository.findByBrand(brand).map { PerfumeSimpleVo(it) }
 
     override fun getPerfumesByGenderWithRandom(gender: Gender, size: Int) =
         perfumeRepository.findByGenderOrderByRandom(gender, PageRequest.ofSize(size))
