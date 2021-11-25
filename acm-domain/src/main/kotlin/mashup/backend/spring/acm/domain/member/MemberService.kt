@@ -6,6 +6,7 @@ import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderInfo
 import mashup.backend.spring.acm.domain.member.idprovider.MemberIdProvider
 import mashup.backend.spring.acm.domain.note.NoteGroupService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -29,8 +30,11 @@ interface MemberService {
 class MemberServiceImpl(
     private val memberRepository: MemberRepository,
     private val memberDetailRepository: MemberDetailRepository,
-    private val noteGroupService: NoteGroupService,
 ) : MemberService {
+
+    @Autowired
+    lateinit var noteGroupService: NoteGroupService
+
     override fun findById(memberId: Long): Member? {
         return memberRepository.findByIdOrNull(memberId)
     }
