@@ -26,6 +26,7 @@ interface NoteGroupService {
     fun getPopularNoteGroup(): NoteGroupDetailVo
     fun cachePutGetPopularNoteGroup(): NoteGroupDetailVo
     fun getNoteGroups(pageable: Pageable): Page<NoteGroup>
+    fun getNoteGroupsByIdIn(noteGroupIds: List<Long>): List<NoteGroupSimpleVo>
 }
 
 @Service
@@ -137,4 +138,8 @@ class NoteGroupServiceImpl(
     }
 
     override fun getNoteGroups(pageable: Pageable): Page<NoteGroup> = noteGroupRepository.findAll(pageable)
+
+    override fun getNoteGroupsByIdIn(noteGroupIds: List<Long>): List<NoteGroupSimpleVo> =
+        noteGroupRepository.findByIdIn(noteGroupIds = noteGroupIds)
+            .map { NoteGroupSimpleVo(it) }
 }

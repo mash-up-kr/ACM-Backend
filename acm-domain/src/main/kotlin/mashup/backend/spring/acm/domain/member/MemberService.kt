@@ -5,6 +5,7 @@ import mashup.backend.spring.acm.domain.exception.MemberNicknameInvalidException
 import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderInfo
 import mashup.backend.spring.acm.domain.member.idprovider.MemberIdProvider
+import mashup.backend.spring.acm.domain.note.NoteGroupService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -27,7 +28,8 @@ interface MemberService {
 @Transactional(readOnly = true)
 class MemberServiceImpl(
     private val memberRepository: MemberRepository,
-    private val memberDetailRepository: MemberDetailRepository
+    private val memberDetailRepository: MemberDetailRepository,
+    private val noteGroupService: NoteGroupService,
 ) : MemberService {
     override fun findById(memberId: Long): Member? {
         return memberRepository.findByIdOrNull(memberId)
@@ -46,7 +48,13 @@ class MemberServiceImpl(
     }
 
     override fun getMembers(pageable: Pageable): Page<MemberDetailVo> =
-        memberRepository.findAll(pageable).map { MemberDetailVo(it) }
+        memberRepository.findAll(pageable)
+            .map {
+                MemberDetailVo(
+                    member = it,
+                    noteGroupSimpleVoList = noteGroupService.getNoteGroupsByIdIn(it.memberDetail.noteGroupIds)
+                )
+            }
 
     @Transactional
     override fun join(idProviderInfo: IdProviderInfo): MemberDetailVo {
@@ -60,13 +68,21 @@ class MemberServiceImpl(
                     MemberIdProvider(idProviderInfo = idProviderInfo)
                 )
             )
-        ).let { MemberDetailVo(it) }
+        ).let {
+            MemberDetailVo(
+                member = it,
+                noteGroupSimpleVoList = noteGroupService.getNoteGroupsByIdIn(it.memberDetail.noteGroupIds)
+            )
+        }
     }
 
     private fun getMemberDetailById(memberId: Long): MemberDetailVo {
         val member = memberRepository.findByIdOrNull(memberId)
             ?: throw MemberNotFoundException(memberId = memberId)
-        return MemberDetailVo(member)
+        return MemberDetailVo(
+            member = member,
+            noteGroupSimpleVoList = noteGroupService.getNoteGroupsByIdIn(member.memberDetail.noteGroupIds)
+        )
     }
 
     @Transactional
