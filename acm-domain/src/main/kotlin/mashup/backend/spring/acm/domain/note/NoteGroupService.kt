@@ -7,6 +7,7 @@ import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.member.MemberService
 import mashup.backend.spring.acm.domain.perfume.PerfumeRepository
 import mashup.backend.spring.acm.infrastructure.CacheType
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
@@ -32,10 +33,12 @@ interface NoteGroupService {
 @Service
 @Transactional(readOnly = true)
 class NoteGroupServiceImpl(
-    private val memberService: MemberService,
     private val noteGroupRepository: NoteGroupRepository,
-    private val perfumeRepository: PerfumeRepository
+    private val perfumeRepository: PerfumeRepository,
 ) : NoteGroupService {
+    @Autowired
+    lateinit var memberService: MemberService
+
     @Transactional(readOnly = false)
     override fun create(noteGroupCreateVo: NoteGroupCreateVo): NoteGroup {
         if (noteGroupRepository.existsByOriginalName(noteGroupCreateVo.name)) {
