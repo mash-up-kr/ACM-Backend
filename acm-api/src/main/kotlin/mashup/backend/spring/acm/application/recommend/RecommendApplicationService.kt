@@ -6,6 +6,7 @@ import mashup.backend.spring.acm.application.member.MemberApplicationService
 import mashup.backend.spring.acm.domain.member.AgeGroup
 import mashup.backend.spring.acm.domain.member.MemberDetailVo
 import mashup.backend.spring.acm.domain.member.MemberStatus
+import mashup.backend.spring.acm.domain.note.NoteGroupService
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
 import mashup.backend.spring.acm.domain.recommend.note.NoteRecommenderService
@@ -29,18 +30,21 @@ class RecommendApplicationServiceImpl(
     private val perfumeService: PerfumeService,
     private val perfumeRecommenderService: PerfumeRecommenderService,
     private val noteRecommenderService: NoteRecommenderService,
-    private val brandApplicationService: BrandApplicationService
+    private val brandApplicationService: BrandApplicationService,
+    private val noteGroupService: NoteGroupService,
 ): RecommendApplicationService {
     override fun recommendSimilarPerfumes(perfumeId: Long): List<SimpleRecommendPerfume> {
         log.info("[RECOMMEND_PERFUMES][recommendSimilarPerfumes] perfumeId=$perfumeId")
         val perfume = perfumeService.getPerfume(perfumeId)
+        val noteGroupIds = perfume.notes.mapNotNull { it.note.noteGroup?.id }.distinctBy { it }
         val memberForSimilarPerfumes = MemberDetailVo(
             id = -1L,
             status = MemberStatus.WITHDRAWAL,
             name = "memberForSimilarPerfumes",
             gender = perfume.gender.getMemberGender(),
             ageGroup = AgeGroup.UNKNOWN,
-            noteGroupIds = perfume.notes.mapNotNull { it.note.noteGroup?.id }.distinctBy { it }
+            noteGroupIds = noteGroupIds,
+            noteGroupSimpleVoList = noteGroupService.getNoteGroupsByIdIn(noteGroupIds = noteGroupIds),
         )
 
         return perfumeRecommenderService.recommendSimilarPerfumes(

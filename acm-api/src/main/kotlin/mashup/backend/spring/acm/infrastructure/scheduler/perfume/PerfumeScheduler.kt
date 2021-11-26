@@ -66,7 +66,8 @@ class PerfumeScheduler(
             name = "MOCK",
             gender = memberGender,
             ageGroup = AgeGroup.UNKNOWN,
-            noteGroupIds = emptyList()
+            noteGroupIds = emptyList(),
+            noteGroupSimpleVoList = emptyList(),
         )
     }
 

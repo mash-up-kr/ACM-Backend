@@ -26,6 +26,7 @@ internal class RecommenderTest {
             gender = MemberGender.MALE,
             ageGroup = AgeGroup.TEENAGER,
             noteGroupIds = emptyList(),
+            noteGroupSimpleVoList = emptyList(),
         )
         // when
         val actual = perfumeRecommenderByGender.recommend(memberDetailVo = memberDetailVo, 3)

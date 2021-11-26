@@ -5,6 +5,8 @@ import mashup.backend.spring.acm.domain.exception.MemberNicknameInvalidException
 import mashup.backend.spring.acm.domain.exception.MemberNotFoundException
 import mashup.backend.spring.acm.domain.member.idprovider.IdProviderInfo
 import mashup.backend.spring.acm.domain.member.idprovider.MemberIdProvider
+import mashup.backend.spring.acm.domain.note.NoteGroupService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -27,26 +29,34 @@ interface MemberService {
 @Transactional(readOnly = true)
 class MemberServiceImpl(
     private val memberRepository: MemberRepository,
-    private val memberDetailRepository: MemberDetailRepository
+    private val memberDetailRepository: MemberDetailRepository,
 ) : MemberService {
+
+    @Autowired
+    lateinit var noteGroupService: NoteGroupService
+
     override fun findById(memberId: Long): Member? {
         return memberRepository.findByIdOrNull(memberId)
     }
 
-    override fun findByIdProviderVo(idProviderInfo: IdProviderInfo): Member? {
-        return memberRepository.findByMemberIdProviders_IdProviderInfo(idProviderInfo)
-    }
+    override fun findByIdProviderVo(idProviderInfo: IdProviderInfo): Member? =
+        memberRepository.findByMemberIdProviders_IdProviderInfo(idProviderInfo)
 
-    override fun findDetailById(memberId: Long): MemberDetailVo {
-        return getMemberDetailById(memberId)
-    }
+    override fun findDetailById(memberId: Long): MemberDetailVo =
+        getMemberDetailById(memberId)
 
-    override fun findAllMemberDetail(): List<SimpleMemberDetailVo> {
-        return memberDetailRepository.findByNoteGroupIdsIsNotNull().map { SimpleMemberDetailVo(it) }
-    }
+    override fun findAllMemberDetail(): List<SimpleMemberDetailVo> =
+        memberDetailRepository.findByNoteGroupIdsIsNotNull()
+            .map { SimpleMemberDetailVo(it) }
 
     override fun getMembers(pageable: Pageable): Page<MemberDetailVo> =
-        memberRepository.findAll(pageable).map { MemberDetailVo(it) }
+        memberRepository.findAll(pageable)
+            .map { toMemberDetailVo(it) }
+
+    private fun toMemberDetailVo(member: Member): MemberDetailVo = MemberDetailVo(
+        member = member,
+        noteGroupSimpleVoList = noteGroupService.getNoteGroupsByIdIn(member.memberDetail.noteGroupIds)
+    )
 
     @Transactional
     override fun join(idProviderInfo: IdProviderInfo): MemberDetailVo {
@@ -60,14 +70,18 @@ class MemberServiceImpl(
                     MemberIdProvider(idProviderInfo = idProviderInfo)
                 )
             )
-        ).let { MemberDetailVo(it) }
+        ).let {
+            MemberDetailVo(
+                member = it,
+                noteGroupSimpleVoList = noteGroupService.getNoteGroupsByIdIn(it.memberDetail.noteGroupIds)
+            )
+        }
     }
 
-    private fun getMemberDetailById(memberId: Long): MemberDetailVo {
-        val member = memberRepository.findByIdOrNull(memberId)
+    private fun getMemberDetailById(memberId: Long): MemberDetailVo =
+        memberRepository.findByIdOrNull(memberId)
+            ?.let { toMemberDetailVo(it) }
             ?: throw MemberNotFoundException(memberId = memberId)
-        return MemberDetailVo(member)
-    }
 
     @Transactional
     override fun withdraw() {
