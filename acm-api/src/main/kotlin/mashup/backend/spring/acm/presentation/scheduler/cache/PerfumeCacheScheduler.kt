@@ -65,7 +65,8 @@ class PerfumeCacheScheduler(
             name = "MOCK",
             gender = memberGender,
             ageGroup = AgeGroup.UNKNOWN,
-            noteGroupIds = emptyList()
+            noteGroupIds = emptyList(),
+            noteGroupSimpleVoList = emptyList(),
         )
     }
 

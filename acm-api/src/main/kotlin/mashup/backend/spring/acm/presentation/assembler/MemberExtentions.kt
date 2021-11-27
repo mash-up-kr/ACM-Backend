@@ -4,7 +4,6 @@ import mashup.backend.spring.acm.domain.member.AgeGroup
 import mashup.backend.spring.acm.domain.member.MemberDetailVo
 import mashup.backend.spring.acm.domain.member.MemberGender
 import mashup.backend.spring.acm.domain.member.MemberInitializeRequestVo
-import mashup.backend.spring.acm.domain.perfume.Gender
 import mashup.backend.spring.acm.presentation.api.member.MemberDetailResponse
 import mashup.backend.spring.acm.presentation.api.member.MemberInfoResponse
 import mashup.backend.spring.acm.presentation.api.member.MemberInitializeRequest
@@ -14,7 +13,8 @@ fun MemberDetailVo.toMemberDetailResponse(): MemberDetailResponse = MemberDetail
     status = this.status.name,
     name = this.name,
     gender = this.gender.name,
-    ageGroup = this.ageGroup.name
+    ageGroup = this.ageGroup.name,
+    noteGroups = this.noteGroupSimpleVoList.map { it.toDto() }
 )
 
 fun MemberDetailVo.toMemberInfoResponse(): MemberInfoResponse = MemberInfoResponse(
@@ -23,8 +23,8 @@ fun MemberDetailVo.toMemberInfoResponse(): MemberInfoResponse = MemberInfoRespon
 
 fun MemberInitializeRequest.toVo(): MemberInitializeRequestVo {
     return MemberInitializeRequestVo(
-        gender = this.gender?.let { MemberGender.valueOf(it) } ?: MemberGender.UNKNOWN,
-        ageGroup = this.ageGroup?.let { AgeGroup.valueOf(it) } ?: AgeGroup.UNKNOWN,
+        gender = this.gender ?: MemberGender.UNKNOWN,
+        ageGroup = this.ageGroup ?: AgeGroup.UNKNOWN,
         noteGroupIds = this.noteGroupIds,
     )
 }

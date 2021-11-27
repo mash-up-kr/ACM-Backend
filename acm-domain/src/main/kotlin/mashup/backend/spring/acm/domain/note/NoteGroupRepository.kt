@@ -13,4 +13,6 @@ interface NoteGroupRepository : JpaRepository<NoteGroup, Long> {
 
     @Query(value = "SELECT ng FROM NoteGroup ng ORDER BY function('RAND')")
     fun findByRandom(pageable: Pageable): List<NoteGroup>
+
+    fun findByIdIn(noteGroupIds: Collection<Long>): List<NoteGroup>
 }

@@ -1,5 +1,6 @@
 package mashup.backend.spring.acm.domain.member
 
+import mashup.backend.spring.acm.domain.note.NoteGroupSimpleVo
 import mashup.backend.spring.acm.domain.perfume.Gender
 
 data class MemberDetailVo(
@@ -8,15 +9,17 @@ data class MemberDetailVo(
     val name: String?,
     val gender: MemberGender,
     val ageGroup: AgeGroup,
-    val noteGroupIds: List<Long>
+    val noteGroupIds: List<Long>,
+    val noteGroupSimpleVoList: List<NoteGroupSimpleVo>,
 ) {
-    constructor(member: Member) : this(
+    constructor(member: Member, noteGroupSimpleVoList: List<NoteGroupSimpleVo>) : this(
         id = member.id,
         status = member.memberStatus,
         name = member.memberDetail.name,
         gender = member.memberDetail.gender,
         ageGroup = member.memberDetail.ageGroup,
-        noteGroupIds = member.memberDetail.noteGroupIds
+        noteGroupIds = member.memberDetail.noteGroupIds,
+        noteGroupSimpleVoList = noteGroupSimpleVoList.toList(),
     )
 
     fun getPerfumeGender(): Gender {

@@ -1,6 +1,13 @@
 package mashup.backend.spring.acm.domain.note
 
 import mashup.backend.spring.acm.domain.exception.NoteGroupNotFoundException
+import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
+import mashup.backend.spring.acm.domain.member.MemberService
+import mashup.backend.spring.acm.domain.perfume.PerfumeRepository
+import mashup.backend.spring.acm.infrastructure.CacheType
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.CachePut
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -14,13 +21,18 @@ interface NoteGroupService {
     fun getDetailById(noteGroupId: Long): NoteGroupDetailVo
     fun getById(noteGroupId: Long): NoteGroup?
     fun getNoteGroups(pageable: Pageable): Page<NoteGroup>
+    fun getNoteGroupsByIdIn(noteGroupIds: List<Long>): List<NoteGroupSimpleVo>
 }
 
 @Service
 @Transactional(readOnly = true)
 class NoteGroupServiceImpl(
     private val noteGroupRepository: NoteGroupRepository,
+    private val perfumeRepository: PerfumeRepository,
 ) : NoteGroupService {
+    @Autowired
+    lateinit var memberService: MemberService
+
     @Transactional(readOnly = false)
     override fun create(noteGroupCreateVo: NoteGroupCreateVo): NoteGroup {
         if (noteGroupRepository.existsByOriginalName(noteGroupCreateVo.name)) {
@@ -45,4 +57,8 @@ class NoteGroupServiceImpl(
 
 
     override fun getNoteGroups(pageable: Pageable): Page<NoteGroup> = noteGroupRepository.findAll(pageable)
+
+    override fun getNoteGroupsByIdIn(noteGroupIds: List<Long>): List<NoteGroupSimpleVo> =
+        noteGroupRepository.findByIdIn(noteGroupIds = noteGroupIds)
+            .map { NoteGroupSimpleVo(it) }
 }
