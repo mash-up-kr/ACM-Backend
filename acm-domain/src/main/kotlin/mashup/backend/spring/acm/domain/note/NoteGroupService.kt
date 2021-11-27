@@ -1,13 +1,11 @@
 package mashup.backend.spring.acm.domain.note
 
+import mashup.backend.spring.acm.domain.ResultCode
+import mashup.backend.spring.acm.domain.exception.BusinessException
 import mashup.backend.spring.acm.domain.exception.NoteGroupNotFoundException
-import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.member.MemberService
 import mashup.backend.spring.acm.domain.perfume.PerfumeRepository
-import mashup.backend.spring.acm.infrastructure.CacheType
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.annotation.CachePut
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -20,6 +18,8 @@ interface NoteGroupService {
     fun findAll(): List<NoteGroup>
     fun getDetailById(noteGroupId: Long): NoteGroupDetailVo
     fun getById(noteGroupId: Long): NoteGroup?
+    fun getByRandom(size: Int): List<NoteGroup>
+    fun findPopularNoteGroup(): NoteGroupDetailVo
     fun getNoteGroups(pageable: Pageable): Page<NoteGroup>
     fun getNoteGroupsByIdIn(noteGroupIds: List<Long>): List<NoteGroupSimpleVo>
 }
@@ -54,7 +54,35 @@ class NoteGroupServiceImpl(
         return noteGroupRepository.findNoteGroupById(noteGroupId)
     }
 
+    override fun getByRandom(size: Int): List<NoteGroup> = noteGroupRepository.findByRandom(Pageable.ofSize(size))
 
+    override fun findPopularNoteGroup(): NoteGroupDetailVo {
+        var maxCount = 0L
+        var popularOnboardNoteGroupId = -1L
+        val countMap = mutableMapOf<Long, Long>()
+
+        val noteGroupIdsList = memberService.findAllMemberDetail().map { it.noteGroupIds }
+        for (noteGroupIds in noteGroupIdsList) {
+            noteGroupIds.forEach {
+                if (countMap.containsKey(it)) {
+                    countMap[it] = countMap[it]!!.plus(1)
+                } else {
+                    countMap[it] = 1
+                }
+
+                if (maxCount < countMap[it]!!) {
+                    maxCount = countMap[it]!!
+                    popularOnboardNoteGroupId = it
+                }
+            }
+        }
+
+        if (popularOnboardNoteGroupId == -1L) {
+            throw BusinessException(ResultCode.ONBOARD_DATA_NOT_EXIST, ResultCode.ONBOARD_DATA_NOT_EXIST.message)
+        }
+
+        return getDetailById(popularOnboardNoteGroupId)
+    }
 
     override fun getNoteGroups(pageable: Pageable): Page<NoteGroup> = noteGroupRepository.findAll(pageable)
 

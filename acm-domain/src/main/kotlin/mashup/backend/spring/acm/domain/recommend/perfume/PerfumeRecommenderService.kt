@@ -11,6 +11,8 @@ class PerfumeRecommenderService(
     private val similarPerfumesRecommender: Recommender<Perfume>,
     private val perfumesByOnboardRecommender: Recommender<Perfume>,
     private val perfumesByNoteGroupRecommender: Recommender<Perfume>,
+    private val perfumesByGenderRecommender: Recommender<Perfume>,
+    private val popularPerfumesRecommender: Recommender<Perfume>,
 ) {
     fun recommendSimilarPerfumes(memberDetailVo: MemberDetailVo, size: Int) =
         recommend(similarPerfumesRecommender, memberDetailVo, size)
@@ -20,6 +22,12 @@ class PerfumeRecommenderService(
 
     fun recommendPerfumesByNoteGroup(memberDetailVo: MemberDetailVo, size: Int) =
         recommend(perfumesByNoteGroupRecommender, memberDetailVo, size)
+
+    fun findPerfumesByGender(memberDetailVo: MemberDetailVo, size: Int) =
+        recommend(perfumesByGenderRecommender, memberDetailVo, size)
+
+    fun findPopularPerfumes(memberDetailVo: MemberDetailVo, size: Int) =
+        recommend(popularPerfumesRecommender, memberDetailVo, size)
 
     private fun recommend(recommender: Recommender<Perfume>, memberDetailVo: MemberDetailVo, size: Int) = recommender
         .recommend(memberDetailVo, size)
