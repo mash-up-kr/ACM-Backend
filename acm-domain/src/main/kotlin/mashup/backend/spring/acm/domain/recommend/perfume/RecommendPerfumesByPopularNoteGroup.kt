@@ -1,6 +1,6 @@
 package mashup.backend.spring.acm.domain.recommend.perfume
 
-import mashup.backend.spring.acm.domain.note.NoteGroupService
+import mashup.backend.spring.acm.domain.note.NoteGroupCacheService
 import mashup.backend.spring.acm.domain.perfume.Perfume
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.recommend.RecommendRequestVo
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class RecommendPerfumesByPopularNoteGroupService(
-    private val noteGroupService: NoteGroupService,
+    private val noteGroupCacheService: NoteGroupCacheService,
     private val perfumeService: PerfumeService
 ): RecommendPerfumesService {
     override fun supports(recommendRequestVo: RecommendRequestVo): Boolean {
@@ -18,7 +18,7 @@ class RecommendPerfumesByPopularNoteGroupService(
     }
 
     override fun getItems(recommendRequestVo: RecommendRequestVo): List<Perfume> {
-        val noteGroup = noteGroupService.getPopularNoteGroup()
+        val noteGroup = noteGroupCacheService.getPopularNoteGroup()
         val size = recommendRequestVo.size
         val perfumes = mutableListOf<Perfume>()
         for (note in noteGroup.notes) {

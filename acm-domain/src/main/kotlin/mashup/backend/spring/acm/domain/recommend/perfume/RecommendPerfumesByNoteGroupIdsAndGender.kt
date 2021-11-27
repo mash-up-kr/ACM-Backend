@@ -1,15 +1,15 @@
 package mashup.backend.spring.acm.domain.recommend.perfume
 
-import mashup.backend.spring.acm.domain.note.NoteGroupService
 import mashup.backend.spring.acm.domain.perfume.Perfume
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.recommend.RecommendRequestVo
+import mashup.backend.spring.acm.domain.recommend.notegroup.NoteGroupRecommenderSupportService
 import org.springframework.stereotype.Service
 
 @Service
 class RecommendPerfumesByNoteGroupIdsAndGenderService(
-    private val noteGroupService: NoteGroupService,
-    private val perfumeService: PerfumeService
+    private val noteGroupRecommenderSupportService: NoteGroupRecommenderSupportService,
+    private val perfumeService: PerfumeService,
 ): RecommendPerfumesService {
     override fun supports(recommendRequestVo: RecommendRequestVo): Boolean {
         val member = recommendRequestVo.memberDetailVo ?: return false
@@ -21,7 +21,7 @@ class RecommendPerfumesByNoteGroupIdsAndGenderService(
         // 노트그룹과 성별이 같은 향수중 랜덤
         val member = recommendRequestVo.memberDetailVo!!
         val size = recommendRequestVo.size
-        val noteGroup = noteGroupService.getRecommendNoteGroupId(recommendRequestVo.exceptIds ?: emptySet(), recommendRequestVo.memberDetailVo.noteGroupIds)
+        val noteGroup = noteGroupRecommenderSupportService.getRecommendNoteGroupId(recommendRequestVo.exceptIds ?: emptySet(), recommendRequestVo.memberDetailVo.noteGroupIds)
 
         return perfumeService.getPerfumesByNoteGroupIdAndGender(noteGroup.id, member.getPerfumeGender(), size)
     }

@@ -1,15 +1,15 @@
 package mashup.backend.spring.acm.domain.recommend.perfume
 
-import mashup.backend.spring.acm.domain.note.NoteGroupService
 import mashup.backend.spring.acm.domain.perfume.Perfume
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.recommend.RecommendRequestVo
+import mashup.backend.spring.acm.domain.recommend.notegroup.NoteGroupRecommenderSupportService
 import org.springframework.stereotype.Service
 
 @Service
 class RecommendPerfumesByNoteGroupIdsAndGenderAndAgeService(
-    private val noteGroupService: NoteGroupService,
-    private val perfumeService: PerfumeService
+    private val noteGroupRecommenderSupportService: NoteGroupRecommenderSupportService,
+    private val perfumeService: PerfumeService,
 ): RecommendPerfumesService {
     override fun supports(recommendRequestVo: RecommendRequestVo): Boolean {
         val member = recommendRequestVo.memberDetailVo!!
@@ -17,7 +17,7 @@ class RecommendPerfumesByNoteGroupIdsAndGenderAndAgeService(
     }
 
     override fun getItems(recommendRequestVo: RecommendRequestVo): List<Perfume> {
-        val notes = noteGroupService.getRecommendNoteGroupId(
+        val notes = noteGroupRecommenderSupportService.getRecommendNoteGroupId(
             recommendRequestVo.exceptIds ?: emptySet(),
             recommendRequestVo.memberDetailVo!!.noteGroupIds
         ).notes.shuffled()

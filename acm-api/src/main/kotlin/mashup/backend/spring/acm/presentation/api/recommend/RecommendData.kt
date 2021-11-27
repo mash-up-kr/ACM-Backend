@@ -7,7 +7,7 @@ data class MainRecommendData(
 data class MainRecommend(
     val title: String,
     val popularBrands: List<PopularBrand>,
-    val recommendPerfumeList: List<SimpleRecommendPerfumes>,
+    val recommendPerfumes: List<SimpleRecommendPerfumes>,
     val recommendNotes : List<RecommendNote>
 )
 
