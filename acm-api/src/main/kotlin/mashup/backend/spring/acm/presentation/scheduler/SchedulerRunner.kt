@@ -7,7 +7,7 @@ import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
-@Profile("local", "develop", "production")
+@Profile("develop", "production")
 @Component
 class SchedulerRunner(private val schedulers: List<Scheduler>): ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
