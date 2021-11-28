@@ -25,8 +25,8 @@ class PerfumeController(
     @ApiOperation(value = "향수 목록 조회")
     @GetMapping
     fun getPerfumes(
-        brandId: Long?,
-        noteId: Long?,
+        @RequestParam(required = false) brandId: Long?,
+        @RequestParam(required = false) noteId: Long?,
         pageable: Pageable,
     ): ApiResponse<PerfumeListData> {
         return ApiResponse.success(
