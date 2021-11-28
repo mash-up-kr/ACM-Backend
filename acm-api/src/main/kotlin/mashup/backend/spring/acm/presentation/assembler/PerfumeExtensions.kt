@@ -52,6 +52,7 @@ fun PerfumeSimpleVo.toDto() = PerfumeSimpleResponse(
     id = this.id,
     name = this.name,
     thumbnailImageUrl = this.thumbnailImageUrl,
+    brandName = this.brandName,
 )
 
 fun PerfumeSimpleVo.toSimpleRecommendPerfume() = SimpleRecommendPerfume(

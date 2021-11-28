@@ -47,4 +47,5 @@ data class PerfumeSimpleResponse(
     val id: Long,
     val name: String,
     val thumbnailImageUrl: String,
+    val brandName: String,
 )
