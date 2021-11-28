@@ -49,3 +49,7 @@ data class PerfumeSimpleResponse(
     val thumbnailImageUrl: String,
     val brandName: String,
 )
+
+data class PerfumeListData(
+    val perfumes: List<PerfumeSimpleResponse>
+)
