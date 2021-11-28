@@ -47,4 +47,9 @@ data class PerfumeSimpleResponse(
     val id: Long,
     val name: String,
     val thumbnailImageUrl: String,
+    val brandName: String,
+)
+
+data class PerfumeListData(
+    val perfumes: List<PerfumeSimpleResponse>
 )
