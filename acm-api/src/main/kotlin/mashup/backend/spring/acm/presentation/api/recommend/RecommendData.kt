@@ -1,21 +1,19 @@
 package mashup.backend.spring.acm.presentation.api.recommend
 
-data class MainPopularResponse(
-    val mainPopular: MainPopular
+data class MainRecommendData(
+    val mainRecommend: MainRecommend
 )
 
-data class MainPopular(
-    val myRecommendPerfumes: SimpleRecommendPerfumes,
+data class MainRecommend(
+    val title: String,
     val popularBrands: List<PopularBrand>,
-    val popularGenderOrRecommendMonthPerfumes: SimpleRecommendPerfumes,
-    val popularPerfumes: SimpleRecommendPerfumes,
-    val recommendGiftPerfumesOrRecommendNoteGroupPerfumes: SimpleRecommendPerfumes,
+    val recommendPerfumeList: List<SimpleRecommendPerfumes>,
     val recommendNotes : List<RecommendNote>
 )
 
 data class SimpleRecommendPerfumes(
+    var no: Int = -1,
     val title: String,
-    val metaData: String? = null,
     val perfumes: List<SimpleRecommendPerfume>
 )
 
@@ -37,82 +35,4 @@ data class SimpleRecommendPerfume(
     val image: String,
     val brand: String,
     val name: String
-)
-
-val NOTE_GROUP_ORIGINAL_NAMES = listOf(
-    "CIRTUS SMELLS",
-    "FRUITS, VEGETABLES AND NUTS",
-    "FLOWERS",
-    "WHITE FLOWERS",
-    "GREENS, HERBS AND FOUGERES",
-    "SPICES",
-    "SWEETS AND GOURMAND SMELLS",
-    "WOODS AND MOSSES",
-    "RESINS AND BALSAMS",
-    "MUSK, AMBER, ANIMALIC SMELLS",
-    "BEVERAGES",
-    "NATURAL AND SYNTHETIC, POPULAR AND WEIRD",
-    "UNCATEGORIZED"
-)
-val SAMPLE_RECOMMEND_PERFUMES: List<SimpleRecommendPerfume> = listOf(
-    SimpleRecommendPerfume(
-        id = -1,
-        image ="https://fimgs.net/mdimg/perfume/375x500.33519.jpg",
-        brand = "Maison Francis Kurkdjian",
-        name = "Baccarat Rouge 540"
-    ),
-    SimpleRecommendPerfume(
-        id = -2,
-        image ="https://fimgs.net/mdimg/perfume/375x500.707.jpg",
-        brand = "Mugler",
-        name = "Alien"
-    ),
-    SimpleRecommendPerfume(
-        id = -3,
-        image ="https://fimgs.net/mdimg/perfume/375x500.1825.jpg",
-        brand = "Tom Ford",
-        name = "Tobacco Vanille"
-    ),
-    SimpleRecommendPerfume(
-        id = -4,
-        image ="https://fimgs.net/mdimg/perfume/375x500.25324.jpg",
-        brand = "Saint Laurent",
-        name = "Black Opium Yves"
-    ),
-    SimpleRecommendPerfume(
-        id = -5,
-        image ="https://fimgs.net/mdimg/perfume/375x500.9828.jpg",
-        brand = "Creed",
-        name = "Aventus"
-    ),
-    SimpleRecommendPerfume(
-        id = -6,
-        image ="https://fimgs.net/mdimg/perfume/375x500.1018.jpg",
-        brand = "Tom Ford",
-        name = "Black Orchid"
-    ),
-    SimpleRecommendPerfume(
-        id = -7,
-        image ="https://fimgs.net/mdimg/perfume/375x500.611.jpg",
-        brand = "Chanel",
-        name = "Coco Mademoiselle"
-    ),
-    SimpleRecommendPerfume(
-        id = -8,
-        image ="https://fimgs.net/mdimg/perfume/375x500.34696.jpg",
-        brand = "Armaf",
-        name = "Club de Nuit Intense Man"
-    ),
-    SimpleRecommendPerfume(
-        id = -9,
-        image ="https://fimgs.net/mdimg/perfume/375x500.29727.jpg",
-        brand = "Giorgio Armani",
-        name = "Acqua di Giò Profumo"
-    ),
-    SimpleRecommendPerfume(
-        id = -10,
-        image ="https://fimgs.net/mdimg/perfume/375x500.31861.jpg",
-        brand = "Dior",
-        name = "Sauvage"
-    ),
 )

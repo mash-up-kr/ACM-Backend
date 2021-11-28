@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>digging-admin : member</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>id</th>
+        <th>status</th>
+        <th>name</th>
+        <th>gender</th>
+        <th>ageGroup</th>
+        <th>noteGroupIds</th>
+    </tr>
+    <tr th:each="memberDetailVo: ${memberDetailVoPage}">
+        <td th:text="${memberDetailVo.id}"/>
+        <td th:text="${memberDetailVo.status}"/>
+        <td th:text="${memberDetailVo.name}"/>
+        <td th:text="${memberDetailVo.gender}"/>
+        <td th:text="${memberDetailVo.ageGroup}"/>
+        <td th:text="${memberDetailVo.noteGroupIds}"/>
+    </tr>
+</table>
+</body>
+</html>

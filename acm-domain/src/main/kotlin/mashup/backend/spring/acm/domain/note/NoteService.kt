@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 interface NoteService {
+    fun getAllNotes(): List<Note>
     fun getNotes(pageable: Pageable): Page<Note>
     fun getNote(url: String): Note
     fun getFirstNoteToScrap(): Note?
@@ -23,6 +24,10 @@ class NoteServiceImpl(
     private val noteRepository: NoteRepository,
     private val noteGroupService: NoteGroupService,
 ) : NoteService {
+    override fun getAllNotes(): List<Note> {
+        return noteRepository.findAll()
+    }
+
     override fun getNotes(pageable: Pageable): Page<Note> = noteRepository.findAll(pageable)
 
     override fun getNote(url: String): Note = noteRepository.findByUrl(url) ?: throw NoteNotFoundException()

@@ -1,9 +1,13 @@
 package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.accord.AccordService
+import mashup.backend.spring.acm.domain.brand.Brand
 import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.note.NoteService
+import mashup.backend.spring.acm.infrastructure.CacheType
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -12,11 +16,14 @@ import org.springframework.transaction.annotation.Transactional
 interface PerfumeService {
     fun create(perfumeCreateVo: PerfumeCreateVo): Perfume
     fun getPerfume(id: Long): Perfume
+    fun getPerfumeByUrl(url: String): Perfume
+    fun getPerfumes(pageable: Pageable): Page<PerfumeSimpleVo>
     fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int): List<PerfumeSimpleVo>
-    fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<PerfumeSimpleVo>
-    fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo>
-    fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo>
-    fun getSimilarPerfume(id: Long): List<Perfume>
+    fun getPerfumesByBrand(brand: Brand): List<PerfumeSimpleVo>
+    fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<Perfume>
+    fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume>
+    fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume>
+    fun getPerfumesByNoteGroupIdAndGender(noteGroupId: Long, gender: Gender, size: Int): List<Perfume>
     fun searchByName(name: String, pageable: Pageable): List<PerfumeSimpleVo>
 }
 
@@ -81,31 +88,36 @@ class PerfumeServiceImpl(
     override fun getPerfume(id: Long) = perfumeRepository.findPerfumeById(id)
         ?: throw PerfumeNotFoundException("Perfume not found. id: $id")
 
-
-    private fun getPerfume(url: String) = perfumeRepository.findByUrl(url)
+    override fun getPerfumeByUrl(url: String) = perfumeRepository.findByUrl(url)
         ?: throw PerfumeNotFoundException("Perfume not found. url: $url")
+
+    override fun getPerfumes(pageable: Pageable): Page<PerfumeSimpleVo> =
+        perfumeRepository.findAll(pageable).map { PerfumeSimpleVo(it) }
 
     override fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int) =
         perfumeRepository.findByBrand_IdOrderByRandom(brandId, PageRequest.ofSize(size)).map { PerfumeSimpleVo(it) }
 
+    override fun getPerfumesByBrand(brand: Brand): List<PerfumeSimpleVo> =
+        perfumeRepository.findByBrand(brand).map { PerfumeSimpleVo(it) }
+
     override fun getPerfumesByGenderWithRandom(gender: Gender, size: Int) =
-        perfumeRepository.findByGenderOrderByRandom(gender, PageRequest.ofSize(size)).map { PerfumeSimpleVo(it) }
+        perfumeRepository.findByGenderOrderByRandom(gender, PageRequest.ofSize(size))
 
-
-    override fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo> {
-        return perfumeNoteRepository.findByNote_Id(noteId, PageRequest.of(0, size)).content
-            .map { PerfumeSimpleVo(it.perfume) }
+    @Cacheable(CacheType.CacheNames.PERFUMES_BY_NOTE_ID, key = "#noteId.toString().concat(':').concat(#size)")
+    override fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume> {
+        return perfumeNoteRepository.findByNoteId(noteId, PageRequest.ofSize(size)).content
+            .map { it.perfume }
     }
 
-    override fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo> {
-        return perfumeNoteRepository.findByNote_IdAndPerfume_Gender(noteId, gender, PageRequest.of(0, size)).content
-            .map { PerfumeSimpleVo(it.perfume) }
+    override fun getPerfumesByNoteGroupIdAndGender(noteGroupId: Long, gender: Gender, size: Int): List<Perfume> {
+        return perfumeNoteRepository.findByPerfumeGenderAndNoteNoteGroupId(gender, noteGroupId, PageRequest.ofSize(size))
+            .content
+            .map { it.perfume }
     }
 
-    @Transactional(readOnly = true)
-    override fun getSimilarPerfume(id: Long): List<Perfume> {
-        // TODO: 구현해야 함.
-        return emptyList()
+    override fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume> {
+        return perfumeNoteRepository.findByNoteIdAndPerfumeGender(noteId, gender, PageRequest.ofSize(size)).content
+            .map { it.perfume }
     }
 
     override fun searchByName(name: String, pageable: Pageable): List<PerfumeSimpleVo> = perfumeRepository.findByNameContaining(name, pageable)

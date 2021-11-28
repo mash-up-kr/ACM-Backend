@@ -4,10 +4,9 @@ import mashup.backend.spring.acm.domain.BaseEntity
 import mashup.backend.spring.acm.domain.member.MemberDetailVo
 
 class Recommender<T : BaseEntity>(
-    private val recommendServices: List<RecommendService<T>>,
-    private val size: Int,
+    private val recommendServices: List<RecommendService<T>>
 ) {
-    fun recommend(memberDetailVo: MemberDetailVo): List<T> {
+    fun recommend(memberDetailVo: MemberDetailVo, size: Int): List<T> {
         val perfumes: MutableList<T> = mutableListOf()
         for (recommendService in recommendServices) {
             if (perfumes.size >= size) {

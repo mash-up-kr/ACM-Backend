@@ -1,3 +1,8 @@
 jwt:
   token-issuer: acm-api-local
   token-signing-key: ENC(4VRIXH383eYjwjYXtlj82PYH3Q0VFeZ8HdtoRVwhTVMs4b6qLEoHOBCyifQmEfHxgg+uocQddEHQutxofP8htA==)
+logging:
+  level:
+    org:
+      springframework:
+        web: debug

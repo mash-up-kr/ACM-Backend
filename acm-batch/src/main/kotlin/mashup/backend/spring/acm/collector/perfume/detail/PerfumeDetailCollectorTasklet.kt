@@ -1,7 +1,5 @@
 package mashup.backend.spring.acm.collector.perfume.detail
 
-import mashup.backend.spring.acm.domain.brand.Brand
-import mashup.backend.spring.acm.domain.brand.BrandService
 import mashup.backend.spring.acm.domain.perfume.PerfumeService
 import mashup.backend.spring.acm.domain.scrap.perfume_url.PerfumeUrlScrapingJobService
 import org.jsoup.Jsoup
@@ -14,6 +12,9 @@ import org.springframework.batch.core.step.tasklet.Tasklet
 import org.springframework.batch.repeat.RepeatStatus
 import org.springframework.beans.factory.annotation.Autowired
 
+/**
+ * 향수 url 을 입력받아 상세 정보 크롤링
+ */
 open class PerfumeDetailCollectorTasklet : Tasklet {
     @Autowired
     lateinit var perfumeService: PerfumeService

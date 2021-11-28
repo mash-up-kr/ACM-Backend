@@ -1,5 +1,6 @@
 package mashup.backend.spring.acm.presentation.api.search
 
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import mashup.backend.spring.acm.application.search.SearchApplicationService
 import mashup.backend.spring.acm.presentation.ApiResponse
@@ -11,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
+@Api(
+    description = "검색",
+    tags = ["search"],
+)
 @RestController
 @RequestMapping("/api/v1/search")
 class SearchController(

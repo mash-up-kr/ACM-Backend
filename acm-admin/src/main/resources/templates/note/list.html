@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>digging-admin : note</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>url</th>
+        <th>thumbnailImageUrl</th>
+        <th>noteGroupName</th>
+    </tr>
+    <tr th:each="note: ${notePage}">
+        <td th:text="${note.id}"/>
+        <td th:text="${note.name}"/>
+        <td th:text="${note.url}"/>
+        <td th:text="${note.thumbnailImageUrl}"/>
+        <td th:text="${note.noteGroup.name}"/>
+    </tr>
+</table>
+</body>
+</html>

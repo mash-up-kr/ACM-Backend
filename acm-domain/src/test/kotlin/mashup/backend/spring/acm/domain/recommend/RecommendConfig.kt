@@ -11,7 +11,6 @@ class RecommendConfig {
         .recommendService(listOf(
             mockRecommendService(),
         ))
-        .size(3)
         .build()
 
     @Bean
