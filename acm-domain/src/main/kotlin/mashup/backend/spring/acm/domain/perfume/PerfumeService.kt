@@ -5,6 +5,7 @@ import mashup.backend.spring.acm.domain.exception.DuplicatedPerfumeException
 import mashup.backend.spring.acm.domain.exception.PerfumeNotFoundException
 import mashup.backend.spring.acm.domain.note.NoteService
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,7 +17,7 @@ interface PerfumeService {
     fun getPerfumesByNoteId(noteId: Long, size: Int): List<PerfumeSimpleVo>
     fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<PerfumeSimpleVo>
     fun getSimilarPerfume(id: Long): List<Perfume>
-    fun searchByName(name: String): List<PerfumeSimpleVo>
+    fun searchByName(name: String, pageable: Pageable): List<PerfumeSimpleVo>
 }
 
 @Service
@@ -107,6 +108,6 @@ class PerfumeServiceImpl(
         return emptyList()
     }
 
-    override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findTop30ByNameContaining(name)
+    override fun searchByName(name: String, pageable: Pageable): List<PerfumeSimpleVo> = perfumeRepository.findByNameContaining(name, pageable)
         .map { PerfumeSimpleVo(it) }
 }

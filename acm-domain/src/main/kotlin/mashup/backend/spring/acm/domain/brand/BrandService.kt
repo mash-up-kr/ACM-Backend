@@ -2,6 +2,7 @@ package mashup.backend.spring.acm.domain.brand
 
 import mashup.backend.spring.acm.domain.exception.BrandDuplicatedException
 import mashup.backend.spring.acm.domain.exception.BrandNotFoundException
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -11,7 +12,8 @@ interface BrandService {
     fun rename(brandId: Long, name: String)
     fun updateOriginalName(brandId: Long, originalName: String)
     fun findAll(): List<Brand>
-    fun searchByName(name: String): List<BrandSimpleVo>
+    fun searchByName(name: String, pageable: Pageable): List<BrandSimpleVo>
+    fun searchOneByName(name: String): List<BrandSimpleVo>
     fun getDetail(brandId: Long): BrandDetailVo
     fun getPopularBrands(): List<BrandSimpleVo>
     fun findByUrl(url: String): Brand?
@@ -45,8 +47,11 @@ class BrandServiceImpl(
 
     override fun findAll(): List<Brand> = brandRepository.findAll()
 
-    override fun searchByName(name: String): List<BrandSimpleVo> = brandRepository.findTop30ByNameContaining(name)
+    override fun searchByName(name: String, pageable: Pageable): List<BrandSimpleVo> = brandRepository.findByNameContaining(name, pageable)
         .map { BrandSimpleVo(it) }
+
+    override fun searchOneByName(name: String): List<BrandSimpleVo> = brandRepository.findFirstByNameContaining(name)
+        ?.let { listOf(BrandSimpleVo(it)) } ?: emptyList()
 
     override fun getDetail(brandId: Long): BrandDetailVo = brandRepository.findByIdOrNull(brandId)
         ?.let { BrandDetailVo(it) }
