@@ -1,6 +1,7 @@
 package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.brand.Brand
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -15,4 +16,7 @@ interface PerfumeRepository : JpaRepository<Perfume, Long> {
     fun findByBrand_IdOrderByRandom(brandId: Long, pageable: Pageable): List<Perfume>
     fun findByNameContaining(name: String, pageable: Pageable): List<Perfume>
     fun findByBrand(brand: Brand): List<Perfume>
+    fun findByBrand_id(brandId: Long, pageable: Pageable): Page<Perfume>
+    fun findByNotes_note_id(noteId: Long, pageable: Pageable): Page<Perfume>
+    fun findByBrand_idAndNotes_note_id(brandId: Long, noteId: Long, pageable: Pageable): Page<Perfume>
 }
