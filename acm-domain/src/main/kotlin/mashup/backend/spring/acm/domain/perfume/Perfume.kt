@@ -2,10 +2,13 @@ package mashup.backend.spring.acm.domain.perfume
 
 import mashup.backend.spring.acm.domain.BaseEntity
 import mashup.backend.spring.acm.domain.brand.Brand
-import mashup.backend.spring.acm.domain.member.MemberGender
 import javax.persistence.*
 
 @Entity
+@NamedEntityGraph(
+    name = "perfume.brand",
+    attributeNodes = [NamedAttributeNode("brand")]
+)
 class Perfume(
     var name: String,
     val originalName: String,
