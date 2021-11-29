@@ -18,10 +18,13 @@ interface PerfumeService {
     fun getPerfume(id: Long): Perfume
     fun getPerfumeByUrl(url: String): Perfume
     fun getPerfumes(pageable: Pageable): Page<PerfumeSimpleVo>
+    fun getPerfumes(brandId: Long, noteId: Long, pageable: Pageable): Page<PerfumeSimpleVo>
     fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int): List<PerfumeSimpleVo>
+    fun getPerfumesByBrandId(brandId: Long, pageable: Pageable): Page<PerfumeSimpleVo>
     fun getPerfumesByBrand(brand: Brand): List<PerfumeSimpleVo>
     fun getPerfumesByGenderWithRandom(gender: Gender, size: Int): List<Perfume>
     fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume>
+    fun getPerfumesByNoteId(noteId: Long, pageable: Pageable): Page<PerfumeSimpleVo>
     fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume>
     fun getPerfumesByNoteGroupIdAndGender(noteGroupId: Long, gender: Gender, size: Int): List<Perfume>
     fun searchByName(name: String): List<PerfumeSimpleVo>
@@ -94,8 +97,16 @@ class PerfumeServiceImpl(
     override fun getPerfumes(pageable: Pageable): Page<PerfumeSimpleVo> =
         perfumeRepository.findAll(pageable).map { PerfumeSimpleVo(it) }
 
+    override fun getPerfumes(brandId: Long, noteId: Long, pageable: Pageable): Page<PerfumeSimpleVo> =
+        perfumeRepository.findByBrand_idAndNotes_note_id(brandId, noteId, pageable)
+            .map { PerfumeSimpleVo(it) }
+
     override fun getPerfumesByBrandIdWithRandom(brandId: Long, size: Int) =
         perfumeRepository.findByBrand_IdOrderByRandom(brandId, PageRequest.ofSize(size)).map { PerfumeSimpleVo(it) }
+
+    override fun getPerfumesByBrandId(brandId: Long, pageable: Pageable): Page<PerfumeSimpleVo> =
+        perfumeRepository.findByBrand_id(brandId, pageable)
+            .map { PerfumeSimpleVo(it) }
 
     override fun getPerfumesByBrand(brand: Brand): List<PerfumeSimpleVo> =
         perfumeRepository.findByBrand(brand).map { PerfumeSimpleVo(it) }
@@ -108,6 +119,10 @@ class PerfumeServiceImpl(
         return perfumeNoteRepository.findByNoteId(noteId, PageRequest.ofSize(size)).content
             .map { it.perfume }
     }
+
+    override fun getPerfumesByNoteId(noteId: Long, pageable: Pageable): Page<PerfumeSimpleVo> =
+        perfumeRepository.findByNotes_note_id(noteId, pageable)
+            .map { PerfumeSimpleVo(it) }
 
     override fun getPerfumesByNoteGroupIdAndGender(noteGroupId: Long, gender: Gender, size: Int): List<Perfume> {
         return perfumeNoteRepository.findByPerfumeGenderAndNoteNoteGroupId(gender, noteGroupId, PageRequest.ofSize(size))
