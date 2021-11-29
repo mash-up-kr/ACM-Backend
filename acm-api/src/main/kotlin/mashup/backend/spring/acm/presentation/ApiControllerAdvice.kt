@@ -4,10 +4,8 @@ import mashup.backend.spring.acm.domain.ResultCode
 import mashup.backend.spring.acm.domain.exception.BadRequestException
 import mashup.backend.spring.acm.domain.exception.BusinessException
 import mashup.backend.spring.acm.domain.exception.NotFoundException
-import mashup.backend.spring.acm.infrastructure.spring.mvc.EnumConversionFailedException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.core.convert.ConversionFailedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
