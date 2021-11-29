@@ -24,7 +24,7 @@ interface PerfumeService {
     fun getPerfumesByNoteId(noteId: Long, size: Int): List<Perfume>
     fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume>
     fun getPerfumesByNoteGroupIdAndGender(noteGroupId: Long, gender: Gender, size: Int): List<Perfume>
-    fun searchByName(name: String): List<PerfumeSimpleVo>
+    fun searchByName(name: String, pageable: Pageable): List<PerfumeSimpleVo>
 }
 
 @Service
@@ -120,6 +120,6 @@ class PerfumeServiceImpl(
             .map { it.perfume }
     }
 
-    override fun searchByName(name: String): List<PerfumeSimpleVo> = perfumeRepository.findTop30ByNameContaining(name)
+    override fun searchByName(name: String, pageable: Pageable): List<PerfumeSimpleVo> = perfumeRepository.findByNameContaining(name, pageable)
         .map { PerfumeSimpleVo(it) }
 }

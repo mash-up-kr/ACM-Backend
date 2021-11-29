@@ -14,7 +14,7 @@ interface BrandService {
     fun rename(brandId: Long, name: String)
     fun updateOriginalName(brandId: Long, originalName: String)
     fun findAll(): List<Brand>
-    fun searchByName(name: String): List<BrandSimpleVo>
+    fun searchByName(name: String, pageable: Pageable): List<BrandSimpleVo>
     fun getDetail(brandId: Long): BrandDetailVo
     fun getPopularBrands(): List<BrandSimpleVo>
     fun findByUrl(url: String): Brand?
@@ -50,7 +50,7 @@ class BrandServiceImpl(
 
     override fun findAll(): List<Brand> = brandRepository.findAll()
 
-    override fun searchByName(name: String): List<BrandSimpleVo> = brandRepository.findTop30ByNameContaining(name)
+    override fun searchByName(name: String, pageable: Pageable): List<BrandSimpleVo> = brandRepository.findByNameContaining(name, pageable)
         .map { BrandSimpleVo(it) }
 
     override fun getDetail(brandId: Long): BrandDetailVo = brandRepository.findByIdOrNull(brandId)

@@ -13,6 +13,6 @@ interface PerfumeRepository : JpaRepository<Perfume, Long> {
     fun findByGenderOrderByRandom(gender: Gender, pageable: Pageable): List<Perfume>
     @Query(value="SELECT p FROM Perfume p WHERE p.brand.id = :brandId ORDER BY function('RAND')")
     fun findByBrand_IdOrderByRandom(brandId: Long, pageable: Pageable): List<Perfume>
-    fun findTop30ByNameContaining(name: String): List<Perfume>
+    fun findByNameContaining(name: String, pageable: Pageable): List<Perfume>
     fun findByBrand(brand: Brand): List<Perfume>
 }
