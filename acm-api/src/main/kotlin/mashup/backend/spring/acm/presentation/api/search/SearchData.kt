@@ -5,8 +5,9 @@ import mashup.backend.spring.acm.presentation.api.perfume.PerfumeSimpleResponse
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
-data class SearchResponse(
+data class SearchData(
     val brands: List<BrandSimpleResponse>,
     val perfumes: List<PerfumeSimpleResponse>,
 )
@@ -14,13 +15,13 @@ data class SearchResponse(
 data class SearchRequest(
     @field:NotBlank
     val name: String?,
-    @field:NotBlank
-    val type: String?,
+    @field:NotNull
+    val type: SearchType,
     @field:Min(0)
-    val page: Int? = 0,
+    val page: Int = 0,
     @field:Min(0)
     @field:Max(30)
-    val size: Int? = 30,
+    val size: Int = 30,
 )
 
 enum class SearchType(

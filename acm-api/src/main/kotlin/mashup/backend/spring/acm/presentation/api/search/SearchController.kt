@@ -4,7 +4,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import mashup.backend.spring.acm.application.search.SearchApplicationService
 import mashup.backend.spring.acm.presentation.ApiResponse
-import mashup.backend.spring.acm.presentation.assembler.toSearchResponse
+import mashup.backend.spring.acm.presentation.assembler.toDto
 import mashup.backend.spring.acm.presentation.assembler.toVo
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -31,9 +31,9 @@ class SearchController(
     @PostMapping
     fun search(
         @RequestBody @Valid searchRequest: SearchRequest,
-    ): ApiResponse<SearchResponse> {
+    ): ApiResponse<SearchData> {
         return ApiResponse.success(
-            data = searchApplicationService.search(searchRequestVo = searchRequest.toVo()).toSearchResponse()
+            data = searchApplicationService.search(searchRequestVo = searchRequest.toVo()).toDto()
         )
     }
 }
