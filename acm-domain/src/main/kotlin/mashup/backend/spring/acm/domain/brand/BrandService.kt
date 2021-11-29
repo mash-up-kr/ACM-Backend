@@ -19,6 +19,8 @@ interface BrandService {
     fun getPopularBrands(): List<BrandSimpleVo>
     fun findByUrl(url: String): Brand?
     fun getBrands(pageable: Pageable): Page<BrandSimpleVo>
+    fun getBrandByIdGreaterThan(brandId: Long): Brand?
+    fun findById(brandId: Long): Brand?
 }
 
 @Service
@@ -65,6 +67,12 @@ class BrandServiceImpl(
 
     override fun getBrands(pageable: Pageable): Page<BrandSimpleVo> =
         brandRepository.findAll(pageable).map { BrandSimpleVo(it) }
+
+    override fun getBrandByIdGreaterThan(brandId: Long): Brand? =
+        brandRepository.findTop1ByIdGreaterThanOrderByIdAsc(brandId)
+
+    override fun findById(brandId: Long): Brand? =
+        brandRepository.findByIdOrNull(brandId)
 
     companion object {
         val POPULAR_BRAND_URL_LIST: List<String> = listOf(
