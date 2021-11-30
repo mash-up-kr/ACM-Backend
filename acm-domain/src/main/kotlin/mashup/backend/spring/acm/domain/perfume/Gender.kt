@@ -8,7 +8,7 @@ enum class Gender {
     UNISEX,
     UNKNOWN;
 
-    fun getMemberGender(): MemberGender {
+    fun toMemberGender(): MemberGender {
         return when (this) {
             WOMAN -> MemberGender.FEMALE
             MAN -> MemberGender.MALE

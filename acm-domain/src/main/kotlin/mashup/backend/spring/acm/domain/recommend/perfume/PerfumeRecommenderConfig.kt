@@ -17,11 +17,11 @@ class PerfumeRecommenderConfig(
     private val recommendPerfumesByDefaultService: RecommendPerfumesByDefaultService
 ) {
 
-@Bean
-fun similarPerfumesRecommender() = RecommenderBuilder<Perfume>()
-    .recommendService(listOf(
-        recommendPerfumesByNoteGroupIdsAndGenderService
-    ))
+    @Bean
+    fun similarPerfumesRecommender() = RecommenderBuilder<Perfume>()
+        .recommendService(listOf(
+            recommendPerfumesByNoteGroupIdsAndGenderService
+        ))
     .build()
 
     @Bean

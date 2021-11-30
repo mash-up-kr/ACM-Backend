@@ -35,17 +35,14 @@ data class MemberDetailVo(
     }
 
     fun hasGender(): Boolean {
-        if (gender != MemberGender.UNKNOWN) return true
-        return false
+        return gender != MemberGender.UNKNOWN
     }
 
     fun hasAgeGroup(): Boolean {
-        if (ageGroup != AgeGroup.UNKNOWN) return true
-        return false
+        return ageGroup != AgeGroup.UNKNOWN
     }
 
     fun hasNoteGroupIds(): Boolean {
-        if (noteGroupIds.isNullOrEmpty()) return false
-        return true
+        return noteGroupIds.isEmpty()
     }
 }
