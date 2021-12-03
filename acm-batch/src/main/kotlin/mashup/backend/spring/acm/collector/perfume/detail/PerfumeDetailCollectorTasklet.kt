@@ -26,7 +26,7 @@ open class PerfumeDetailCollectorTasklet : Tasklet {
     lateinit var perfumeDetailParser: PerfumeDetailParser
 
     override fun execute(contribution: StepContribution, chunkContext: ChunkContext): RepeatStatus {
-        val perfumeUrlScrapingJob = perfumeUrlScrapingJobService.getOneToScrap()
+        val perfumeUrlScrapingJob = perfumeUrlScrapingJobService.setOneToScrap()
         if (perfumeUrlScrapingJob == null) {
             log.info("조회할 향수가 없습니다.")
             return RepeatStatus.FINISHED

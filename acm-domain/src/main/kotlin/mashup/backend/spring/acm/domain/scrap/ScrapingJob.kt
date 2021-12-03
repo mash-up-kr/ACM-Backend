@@ -15,4 +15,8 @@ abstract class ScrapingJob(
     fun updateToFailure() {
         status = ScrappingJobStatus.FAILURE
     }
+
+    fun updateToProcessing() {
+        status = ScrappingJobStatus.PROCESSING
+    }
 }
