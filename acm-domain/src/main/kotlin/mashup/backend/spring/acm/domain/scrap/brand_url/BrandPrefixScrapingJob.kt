@@ -7,5 +7,5 @@ import javax.persistence.Entity
 @Entity
 class BrandPrefixScrapingJob(
     val prefix: String,
-    override var status: ScrappingJobStatus = ScrappingJobStatus.PROCESSING,
+    override var status: ScrappingJobStatus = ScrappingJobStatus.WAITING,
 ) : ScrapingJob(status)

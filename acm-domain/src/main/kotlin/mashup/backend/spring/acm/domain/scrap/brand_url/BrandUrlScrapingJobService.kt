@@ -33,5 +33,5 @@ class BrandUrlScrapingJobService(
         brandUrlScrapingJobRepository.findByIdOrNull(brandUrlScrapingJobId)?.updateToFailure()
 
     fun findFirstByUrlForScrap(): BrandUrlScrapingJob? =
-        brandUrlScrapingJobRepository.findFirstByStatus(status = ScrappingJobStatus.PROCESSING)
+        brandUrlScrapingJobRepository.findFirstByStatus(status = ScrappingJobStatus.WAITING)
 }

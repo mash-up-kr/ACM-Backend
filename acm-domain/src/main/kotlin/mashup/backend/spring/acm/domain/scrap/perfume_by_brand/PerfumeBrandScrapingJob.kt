@@ -7,7 +7,7 @@ import javax.persistence.Entity
 @Entity
 class PerfumeBrandScrapingJob(
     val brandId: Long,
-    override var status: ScrappingJobStatus = ScrappingJobStatus.PROCESSING
+    override var status: ScrappingJobStatus = ScrappingJobStatus.WAITING
 ) : ScrapingJob(status) {
 
     override fun equals(other: Any?): Boolean {

@@ -24,8 +24,10 @@ class PerfumeUrlScrapingJobService(
         return Pair(true, perfumeUrlScrapingJob)
     }
 
-    fun getOneToScrap(): PerfumeUrlScrapingJob? =
-        perfumeUrlRepository.findFirstByStatus(status = ScrappingJobStatus.PROCESSING)
+    @Transactional
+    fun setOneToScrap(): PerfumeUrlScrapingJob? =
+        perfumeUrlRepository.findFirstByStatus(status = ScrappingJobStatus.WAITING)
+            ?.apply { updateToProcessing() }
 
     @Transactional
     fun updateToSuccess(perfumeUrlScrapingJobId: Long) = perfumeUrlRepository.findByIdOrNull(perfumeUrlScrapingJobId)
