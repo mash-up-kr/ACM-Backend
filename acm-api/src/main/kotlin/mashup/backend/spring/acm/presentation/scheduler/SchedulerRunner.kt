@@ -13,7 +13,11 @@ class SchedulerRunner(private val schedulers: List<Scheduler>): ApplicationRunne
     override fun run(args: ApplicationArguments?) {
         schedulers.forEach { scheduler ->
             log.info("[${scheduler.javaClass.name}] init start ======================")
-            scheduler.preApply()
+            try {
+                scheduler.preApply()
+            } catch (e: Exception) {
+                log.error("Fail to initialize cache", e)
+            }
             log.info("====================== init end [${scheduler.javaClass.name}]")
         }
     }
