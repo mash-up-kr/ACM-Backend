@@ -21,6 +21,10 @@ class RecommendPerfumesByNoteGroupIdsAndGenderService(
         // 노트그룹과 성별이 같은 향수중 랜덤
         val member = recommendRequestVo.memberDetailVo!!
         val size = recommendRequestVo.size
+        val noteGroupIds = recommendRequestVo.memberDetailVo.noteGroupIds
+        if (noteGroupIds.isEmpty()) {
+            return emptyList()
+        }
         val noteGroup = noteGroupRecommenderSupportService.getRecommendNoteGroupId(recommendRequestVo.exceptIds ?: emptySet(), recommendRequestVo.memberDetailVo.noteGroupIds)
 
         return perfumeService.getPerfumesByNoteGroupIdAndGender(noteGroup.id, member.getPerfumeGender(), size)
