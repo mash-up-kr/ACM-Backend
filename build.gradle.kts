@@ -4,6 +4,8 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 plugins {
 	id("org.springframework.boot") version "2.5.4"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
+	id("jacoco")
+	id("org.sonarqube") version "3.0"
 	kotlin("jvm") version "1.5.21"
 	kotlin("plugin.spring") version "1.5.21"
 	kotlin("plugin.jpa") version "1.5.21"
@@ -19,9 +21,7 @@ allprojects {
 	repositories {
 		mavenCentral()
 	}
-
 }
-
 
 subprojects {
 	apply(plugin = "org.springframework.boot")
@@ -31,6 +31,8 @@ subprojects {
 	apply(plugin = "kotlin-kapt")
 	apply(plugin = "kotlin-jpa")
 	apply(plugin = "kotlin-spring")
+	apply(plugin = "org.sonarqube")
+	apply(plugin = "jacoco")
 
 	the<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension>().apply {
 		imports {
@@ -64,9 +66,34 @@ subprojects {
 
 	tasks.withType<Test> {
 		useJUnitPlatform()
+		finalizedBy("jacocoTestReport")
+	}
+
+	tasks.jacocoTestReport {
+		dependsOn("test")
+		reports {
+			xml.required.set(true)
+			csv.required.set(false)
+			html.required.set(true)
+		}
+	}
+
+	tasks.withType<org.sonarqube.gradle.SonarQubeTask> {
+		dependsOn("jacocoTestResult")
 	}
 }
 
 tasks.withType<BootJar> {
 	enabled = false
+}
+
+jacoco {
+	toolVersion = "0.8.7"
+}
+
+sonarqube {
+	properties {
+		property("sonar.sourceEncoding", "UTF-8")
+		property("sonar.core.codeCoveragePlugin", "jacoco")
+	}
 }
