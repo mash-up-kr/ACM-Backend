@@ -3,6 +3,8 @@ package mashup.backend.spring.acm.domain.recommend.note
 import mashup.backend.spring.acm.domain.note.Note
 import mashup.backend.spring.acm.domain.note.NoteGroupService
 import mashup.backend.spring.acm.domain.recommend.RecommendRequestVo
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,8 +19,20 @@ class RecommendNotesByNoteGroupIdsService(
 
     override fun getItems(recommendRequestVo: RecommendRequestVo): List<Note> {
         val member = recommendRequestVo.memberDetailVo!!
-        return member.noteGroupIds.mapNotNull { noteGroupService.getById(it)?.notes }
+
+        var notes = member.noteGroupIds.mapNotNull { noteGroupService.getById(it)?.notes }
             .flatten()
             .distinctBy { it.id }
+            .shuffled()
+
+        if (notes.size > recommendRequestVo.size) {
+            notes = notes.subList(0, recommendRequestVo.size)
+        }
+
+        return notes
+    }
+
+    companion object {
+        val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 }

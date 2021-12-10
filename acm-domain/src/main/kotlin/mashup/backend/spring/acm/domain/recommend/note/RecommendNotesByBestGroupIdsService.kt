@@ -14,11 +14,17 @@ class RecommendNotesByDefaultService(
         return true
     }
 
-    @Transactional
     override fun getItems(recommendRequestVo: RecommendRequestVo): List<Note> {
-        return noteGroupCacheService.getByRandom(recommendRequestVo.size)
+        var notes = noteGroupCacheService.getByRandom(recommendRequestVo.size)
             .map { it.notes }
             .flatten()
             .distinctBy { it.id }
+            .shuffled()
+
+        if (notes.size > recommendRequestVo.size) {
+            notes = notes.subList(0, recommendRequestVo.size)
+        }
+
+        return notes
     }
 }

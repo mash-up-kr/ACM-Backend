@@ -7,20 +7,20 @@ class Recommender<T : BaseEntity>(
     private val recommendServices: List<RecommendService<T>>
 ) {
     fun recommend(memberDetailVo: MemberDetailVo, size: Int): List<T> {
-        val perfumes: MutableList<T> = mutableListOf()
+        val items: MutableList<T> = mutableListOf()
         for (recommendService in recommendServices) {
-            if (perfumes.size >= size) {
+            if (items.size >= size) {
                 break
             }
             val recommendRequestVo = RecommendRequestVo(
                 memberDetailVo = memberDetailVo,
-                size = size - perfumes.size,
-                exceptIds = perfumes.map { it.id }.toSet()
+                size = size - items.size,
+                exceptIds = items.map { it.id }.toSet()
             )
             if (recommendService.supports(recommendRequestVo = recommendRequestVo)) {
-                perfumes += recommendService.getItems(recommendRequestVo = recommendRequestVo)
+                items += recommendService.getItems(recommendRequestVo = recommendRequestVo)
             }
         }
-        return perfumes.toList()
+        return items.toList()
     }
 }

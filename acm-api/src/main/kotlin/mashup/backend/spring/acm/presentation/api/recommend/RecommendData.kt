@@ -8,13 +8,19 @@ data class MainRecommend(
     val title: String,
     val popularBrands: List<PopularBrand>,
     val recommendPerfumes: List<SimpleRecommendPerfumes>,
-    val recommendNotes : List<RecommendNote>
+    val recommendNoteGroups: List<RecommendNoteGroup>
 )
 
 data class SimpleRecommendPerfumes(
     var no: Int = -1,
     val title: String,
     val perfumes: List<SimpleRecommendPerfume>
+)
+
+data class RecommendNoteGroup(
+    val id: Long,
+    val name: String,
+    val recommendNotes: List<RecommendNote>
 )
 
 data class RecommendNote(
