@@ -5,7 +5,7 @@ plugins {
 	id("org.springframework.boot") version "2.5.4"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("jacoco")
-	id("org.sonarqube") version "3.0"
+	id("org.sonarqube") version "3.3"
 	kotlin("jvm") version "1.5.21"
 	kotlin("plugin.spring") version "1.5.21"
 	kotlin("plugin.jpa") version "1.5.21"
@@ -64,7 +64,7 @@ subprojects {
 		}
 	}
 
-	tasks.withType<Test> {
+	tasks.test {
 		useJUnitPlatform()
 		finalizedBy("jacocoTestReport")
 	}
@@ -76,10 +76,6 @@ subprojects {
 			csv.required.set(false)
 			html.required.set(true)
 		}
-	}
-
-	tasks.withType<org.sonarqube.gradle.SonarQubeTask> {
-		dependsOn("jacocoTestResult")
 	}
 }
 
