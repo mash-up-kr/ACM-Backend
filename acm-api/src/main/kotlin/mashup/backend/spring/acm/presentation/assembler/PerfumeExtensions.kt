@@ -64,5 +64,5 @@ fun PerfumeSimpleVo.toSimpleRecommendPerfume() = SimpleRecommendPerfume(
     thumbnailImageUrl = this.thumbnailImageUrl,
     brand = this.brandName,
     brandName = this.brandName,
-    name = this.name
+    name = this.name,
 )
