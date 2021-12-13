@@ -10,23 +10,27 @@ import org.springframework.stereotype.Service
 class RecommendPerfumesByNoteGroupIdsAndGenderService(
     private val noteGroupRecommenderSupportService: NoteGroupRecommenderSupportService,
     private val perfumeService: PerfumeService,
-): RecommendPerfumesService {
+) : RecommendPerfumesService {
     override fun supports(recommendRequestVo: RecommendRequestVo): Boolean {
-        val member = recommendRequestVo.memberDetailVo ?: return false
-
-        return member.hasNoteGroupIds() && member.hasGender()
+        val memberDetailVo = recommendRequestVo.memberDetailVo ?: return false
+        return memberDetailVo.hasNoteGroupIds() && memberDetailVo.hasGender()
     }
 
+    /**
+     * 노트 그룹이나 성별이 같은 향수
+     * 노트 그룹이 없으면 향수 추천 안함
+     */
     override fun getItems(recommendRequestVo: RecommendRequestVo): List<Perfume> {
-        // 노트그룹과 성별이 같은 향수중 랜덤
         val member = recommendRequestVo.memberDetailVo!!
         val size = recommendRequestVo.size
         val noteGroupIds = recommendRequestVo.memberDetailVo.noteGroupIds
         if (noteGroupIds.isEmpty()) {
             return emptyList()
         }
-        val noteGroup = noteGroupRecommenderSupportService.getRecommendNoteGroupId(recommendRequestVo.exceptIds ?: emptySet(), recommendRequestVo.memberDetailVo.noteGroupIds)
-
+        val noteGroup = noteGroupRecommenderSupportService.getRecommendNoteGroupId(
+            perfumeIds = recommendRequestVo.exceptIds ?: emptySet(),
+            noteGroupIds = recommendRequestVo.memberDetailVo.noteGroupIds,
+        )
         return perfumeService.getPerfumesByNoteGroupIdAndGender(noteGroup.id, member.getPerfumeGender(), size)
     }
 }

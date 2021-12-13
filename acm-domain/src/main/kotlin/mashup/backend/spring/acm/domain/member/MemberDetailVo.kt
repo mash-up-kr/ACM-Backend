@@ -30,19 +30,11 @@ data class MemberDetailVo(
         }
     }
 
-    fun hasOnboard(): Boolean {
-        return hasGender() || hasAgeGroup() || hasNoteGroupIds()
-    }
+    fun hasOnboard(): Boolean = hasGender() || hasAgeGroup() || hasNoteGroupIds()
 
-    fun hasGender(): Boolean {
-        return gender != MemberGender.UNKNOWN
-    }
+    fun hasGender(): Boolean = gender != MemberGender.UNKNOWN
 
-    fun hasAgeGroup(): Boolean {
-        return ageGroup != AgeGroup.UNKNOWN
-    }
+    fun hasAgeGroup(): Boolean = ageGroup != AgeGroup.UNKNOWN
 
-    fun hasNoteGroupIds(): Boolean {
-        return noteGroupIds.isEmpty()
-    }
+    fun hasNoteGroupIds(): Boolean = noteGroupIds.isNotEmpty()
 }
