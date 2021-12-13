@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @ConditionalOnWebApplication
 @Configuration
 class SecurityConfig : WebSecurityConfigurerAdapter() {
