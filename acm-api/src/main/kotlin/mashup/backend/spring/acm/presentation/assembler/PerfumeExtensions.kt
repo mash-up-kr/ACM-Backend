@@ -4,7 +4,10 @@ import mashup.backend.spring.acm.domain.perfume.Perfume
 import mashup.backend.spring.acm.domain.perfume.PerfumeAccord
 import mashup.backend.spring.acm.domain.perfume.PerfumeNoteType
 import mashup.backend.spring.acm.domain.perfume.PerfumeSimpleVo
-import mashup.backend.spring.acm.presentation.api.perfume.*
+import mashup.backend.spring.acm.presentation.api.perfume.PerfumeDetail
+import mashup.backend.spring.acm.presentation.api.perfume.PerfumeSimpleResponse
+import mashup.backend.spring.acm.presentation.api.perfume.SimplePerfumeAccord
+import mashup.backend.spring.acm.presentation.api.perfume.SimplePerfumeNotes
 import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfume
 
 fun Perfume.toPerfumeDetail(similarPerfumes: List<SimpleRecommendPerfume>): PerfumeDetail {
@@ -56,8 +59,10 @@ fun PerfumeSimpleVo.toDto() = PerfumeSimpleResponse(
 )
 
 fun PerfumeSimpleVo.toSimpleRecommendPerfume() = SimpleRecommendPerfume(
-id = this.id,
-image = this.thumbnailImageUrl,
-brand = this.brandName,
-name = this.name
+    id = this.id,
+    image = this.thumbnailImageUrl,
+    thumbnailImageUrl = this.thumbnailImageUrl,
+    brand = this.brandName,
+    brandName = this.brandName,
+    name = this.name,
 )
