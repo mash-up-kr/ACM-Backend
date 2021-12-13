@@ -17,7 +17,7 @@ data class PerfumeDetail(
     val thumbnailImageUrl: String,
     val accords: List<SimplePerfumeAccord>,
     val notes: SimplePerfumeNotes,
-    val similarPerfumes: List<SimpleRecommendPerfume> = emptyList()
+    val similarPerfumes: List<SimpleRecommendPerfume>,
 )
 
 data class SimplePerfumeNotes(
