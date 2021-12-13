@@ -44,4 +44,18 @@ class NoteGroupController(
             ),
         )
     }
+
+    @ApiOperation(
+        value = "노트 목록 조회",
+    )
+    @GetMapping("/{noteGroupId}/notes")
+    fun getNotes(
+        @PathVariable noteGroupId: Long,
+    ): ApiResponse<NoteSimpleListData> {
+        return ApiResponse.success(
+            data = NoteSimpleListData(
+                notes = noteGroupApplicationService.getNotes(noteGroupId = noteGroupId).map { it.toDto() },
+            ),
+        )
+    }
 }
