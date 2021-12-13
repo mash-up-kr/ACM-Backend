@@ -6,6 +6,10 @@ data class NoteDetailData(
     val note: NoteDetailResponse,
 )
 
+data class NoteSimpleListData(
+    val notes: List<NoteSimpleResponse>,
+)
+
 data class NoteDetailResponse(
     val id: Long,
     val name: String,
