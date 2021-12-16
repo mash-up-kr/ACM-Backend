@@ -13,7 +13,7 @@ class RecommendPerfumesByNoteGroupIdsAndGenderService(
 ) : RecommendPerfumesService {
     override fun supports(recommendRequestVo: RecommendRequestVo): Boolean {
         val memberDetailVo = recommendRequestVo.memberDetailVo ?: return false
-        return memberDetailVo.hasNoteGroupIds() && memberDetailVo.hasGender()
+        return memberDetailVo.hasNoteGroupIds()
     }
 
     /**
