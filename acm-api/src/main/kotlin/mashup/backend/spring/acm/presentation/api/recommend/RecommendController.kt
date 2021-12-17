@@ -22,13 +22,21 @@ class RecommendController(
     @ApiOperation(
         value = "[v1] 메인페이지 추천 API",
         notes = "메인페이지 추천 내용\n"
-                + " 1. 온보딩 맞춤 추천 향수 or 전체 인기 향수 랜덤 데이터(온보딩x)\n"
+                + " 온보딩 완료한 경우\n"
+                + " 1. For you (온보딩 맞춤 추천 향수 3개)\n"
                 + " 2. 인기 브랜드\n"
-                + " 3. gender 인기 함수 or 이달의 추천 향수(온보딩x)\n"
-                + " 4. 전체 인기 향수\n"
-                + " 5. 노트 그룹 기반 추천 향수 or 선물하기 좋은 향수(온보딩x)\n"
+                + " 3-1 {성별} 인기 함수\n"
+                + " 3-2 모든 분들에게 인기가 많아요\n"
+                + " 3-3 {상큼한 향}, 이 향수 어때요\n"
+                + " 4. 취향을 맞춘 노트\n"
                 + "\n"
-                + "- recommendPerfumesList는 위의 3,4,5를 순서대로 정렬하여 내려줍니다."
+                + " 온보딩 완료하지 않은 경우\n"
+                + " 1. For you (전체 인기 향수 중 3개)\n"
+                + " 2. 인기 브랜드\n"
+                + " 3-1 이달의 추천 향수\n"
+                + " 3-2 모든 분들에게 인기가 많아요\n"
+                + " 3-3 선물하기 좋은 향수\n"
+                + " 4. 내가 좋아할 노트\n"
     )
     @GetMapping("/main")
     fun getMainRecommend(@ApiIgnore @ModelAttribute("memberId") memberId: Long) : ApiResponse<MainRecommendData> {

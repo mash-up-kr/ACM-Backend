@@ -67,7 +67,7 @@ class RecommendApplicationServiceImpl(
         val popularPerfumes = recommendPopularPerfumes(memberId, DEFAULT_RECOMMEND_PERFUMES_COUNT)
         popularPerfumes.no = 3
         val perfumesByNoteGroup = recommendPerfumesByNoteGroup(memberId, DEFAULT_RECOMMEND_PERFUMES_COUNT)
-        popularPerfumes.no = 4
+        perfumesByNoteGroup.no = 4
 
         // 추천 노트들
         val noteGroups = recommendNoteGroupsByOnboard(memberId, DEFAULT_RECOMMEND_NOTE_GROUPS_COUNT, DEFAULT_RECOMMEND_NOTES_COUNT, DEFAULT_RECOMMEND_PERFUMES_COUNT)
@@ -79,9 +79,9 @@ class RecommendApplicationServiceImpl(
                 perfumesByOnboard,
                 perfumesByGender,
                 popularPerfumes,
-                perfumesByNoteGroup
+                perfumesByNoteGroup,
             ),
-            recommendNoteGroups = noteGroups
+            recommendNoteGroups = noteGroups,
         )
     }
 
