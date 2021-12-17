@@ -50,7 +50,13 @@ subprojects {
 		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 		testImplementation("org.springframework.boot:spring-boot-starter-test") {
 			exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+			exclude(module = "junit")
+			exclude(module = "mockito-core")
 		}
+		testImplementation("org.junit.jupiter:junit-jupiter-api")
+		testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+		testImplementation("com.ninja-squad:springmockk:3.0.1")
+		testRuntimeOnly("com.h2database:h2")
 	}
 
 	repositories {

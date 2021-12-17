@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.userdetails.User
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -22,6 +23,9 @@ class ApiControllerAdvice {
     fun resolveMemberId(principal: Principal?): Long? {
         log.debug("principal : $principal")
         if (principal is UsernamePasswordAuthenticationToken) {
+            if (principal.principal is User) {
+                return (principal.principal as User).username.toLong()
+            }
             return principal.principal.toString().toLong()
         }
         return null
