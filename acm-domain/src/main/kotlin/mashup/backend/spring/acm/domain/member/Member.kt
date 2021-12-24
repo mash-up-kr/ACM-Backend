@@ -24,9 +24,6 @@ class Member(
     }
 
     fun initialize(memberInitializeRequestVo: MemberInitializeRequestVo) {
-        if (memberStatus == MemberStatus.ACTIVE) {
-            throw MemberInitializeFailedException("이미 ACTIVE 상태인 회원입니다. memberId: $id")
-        }
         memberStatus = MemberStatus.ACTIVE
         memberDetail.initialize(memberInitializeRequestVo)
     }
