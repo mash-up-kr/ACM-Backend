@@ -78,7 +78,6 @@ class MemberController(
     /**
      * 회원 초기화 (온보딩 정보 입력, 상태 변경(ASSOCIATE -> ACTIVE))
      * - 200, SUCCESS
-     * - 400, MEMBER_STATUS_ALREADY_ACTIVE
      * - 400, MEMBER_NOT_FOUND
      */
     @ApiOperation(
