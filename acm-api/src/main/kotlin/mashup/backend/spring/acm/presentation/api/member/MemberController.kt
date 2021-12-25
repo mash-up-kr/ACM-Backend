@@ -3,11 +3,11 @@ package mashup.backend.spring.acm.presentation.api.member
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import mashup.backend.spring.acm.application.LoginApplicationService
-import mashup.backend.spring.acm.presentation.assembler.toLoginResponse
-import mashup.backend.spring.acm.presentation.assembler.toVo
 import mashup.backend.spring.acm.application.member.MemberApplicationService
 import mashup.backend.spring.acm.presentation.ApiResponse
+import mashup.backend.spring.acm.presentation.assembler.toLoginResponse
 import mashup.backend.spring.acm.presentation.assembler.toMemberInfoResponse
+import mashup.backend.spring.acm.presentation.assembler.toVo
 import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
 import javax.validation.Valid
@@ -66,7 +66,7 @@ class MemberController(
     @PutMapping("/me/nickname")
     fun updateNickname(
         @ApiIgnore @ModelAttribute("memberId") memberId: Long,
-        @RequestBody nicknameUpdateRequest: NicknameUpdateRequest
+        @RequestBody nicknameUpdateRequest: NicknameUpdateRequest,
     ): ApiResponse<Unit> {
         memberApplicationService.updateNickname(
             memberId = memberId,
@@ -92,6 +92,20 @@ class MemberController(
         memberApplicationService.initialize(
             memberId = memberId,
             requestVo = memberInitializeRequest.toVo()
+        )
+        return ApiResponse.success()
+    }
+
+    @ApiOperation(
+        value = "회원 탈퇴",
+        notes = "회원 정보 삭제",
+    )
+    @PostMapping("/withdraw")
+    fun withdraw(
+        @ApiIgnore @ModelAttribute("memberId") memberId: Long,
+    ): ApiResponse<Unit> {
+        memberApplicationService.withdraw(
+            memberId = memberId,
         )
         return ApiResponse.success()
     }

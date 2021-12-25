@@ -20,7 +20,7 @@ interface MemberService {
     fun findAllMemberDetail(): List<SimpleMemberDetailVo>
     fun getMembers(pageable: Pageable): Page<MemberDetailVo>
     fun join(idProviderInfo: IdProviderInfo): MemberDetailVo
-    fun withdraw()
+    fun withdraw(memberId: Long)
     fun updateNickname(memberId: Long, nickname: String)
     fun initialize(memberId: Long, requestVo: MemberInitializeRequestVo)
 }
@@ -83,9 +83,13 @@ class MemberServiceImpl(
             ?.let { toMemberDetailVo(it) }
             ?: throw MemberNotFoundException(memberId = memberId)
 
+    /**
+     * 회원 탈퇴
+     * - 회원 관련 테이블 데이터 모두 삭제 (member, member_detail, member_id_provider)
+     */
     @Transactional
-    override fun withdraw() {
-        TODO("Not yet implemented")
+    override fun withdraw(memberId: Long) {
+        memberRepository.findByIdOrNull(memberId)?.run { memberRepository.delete(this) }
     }
 
     /**

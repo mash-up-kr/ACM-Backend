@@ -10,6 +10,7 @@ interface MemberApplicationService {
     fun getMemberInfo(memberId: Long): MemberDetailVo
     fun updateNickname(memberId: Long, nickname: String)
     fun initialize(memberId: Long, requestVo: MemberInitializeRequestVo)
+    fun withdraw(memberId: Long)
 }
 
 @ApplicationService
@@ -44,6 +45,16 @@ class MemberApplicationServiceImpl(
         memberService.initialize(
             memberId = memberId,
             requestVo = requestVo
+        )
+    }
+
+    /**
+     * 회원 탈퇴
+     * - 데이터 삭제
+     */
+    override fun withdraw(memberId: Long) {
+        memberService.withdraw(
+            memberId = memberId
         )
     }
 }
