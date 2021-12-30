@@ -73,6 +73,7 @@ class RecommendApplicationServiceImpl(
         val noteGroups = recommendNoteGroupsByOnboard(memberId, DEFAULT_RECOMMEND_NOTE_GROUPS_COUNT, DEFAULT_RECOMMEND_NOTES_COUNT, DEFAULT_RECOMMEND_PERFUMES_COUNT)
 
         return MainRecommend(
+            hasOnboarded = member.hasOnboard(),
             title = title,
             popularBrands = popularBrands,
             recommendPerfumes = listOf(

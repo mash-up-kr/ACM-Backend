@@ -5,6 +5,7 @@ data class MainRecommendData(
 )
 
 data class MainRecommend(
+    val hasOnboarded: Boolean,
     val title: String,
     val popularBrands: List<PopularBrand>,
     val recommendPerfumes: List<SimpleRecommendPerfumes>,
