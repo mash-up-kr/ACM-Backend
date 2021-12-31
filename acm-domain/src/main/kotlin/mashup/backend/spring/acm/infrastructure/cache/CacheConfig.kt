@@ -55,7 +55,6 @@ enum class CacheType(
     RECOMMEND_GENDER_PERFUMES(CacheNames.RECOMMEND_GENDER_PERFUMES, CacheExpiredAfterWrite.EXPIRE_1_DAY, 10),
     RECOMMEND_POPULAR_PERFUMES(CacheNames.RECOMMEND_POPULAR_PERFUMES, CacheExpiredAfterWrite.EXPIRE_1_DAY, 10),
     RECOMMEND_MONTHLY_PERFUMES(CacheNames.RECOMMEND_MONTHLY_PERFUMES, null, 10),
-    RECOMMEND_DEFAULT_PERFUMES(CacheNames.RECOMMEND_DEFAULT_PERFUMES, null, 10),
     RECOMMEND_PRESENT_PERFUMES(CacheNames.RECOMMEND_PRESENT_PERFUMES, null, 10),
 
     // recommend notes
@@ -75,7 +74,6 @@ enum class CacheType(
         const val RECOMMEND_GENDER_PERFUMES = "recommendGenderPerfumes"
         const val RECOMMEND_POPULAR_PERFUMES = "recommendPopularPerfumes"
         const val RECOMMEND_MONTHLY_PERFUMES = "recommendMonthlyPerfumes"
-        const val RECOMMEND_DEFAULT_PERFUMES = "recommendDefaultPerfumes"
         const val RECOMMEND_PRESENT_PERFUMES = "recommendPresentPerfumes"
 
         // recommend notes

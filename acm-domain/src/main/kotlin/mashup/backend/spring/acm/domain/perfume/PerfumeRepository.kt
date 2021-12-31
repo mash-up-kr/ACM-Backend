@@ -25,4 +25,5 @@ interface PerfumeRepository : JpaRepository<Perfume, Long> {
     fun findByNotes_note_id(noteId: Long, pageable: Pageable): Page<Perfume>
     @EntityGraph("perfume.brand")
     fun findByBrand_idAndNotes_note_id(brandId: Long, noteId: Long, pageable: Pageable): Page<Perfume>
+    fun findByNotes_note_noteGroup_id(noteGroupId: Long, pageable: Pageable): Page<Perfume>
 }

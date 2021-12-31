@@ -27,6 +27,7 @@ interface PerfumeService {
     fun getPerfumesByNoteId(noteId: Long, pageable: Pageable): Page<PerfumeSimpleVo>
     fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume>
     fun getPerfumesByNoteGroupIdAndGender(noteGroupId: Long, gender: Gender, size: Int): List<Perfume>
+    fun getPerfumesByNoteGroupId(noteGroupId: Long, size: Int): List<PerfumeSimpleVo>
     fun searchByName(name: String, pageable: Pageable): List<PerfumeSimpleVo>
 }
 
@@ -128,6 +129,12 @@ class PerfumeServiceImpl(
         return perfumeNoteRepository.findByPerfumeGenderAndNoteNoteGroupId(gender, noteGroupId, PageRequest.ofSize(size))
             .content
             .map { it.perfume }
+    }
+
+    override fun getPerfumesByNoteGroupId(noteGroupId: Long, size: Int): List<PerfumeSimpleVo> {
+        return perfumeRepository.findByNotes_note_noteGroup_id(noteGroupId, PageRequest.ofSize(size))
+            .content
+            .map { PerfumeSimpleVo(it) }
     }
 
     override fun getPerfumesByNoteIdAndGender(noteId: Long, gender: Gender, size: Int): List<Perfume> {

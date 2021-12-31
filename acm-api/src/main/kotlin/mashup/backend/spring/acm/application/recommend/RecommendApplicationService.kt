@@ -31,7 +31,7 @@ class RecommendApplicationServiceImpl(
     private val noteRecommenderService: NoteRecommenderService,
     private val noteGroupService: NoteGroupService,
     private val brandCacheApplicationService: BrandCacheApplicationService,
-): RecommendApplicationService {
+) : RecommendApplicationService {
     override fun recommendSimilarPerfumes(perfumeId: Long): List<PerfumeSimpleVo> {
         log.debug("[RECOMMEND_PERFUMES][recommendSimilarPerfumes] perfumeId=$perfumeId")
         val perfume = perfumeService.getPerfume(perfumeId)
@@ -70,7 +70,11 @@ class RecommendApplicationServiceImpl(
         perfumesByNoteGroup.no = 4
 
         // 추천 노트 그룹 목록
-        val noteGroups = recommendNoteGroupsByOnboard(memberId, DEFAULT_RECOMMEND_NOTE_GROUPS_COUNT, DEFAULT_RECOMMEND_NOTES_COUNT, DEFAULT_RECOMMEND_PERFUMES_COUNT)
+        val noteGroups = recommendNoteGroupsByOnboard(memberId,
+            DEFAULT_RECOMMEND_NOTE_GROUPS_COUNT,
+            DEFAULT_RECOMMEND_NOTES_COUNT,
+            DEFAULT_RECOMMEND_PERFUMES_COUNT,
+        )
 
         return MainRecommend(
             hasOnboarded = member.hasOnboard(),
@@ -116,13 +120,13 @@ class RecommendApplicationServiceImpl(
             title = "모든 분들에게 인기가 많아요!",
             perfumes = perfumeRecommenderCacheService.recommendPopularPerfumes(member, size)
                 .map { it.toDto() }
-       )
+        )
     }
 
     private fun recommendPerfumesByNoteGroup(memberId: Long, size: Int): SimpleRecommendPerfumes {
         log.debug("[RECOMMEND_PERFUMES][recommendPerfumesByNoteGroup] memberId=$memberId, size:$size")
         val member = memberApplicationService.getMemberInfo(memberId)
-        val hasGroupIds =  member.hasNoteGroupIds()
+        val hasGroupIds = member.hasNoteGroupIds()
         val title = if (hasGroupIds) "취향을 맞춘 노트" else "내가 좋아할 노트"
 
         return SimpleRecommendPerfumes(
@@ -132,7 +136,12 @@ class RecommendApplicationServiceImpl(
         )
     }
 
-    private fun recommendNoteGroupsByOnboard(memberId: Long, noteGroupSize: Int, noteSize: Int, perfumeSize: Int): List<RecommendNoteGroup> {
+    private fun recommendNoteGroupsByOnboard(
+        memberId: Long,
+        noteGroupSize: Int,
+        noteSize: Int,
+        perfumeSize: Int,
+    ): List<RecommendNoteGroup> {
         log.debug("[RECOMMEND_PERFUMES][recommendNotesByOnboard] memberId=$memberId, noteSize:$noteSize, perfumeSize:$perfumeSize")
         val member = memberApplicationService.getMemberInfo(memberId)
         val noteGroupIds = member.noteGroupIds.toMutableList()
@@ -169,11 +178,18 @@ class RecommendApplicationServiceImpl(
                 name = noteGroupService.getById(noteGroupId)!!.name,
                 notes = noteRecommenderService.recommendNotesByNoteGroupIds(recommend4Member, noteSize)
                     .map { note ->
+                        val perfumeSimpleVoSet = mutableSetOf<PerfumeSimpleVo>()
+                        perfumeSimpleVoSet.addAll(perfumeService.getPerfumesByNoteId(note.id, perfumeSize)
+                            .map { PerfumeSimpleVo(it) })
+                        while (perfumeSimpleVoSet.size < 10) {
+                            perfumeSimpleVoSet.addAll(
+                                perfumeService.getPerfumesByNoteGroupId(noteGroupId, 10 - perfumeSimpleVoSet.size)
+                            )
+                        }
                         RecommendNote(
                             id = note.id,
                             name = note.name,
-                            perfumes = perfumeService.getPerfumesByNoteId(note.id, perfumeSize)
-                                .map { PerfumeSimpleVo(it).toDto() }
+                            perfumes = perfumeSimpleVoSet.map { it.toDto() }
                         )
                     }
             )
