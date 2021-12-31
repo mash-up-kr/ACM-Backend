@@ -8,21 +8,12 @@ import mashup.backend.spring.acm.presentation.api.perfume.PerfumeDetail
 import mashup.backend.spring.acm.presentation.api.perfume.PerfumeSimpleResponse
 import mashup.backend.spring.acm.presentation.api.perfume.SimplePerfumeAccord
 import mashup.backend.spring.acm.presentation.api.perfume.SimplePerfumeNotes
-import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfume
 
-fun Perfume.toPerfumeDetail(similarPerfumes: List<SimpleRecommendPerfume>): PerfumeDetail {
-    val topNotes = mutableListOf<String>()
-    val middleNotes = mutableListOf<String>()
-    val baseNotes = mutableListOf<String>()
-    val unknownNotes = mutableListOf<String>()
-    for (perfumeNote in this.notes) {
-        when (perfumeNote.noteType) {
-            PerfumeNoteType.TOP -> topNotes.add(perfumeNote.note.name)
-            PerfumeNoteType.MIDDLE -> middleNotes.add(perfumeNote.note.name)
-            PerfumeNoteType.BASE -> baseNotes.add(perfumeNote.note.name)
-            PerfumeNoteType.UNKNOWN -> unknownNotes.add(perfumeNote.note.name)
-        }
-    }
+fun Perfume.toPerfumeDetail(similarPerfumes: List<PerfumeSimpleVo>): PerfumeDetail {
+    val typeToNoteNameListMap = this.notes.groupBy(
+        { it.noteType },
+        { it.note.name }
+    )
 
     return PerfumeDetail(
         id = this.id,
@@ -34,12 +25,12 @@ fun Perfume.toPerfumeDetail(similarPerfumes: List<SimpleRecommendPerfume>): Perf
         thumbnailImageUrl = this.thumbnailImageUrl,
         accords = this.accords.map { it.toSimplePerfumeAccord() },
         notes = SimplePerfumeNotes(
-            top = topNotes,
-            middle = middleNotes,
-            base = baseNotes,
-            unknown = unknownNotes
+            top = typeToNoteNameListMap[PerfumeNoteType.TOP] ?: listOf(),
+            middle = typeToNoteNameListMap[PerfumeNoteType.MIDDLE] ?: listOf(),
+            base = typeToNoteNameListMap[PerfumeNoteType.BASE] ?: listOf(),
+            unknown = typeToNoteNameListMap[PerfumeNoteType.UNKNOWN] ?: listOf(),
         ),
-        similarPerfumes = similarPerfumes
+        similarPerfumes = similarPerfumes.map { it.toDto() },
     )
 }
 
@@ -56,13 +47,4 @@ fun PerfumeSimpleVo.toDto() = PerfumeSimpleResponse(
     name = this.name,
     thumbnailImageUrl = this.thumbnailImageUrl,
     brandName = this.brandName,
-)
-
-fun PerfumeSimpleVo.toSimpleRecommendPerfume() = SimpleRecommendPerfume(
-    id = this.id,
-    image = this.thumbnailImageUrl,
-    thumbnailImageUrl = this.thumbnailImageUrl,
-    brand = this.brandName,
-    brandName = this.brandName,
-    name = this.name,
 )

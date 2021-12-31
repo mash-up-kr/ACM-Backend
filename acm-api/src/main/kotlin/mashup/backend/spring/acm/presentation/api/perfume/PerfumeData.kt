@@ -1,7 +1,6 @@
 package mashup.backend.spring.acm.presentation.api.perfume
 
 import mashup.backend.spring.acm.domain.perfume.Gender
-import mashup.backend.spring.acm.presentation.api.recommend.SimpleRecommendPerfume
 
 data class PerfumeDetailResponse(
     val perfumeDetail: PerfumeDetail
@@ -17,7 +16,7 @@ data class PerfumeDetail(
     val thumbnailImageUrl: String,
     val accords: List<SimplePerfumeAccord>,
     val notes: SimplePerfumeNotes,
-    val similarPerfumes: List<SimpleRecommendPerfume>,
+    val similarPerfumes: List<PerfumeSimpleResponse>,
 )
 
 data class SimplePerfumeNotes(

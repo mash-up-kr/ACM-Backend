@@ -13,12 +13,12 @@ import mashup.backend.spring.acm.domain.recommend.note.NoteRecommenderService
 import mashup.backend.spring.acm.domain.recommend.perfume.PerfumeRecommenderCacheService
 import mashup.backend.spring.acm.domain.recommend.perfume.PerfumeRecommenderService
 import mashup.backend.spring.acm.presentation.api.recommend.*
-import mashup.backend.spring.acm.presentation.assembler.toSimpleRecommendPerfume
+import mashup.backend.spring.acm.presentation.assembler.toDto
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 interface RecommendApplicationService {
-    fun recommendSimilarPerfumes(perfumeId: Long): List<SimpleRecommendPerfume>
+    fun recommendSimilarPerfumes(perfumeId: Long): List<PerfumeSimpleVo>
     fun recommendMainPerfumes(memberId: Long): MainRecommend
 }
 
@@ -32,7 +32,7 @@ class RecommendApplicationServiceImpl(
     private val noteGroupService: NoteGroupService,
     private val brandCacheApplicationService: BrandCacheApplicationService,
 ): RecommendApplicationService {
-    override fun recommendSimilarPerfumes(perfumeId: Long): List<SimpleRecommendPerfume> {
+    override fun recommendSimilarPerfumes(perfumeId: Long): List<PerfumeSimpleVo> {
         log.debug("[RECOMMEND_PERFUMES][recommendSimilarPerfumes] perfumeId=$perfumeId")
         val perfume = perfumeService.getPerfume(perfumeId)
         val noteGroupIds = perfume.notes.mapNotNull { it.note.noteGroup?.id }.distinctBy { it }
@@ -49,7 +49,7 @@ class RecommendApplicationServiceImpl(
         return perfumeRecommenderService.recommendSimilarPerfumes(
             memberForSimilarPerfumes,
             DEFAULT_RECOMMEND_SIMILAR_PERFUMES_COUNT
-        ).map { it.toSimpleRecommendPerfume() }
+        )
     }
 
     override fun recommendMainPerfumes(memberId: Long): MainRecommend {
@@ -59,7 +59,7 @@ class RecommendApplicationServiceImpl(
         // 추천 브랜드
         val popularBrands = brandCacheApplicationService.getPopularBrands()
 
-        // 추천 향수들
+        // 추천 향수 목록
         val perfumesByOnboard = recommendPerfumesByOnboard(memberId, DEFAULT_MY_RECOMMEND_PERFUMES_COUNT)
         perfumesByOnboard.no = 1
         val perfumesByGender = recommendPerfumesByGender(memberId, DEFAULT_RECOMMEND_PERFUMES_COUNT)
@@ -69,13 +69,13 @@ class RecommendApplicationServiceImpl(
         val perfumesByNoteGroup = recommendPerfumesByNoteGroup(memberId, DEFAULT_RECOMMEND_PERFUMES_COUNT)
         perfumesByNoteGroup.no = 4
 
-        // 추천 노트들
+        // 추천 노트 그룹 목록
         val noteGroups = recommendNoteGroupsByOnboard(memberId, DEFAULT_RECOMMEND_NOTE_GROUPS_COUNT, DEFAULT_RECOMMEND_NOTES_COUNT, DEFAULT_RECOMMEND_PERFUMES_COUNT)
 
         return MainRecommend(
             hasOnboarded = member.hasOnboard(),
             title = title,
-            popularBrands = popularBrands,
+            popularBrands = popularBrands.map { it.toDto() },
             recommendPerfumes = listOf(
                 perfumesByOnboard,
                 perfumesByGender,
@@ -93,7 +93,7 @@ class RecommendApplicationServiceImpl(
         return SimpleRecommendPerfumes(
             title = "온보딩 맞춤 향수",
             perfumes = perfumeRecommenderService.recommendPerfumesByOnboard(member, size)
-                .map { it.toSimpleRecommendPerfume() }
+                .map { it.toDto() }
         )
     }
 
@@ -104,7 +104,7 @@ class RecommendApplicationServiceImpl(
         return SimpleRecommendPerfumes(
             title = if (!member.hasGender()) "이달의 향수" else "${member.gender.name}, 인기 향수",
             perfumes = perfumeRecommenderCacheService.recommendPerfumesByGender(member, size)
-                .map { it.toSimpleRecommendPerfume() }
+                .map { it.toDto() }
         )
     }
 
@@ -115,7 +115,7 @@ class RecommendApplicationServiceImpl(
         return SimpleRecommendPerfumes(
             title = "모든 분들에게 인기가 많아요!",
             perfumes = perfumeRecommenderCacheService.recommendPopularPerfumes(member, size)
-                .map { it.toSimpleRecommendPerfume() }
+                .map { it.toDto() }
        )
     }
 
@@ -128,14 +128,14 @@ class RecommendApplicationServiceImpl(
         return SimpleRecommendPerfumes(
             title = title,
             perfumes = perfumeRecommenderService.recommendPerfumesByNoteGroup(member, size)
-                .map { it.toSimpleRecommendPerfume() }
+                .map { it.toDto() }
         )
     }
 
     private fun recommendNoteGroupsByOnboard(memberId: Long, noteGroupSize: Int, noteSize: Int, perfumeSize: Int): List<RecommendNoteGroup> {
         log.debug("[RECOMMEND_PERFUMES][recommendNotesByOnboard] memberId=$memberId, noteSize:$noteSize, perfumeSize:$perfumeSize")
         val member = memberApplicationService.getMemberInfo(memberId)
-        var noteGroupIds = member.noteGroupIds.toMutableList()
+        val noteGroupIds = member.noteGroupIds.toMutableList()
         if (noteGroupIds.size < noteGroupSize) {
             noteGroupService.getByRandom(noteGroupSize).forEach { noteGroupIds.add(it.id) }
             noteGroupIds.distinctBy { it }
@@ -167,13 +167,13 @@ class RecommendApplicationServiceImpl(
             RecommendNoteGroup(
                 id = noteGroupId,
                 name = noteGroupService.getById(noteGroupId)!!.name,
-                recommendNotes = noteRecommenderService.recommendNotesByNoteGroupIds(recommend4Member, noteSize)
+                notes = noteRecommenderService.recommendNotesByNoteGroupIds(recommend4Member, noteSize)
                     .map { note ->
                         RecommendNote(
                             id = note.id,
                             name = note.name,
-                            recommendPerfumes = perfumeService.getPerfumesByNoteId(note.id, perfumeSize)
-                                .map { perfume ->  PerfumeSimpleVo(perfume).toSimpleRecommendPerfume() }
+                            perfumes = perfumeService.getPerfumesByNoteId(note.id, perfumeSize)
+                                .map { PerfumeSimpleVo(it).toDto() }
                         )
                     }
             )
