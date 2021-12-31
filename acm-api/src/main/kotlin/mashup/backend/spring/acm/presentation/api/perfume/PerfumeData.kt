@@ -2,11 +2,11 @@ package mashup.backend.spring.acm.presentation.api.perfume
 
 import mashup.backend.spring.acm.domain.perfume.Gender
 
-data class PerfumeDetailResponse(
-    val perfumeDetail: PerfumeDetail
+data class PerfumeDetailData(
+    val perfumeDetail: PerfumeDetailResponse
 )
 
-data class PerfumeDetail(
+data class PerfumeDetailResponse(
     val id: Long,
     val name: String,
     val brandName: String,
@@ -34,17 +34,10 @@ data class SimplePerfumeAccord(
     val textColor: String,
 )
 
-data class PerfumeSearchRequest(
-    val name: String,
-)
-
-data class PerfumeSearchResponse(
-    val perfumes: List<PerfumeSimpleResponse>,
-)
-
 data class PerfumeSimpleResponse(
     val id: Long,
     val name: String,
+    val imageUrl: String,
     val thumbnailImageUrl: String,
     val brandName: String,
 )
