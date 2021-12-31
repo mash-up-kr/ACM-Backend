@@ -2,20 +2,11 @@ package mashup.backend.spring.acm.presentation.api.brand
 
 import mashup.backend.spring.acm.presentation.api.perfume.PerfumeSimpleResponse
 
-data class BrandSearchRequest(
-    val name: String,
-)
-
-data class BrandSearchResponse(
-    val brands: List<BrandSimpleResponse>,
-)
-
 data class BrandSimpleResponse(
     val id: Long,
     val name: String,
     val thumbnailImageUrl: String,
 )
-
 
 data class BrandDetailData(
     val brand: BrandDetailResponse,
