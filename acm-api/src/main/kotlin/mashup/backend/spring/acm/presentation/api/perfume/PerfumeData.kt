@@ -34,14 +34,6 @@ data class SimplePerfumeAccord(
     val textColor: String,
 )
 
-data class PerfumeSearchRequest(
-    val name: String,
-)
-
-data class PerfumeSearchResponse(
-    val perfumes: List<PerfumeSimpleResponse>,
-)
-
 data class PerfumeSimpleResponse(
     val id: Long,
     val name: String,
