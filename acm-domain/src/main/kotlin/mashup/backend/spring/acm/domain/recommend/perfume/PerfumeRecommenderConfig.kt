@@ -20,7 +20,8 @@ class PerfumeRecommenderConfig(
     @Bean
     fun similarPerfumesRecommender() = RecommenderBuilder<Perfume>()
         .recommendService(listOf(
-            recommendPerfumesByNoteGroupIdsAndGenderService
+            recommendPerfumesByNoteGroupIdsAndGenderService,
+            recommendPerfumesByDefaultService,
         ))
     .build()
 
@@ -30,6 +31,7 @@ class PerfumeRecommenderConfig(
             recommendPerfumesByNoteGroupIdsAndGenderService,
             recommendPerfumesByGenderService,
             recommendPerfumesByUnisexGenderService,
+            recommendPerfumesByDefaultService,
         ))
         .build()
 
@@ -39,6 +41,7 @@ class PerfumeRecommenderConfig(
             // TODO : 최근 보관함에 많이 담긴 향수
             recommendPerfumesByPopularNoteGroupService,
             recommendMonthlyPerfumesService,
+            recommendPerfumesByDefaultService,
         ))
         .build()
 
@@ -52,6 +55,7 @@ class PerfumeRecommenderConfig(
             recommendPerfumesByUnisexGenderService,
             recommendPerfumesByPopularNoteGroupService,
             recommendMonthlyPerfumesService,
+            recommendPerfumesByDefaultService,
         ))
         .build()
 
@@ -62,6 +66,7 @@ class PerfumeRecommenderConfig(
             recommendPerfumesByNoteGroupIdsAndGenderAndAgeService,
             recommendPerfumesByNoteGroupIdsAndGenderService,
             recommendPerfumesForPresentService,
+            recommendPerfumesByDefaultService,
         ))
         .build()
 

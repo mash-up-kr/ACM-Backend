@@ -36,4 +36,30 @@ class Perfume(
             imageUrl = perfumeCreateVo.imageUrl,
         )
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Perfume
+
+        if (name != other.name) return false
+        if (originalName != other.originalName) return false
+        if (gender != other.gender) return false
+        if (url != other.url) return false
+        if (imageUrl != other.imageUrl) return false
+        if (thumbnailImageUrl != other.thumbnailImageUrl) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + originalName.hashCode()
+        result = 31 * result + gender.hashCode()
+        result = 31 * result + url.hashCode()
+        result = 31 * result + imageUrl.hashCode()
+        result = 31 * result + thumbnailImageUrl.hashCode()
+        return result
+    }
 }
