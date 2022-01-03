@@ -126,8 +126,7 @@ class RecommendApplicationServiceImpl(
     private fun recommendPerfumesByNoteGroup(memberId: Long, size: Int): SimpleRecommendPerfumes {
         log.debug("[RECOMMEND_PERFUMES][recommendPerfumesByNoteGroup] memberId=$memberId, size:$size")
         val member = memberApplicationService.getMemberInfo(memberId)
-        val hasGroupIds = member.hasNoteGroupIds()
-        val title = if (hasGroupIds) "취향을 맞춘 노트" else "내가 좋아할 노트"
+        val title = if (member.hasOnboard()) "{상큼한 향}, 이 향수 어때요?" else "선물하기 좋은 향수"
 
         return SimpleRecommendPerfumes(
             title = title,
